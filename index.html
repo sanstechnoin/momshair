@@ -10,22 +10,18 @@
     <meta property="og:title" content="Mom's Hair Oils — Wisdom in Every Drop">
     <meta property="og:description" content="100% natural, handcrafted oils from a secret family recipe.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://sanstechnoin.github.io/momshair/"> 
-    <meta property="og:image" content="https://sanstechnoin.github.io/momshair/1.png"> 
-    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:url" content="https://sanstechnoin.github.io/momshair/"> <meta property="og:image" content="https://sanstechnoin.github.io/momshair/1.png"> <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Mom's Hair Oils — Wisdom in Every Drop">
     <meta name="twitter:description" content="100% natural, handcrafted oils from a secret family recipe.">
-    <meta name="twitter:image" content="https://sanstechnoin.github.io/momshair/1.png"> 
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <meta name="twitter:image" content="https://sanstechnoin.github.io/momshair/1.png"> <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,700;1,400&family=Great+Vibes&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&libraries=places&callback=initAutocomplete" async defer></script>
-</head>
+    
+    </head>
 <body>
 
     <header class="main-header">
@@ -120,6 +116,7 @@
                         <button class="btn-quantity" onclick="changeQuantity('p3', 1, 'Combo Pack', 360)">+</button>
                     </div>
                 </div>
+
             </div>
         </section>
 
@@ -215,4 +212,147 @@
                         <span>Is this safe for colored or chemically treated hair?</span>
                         <span class="faq-icon">+</span>
                     </button>
-                    <div class="faq
+                    <div class="faq-answer">
+                        <p>Yes! Our oils are 100% natural and contain no sulfates, parabens, or harsh chemicals. They are completely safe and, in fact, highly beneficial for nourishing hair that has been colored or chemically treated.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>How often should I use the oil?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>For best results, we recommend using the oil 2-3 times per week. Gently massage it into your scalp for 5-10 minutes and leave it on for at least one hour (or overnight) before washing with a gentle shampoo.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>What is your shipping & return policy?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We ship all orders within 48 hours. Due to the handmade, natural, and hygienic nature of our products, we do not accept returns. However, if your product arrives damaged, please send us a photo on WhatsApp within 24 hours of delivery, and we will be happy to send a replacement.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about-section">
+            <h3 class="section-subtitle">About Us</h3>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>We are a small family business sharing our grandmother’s wisdom with the world. Every bottle is made with patience, care, and generations of knowledge.</p>
+                    <p>When you order from us, you support a tradition of natural beauty and a mother’s heartfelt craft.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <div id="cart-modal" class="cart-modal">
+        <div class="cart-modal-content">
+            <button id="close-cart-btn" class="cart-modal-close">&times;</button>
+            <h3>Your Order</h3>
+            
+            <div id="cart-items-container">
+                </div>
+
+            <div class="cart-total">
+                <strong>Total:</strong>
+                <strong id="cart-total-price">₹0.00</strong>
+            </div>
+
+            <div id="order-form-container">
+                
+                <form id="orderForm" action="https://formbold.com/s/94nDZ" method="POST" enctype="multipart/form-data">
+                    <p>Please fill in your details to complete the order.</p>
+                    <input type="hidden" id="cart-contents" name="cart_contents" value="">
+
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number (for WhatsApp updates)</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Full Address</label>
+                        <textarea id="address" name="address" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="notes">Notes (for address correction, etc.)</label>
+                        <textarea id="notes" name="notes" rows="2"></textarea>
+                    </div>
+
+                    <div class="payment-manual-section">
+                        <h4>Step 1: Complete Payment</h4>
+                        <p>Please pay <strong><span id="manual-total-price">₹0.00</span></strong> to complete your order.</p>
+                        
+                        <div class="payment-options-manual">
+                            <div class="qr-code-manual">
+                                <img src="qr.png" alt="Scan QR Code to Pay"> <p>Scan to Pay</p>
+                            </div>
+                            <div class="gpay-manual">
+                                <p><strong>Or pay to UPI ID:</strong><br> your-upi-id@okhdfcbank</p>
+                                <p style="font-size: 0.9rem; color: #777;">(Please replace this with your real UPI ID)</p>
+                            </div>
+                        </div>
+                        
+                        <h4>Step 2: Confirm Order</h4>
+                        <div class="form-group">
+                            <label for="screenshot">Upload Payment Screenshot (Required)</label>
+                            <input type="file" id="screenshot" name="payment_screenshot" accept="image/*" required>
+                        </div>
+                        
+                        <div class="form-group-checkbox">
+                            <input type="checkbox" id="payment-confirm" name="payment_confirmed" value="yes" required>
+                            <label for="payment-confirm">I have completed the payment and uploaded the screenshot.</label>
+                        </div>
+                    </div>
+                    <div class="cart-buttons">
+                        <button type="submit" class="btn-submit-email">Submit Order</button>
+                        <a id="whatsapp-order-btn" class="btn-whatsapp" href="#" target="_blank">Order via WhatsApp</a>
+                    </div>
+                </form>
+            </div>
+
+            <div id="thank-you-message" style="display: none; text-align: center; padding: 2rem 0;">
+                <h4>Thanks for the order!</h4>
+                <p>We will update you soon via WhatsApp.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="lightbox-modal" class="lightbox-modal">
+        <button id="lightbox-close" class="lightbox-close">&times;</button>
+        <button id="lightbox-prev" class="lightbox-prev">&lt;</button>
+        <button id="lightbox-next" class="lightbox-next">&gt;</button>
+        <div class="lightbox-content">
+            <img id="lightbox-image" src="" alt="Enlarged product image">
+        </div>
+    </div>
+    
+    <section id="instagram-feed" class="instagram-feed-section">
+        <h3 class="section-subtitle">Follow Our Journey</h3>
+        <p class="section-intro">Join our community on Instagram @its_moms_hair_oil for tips, stories, and updates.</p>
+        
+        <div class="instagram-grid">
+            <img src="1.png" alt="Instagram post placeholder">
+            <img src="2.png" alt="Instagram post placeholder">
+            <img src="3.png" alt="Instagram post placeholder">
+            <img src="5.png" alt="Instagram post placeholder">
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <p><strong>Contact (WhatsApp):</strong> +91 9952532391 | <strong>Instagram:</strong> @its_moms_hair_oil</p>
+        <p>© 2025 Mom’s Hair Oils. All Rights Reserved.</p>
+        <p class="footer-credit">Created & Developed by Shri Avinash Narendhran S V +49 162 3757839</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
