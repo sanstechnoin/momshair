@@ -887,3 +887,29 @@ section {
     }
 }
 
+/* ========
+   ADD THIS TO THE BOTTOM OF YOUR STYLE.CSS
+======== */
+
+/* NEW: Styles for the Order Number Display */
+.order-number-display {
+    background-color: #fdfdfb;
+    border: 2px dashed var(--color-gold);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+.order-number-display strong {
+    font-size: 1.8rem;
+    color: var(--color-red);
+    display: block;
+    letter-spacing: 2px;
+}
+.order-number-display p {
+    font-size: 0.9rem;
+    color: #555;
+    margin: 0.25rem 0 0 0;
+}
+
+
