@@ -1,3 +1,29 @@
+/* ========
+   GLOBAL FUNCTIONS
+   (Must be here for Google Maps to work)
+======== */
+
+function initAutocomplete() {
+    const addressInput = document.getElementById('address');
+    
+    if (addressInput) {
+        const autocomplete = new google.maps.places.Autocomplete(addressInput, {
+            types: ['address'], // Only search for street addresses
+            componentRestrictions: { 'country': 'in' } // Restrict search to India
+        });
+
+        autocomplete.addListener('place_changed', () => {
+            const place = autocomplete.getPlace();
+            console.log("Selected place:", place.formatted_address);
+        });
+    }
+}
+
+
+/* ========
+   MAIN SCRIPT (runs after page loads)
+======== */
+
 document.addEventListener("DOMContentLoaded", function() {
     
     // --- Hamburger Menu ---
@@ -25,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const whatsappBtn = document.getElementById("whatsapp-order-btn");
     const formContainer = document.getElementById("order-form-container");
     const thankYouMessage = document.getElementById("thank-you-message");
-    const manualTotalPriceEl = document.getElementById("manual-total-price"); // Get manual total el
+    const manualTotalPriceEl = document.getElementById("manual-total-price");
 
     // Cart state
     let cart = {}; // Example: { p1: { name: '...', price: 190, quantity: 2 }, ... }
@@ -303,21 +329,3 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
 });
-
-// --- NEW: GOOGLE MAPS AUTOCOMPLETE FUNCTION ---
-// This function is called by the script tag in your HTML <head>
-function initAutocomplete() {
-    const addressInput = document.getElementById('address');
-    
-    if (addressInput) {
-        const autocomplete = new google.maps.places.Autocomplete(addressInput, {
-            types: ['address'], // Only search for street addresses
-            componentRestrictions: { 'country': 'in' } // Restrict search to India
-        });
-
-        autocomplete.addListener('place_changed', ()_ => {
-            const place = autocomplete.getPlace();
-            console.log("Selected place:", place.formatted_address);
-        });
-    }
-}
