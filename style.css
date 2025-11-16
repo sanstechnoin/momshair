@@ -721,3 +721,78 @@ img {
         grid-template-columns: 1fr;
     }
 }
+
+/* ========
+   ADD THIS TO THE BOTTOM OF YOUR STYLE.CSS
+======== */
+
+/* Styles for Manual Payment (Option 2) in Cart */
+.payment-manual-section {
+    border-top: 1px dashed #ccc;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+}
+
+.payment-manual-section h4 {
+    font-size: 1.2rem;
+    font-family: var(--font-heading);
+    color: var(--color-red);
+    margin-bottom: 1rem;
+}
+
+.payment-manual-section p {
+    margin-bottom: 1rem;
+}
+
+.payment-options-manual {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    background-color: #fdfdfb;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.qr-code-manual img {
+    width: 120px;
+    height: 120px;
+    border: 1px solid #eee;
+}
+.qr-code-manual p {
+    text-align: center;
+    font-size: 0.9rem;
+    margin-bottom: 0;
+}
+
+.gpay-manual p {
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+/* Style for the "I have paid" checkbox */
+.form-group-checkbox {
+    display: flex;
+    align-items: center;
+    background: #fdfdfb;
+    padding: 1rem;
+    border-radius: 5px;
+    margin-top: 1.5rem;
+}
+.form-group-checkbox input[type="checkbox"] {
+    width: 1.3rem;
+    height: 1.3rem;
+    margin-right: 1rem;
+}
+.form-group-checkbox label {
+    font-size: 1rem;
+    font-family: var(--font-body);
+}
+
+/* Responsive fix for manual payment section */
+@media (max-width: 480px) {
+    .payment-options-manual {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
