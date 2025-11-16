@@ -11,6 +11,11 @@
     --color-red: #5D2A1F;
 }
 
+/* TIER 2: Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -65,6 +70,14 @@ section {
     padding: 5rem 2rem;
     max-width: 1200px;
     margin: 0 auto;
+}
+
+.section-intro {
+    text-align: center;
+    font-size: 1.15rem;
+    max-width: 700px;
+    margin: -2rem auto 3rem;
+    color: #555;
 }
 
 /* ======== BUTTONS ======== */
@@ -233,7 +246,7 @@ section {
     max-width: 100%;
     height: 250px;
     object-fit: contain;
-    margin-bottom: 1rem; /* Reduced margin */
+    margin-bottom: 1rem; 
     cursor: pointer;
 }
 .product-card h4 {
@@ -247,7 +260,7 @@ section {
     flex-grow: 1;
 }
 
-/* NEW Product Thumbnails */
+/* Product Thumbnails */
 .product-thumbnails {
     display: flex;
     justify-content: center;
@@ -339,10 +352,10 @@ section {
 }
 .testimonial-content {
     display: grid;
-    grid-template-columns: 1fr; /* Changed from 1fr 1fr */
-    gap: 2rem; /* Reduced gap */
+    grid-template-columns: 1fr; 
+    gap: 2rem; 
     align-items: center;
-    max-width: 800px; /* Constrain width */
+    max-width: 800px; 
     margin: 0 auto;
 }
 .testimonial-quotes blockquote {
@@ -354,6 +367,101 @@ section {
     margin-bottom: 1.5rem;
     border-radius: 0 8px 8px 0;
 }
+/* TIER 2: Star Rating Style */
+.testimonial-quotes .stars {
+    font-size: 1.5rem;
+    color: var(--color-gold);
+    margin-bottom: 0.5rem;
+}
+
+
+/* ======== INGREDIENTS SECTION STYLES ======== */
+.ingredients-section {
+    background-color: white;
+}
+.ingredients-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+.ingredient-card {
+    background-color: var(--color-bg);
+    border: 1px solid #eee;
+    padding: 2.5rem;
+    border-radius: 10px;
+    border-top: 4px solid var(--color-gold);
+}
+.ingredient-card h4 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-red);
+}
+.ingredient-card ul {
+    list-style: none;
+    padding: 0;
+}
+.ingredient-card li {
+    font-size: 1.05rem;
+    margin-bottom: 1.25rem;
+    line-height: 1.6;
+}
+.ingredient-card li strong {
+    color: var(--color-text);
+    display: inline;
+}
+
+/* ======== FAQ SECTION STYLES ======== */
+.faq-section {
+    background-color: #fdfdfb;
+}
+.faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+.faq-item {
+    border-bottom: 1px solid #ddd;
+}
+.faq-question {
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 0.5rem;
+    cursor: pointer;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+.faq-question:hover {
+    color: var(--color-gold);
+}
+.faq-icon {
+    font-size: 1.5rem;
+    font-weight: 300;
+    transition: transform 0.3s ease;
+}
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+}
+.faq-answer p {
+    padding: 0 0.5rem 1.5rem;
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+/* Style for when FAQ is active/open */
+.faq-item.active .faq-answer {
+    max-height: 200px; /* Set to a height larger than any possible answer */
+}
+.faq-item.active .faq-icon {
+    transform: rotate(45deg);
+}
+
 
 /* ======== ABOUT US SECTION (UPDATED) ======== */
 .about-section {
@@ -361,32 +469,16 @@ section {
 }
 .about-content {
     display: grid;
-    grid-template-columns: 1fr; /* Changed from 1fr 1fr */
+    grid-template-columns: 1fr; 
     gap: 0;
     align-items: center;
-    max-width: 800px; /* Constrain width */
+    max-width: 800px; 
     margin: 0 auto;
-    text-align: center; /* Center the text */
+    text-align: center; 
 }
 .about-text p {
     font-size: 1.15rem;
     margin-bottom: 1.5rem;
-}
-
-/* ======== FOOTER ======== */
-.main-footer {
-    background-color: var(--color-text);
-    color: #ccc;
-    text-align: center;
-    padding: 2.5rem 2rem;
-    margin-top: 3rem;
-}
-.main-footer p {
-    margin-bottom: 0.5rem;
-}
-.main-footer a {
-    color: white;
-    text-decoration: none;
 }
 
 /* ======== CART MODAL STYLES ======== */
@@ -526,9 +618,9 @@ section {
     background-color: #128C7E;
 }
 
-/* ======== NEW LIGHTBOX STYLES ======== */
+/* ======== LIGHTBOX STYLES ======== */
 .lightbox-modal {
-    display: none;
+    display: none; /* Fixed: Was visible on load */
     position: fixed;
     z-index: 300; 
     left: 0;
@@ -587,6 +679,37 @@ section {
 }
 .lightbox-prev:hover, .lightbox-next:hover {
     background-color: rgba(255,255,255,0.2);
+}
+
+/* ======== TIER 3: INSTAGRAM FEED STYLES ======== */
+.instagram-feed-section {
+    background-color: #fdfdfb;
+}
+.instagram-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+.instagram-grid img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+/* TIER 2: Cart Jiggle Animation */
+@keyframes jiggle {
+    0% { transform: scale(1); }
+    25% { transform: scale(1.1) rotate(-3deg); }
+    50% { transform: scale(1.1) rotate(3deg); }
+    75% { transform: scale(1.1) rotate(-3deg); }
+    100% { transform: scale(1) rotate(0); }
+}
+.cart-icon-btn.jiggle {
+    animation: jiggle 0.5s ease-in-out;
 }
 
 
@@ -656,5 +779,12 @@ section {
 
     .features-grid { grid-template-columns: 1fr; }
     .cart-buttons { grid-template-columns: 1fr; }
-}
+    
+    .ingredients-grid {
+        grid-template-columns: 1fr;
+    }
 
+    .instagram-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
