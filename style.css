@@ -249,10 +249,12 @@ section {
     margin-bottom: 1rem; 
     cursor: pointer;
 }
+
+/* FIX: Product title font size */
 .product-card h4 {
-    font-size: 1.3rem; /* <-- FIX: Title font size reduced */
+    font-size: 1.3rem;
     margin-bottom: 0.5rem;
-    min-height: 2.6rem; /* Ensures cards align */
+    min-height: 2.6rem; /* a 2-line height, to keep cards aligned */
 }
 .product-card > p {
     font-style: italic;
@@ -303,7 +305,7 @@ section {
     padding: 0.5rem 0;
     margin: 0;
     border-radius: 0;
-    -webkit-appearance: none; /* Fix for iOS */
+    -webkit-appearance: none;
 }
 .btn-quantity {
     background-color: var(--color-gold);
@@ -529,20 +531,20 @@ section {
     flex-shrink: 0; /* Prevents title from shrinking */
 }
 
-/* THIS IS THE SCROLLABLE PART */
+/* FIX: THIS IS THE SCROLLABLE PART */
 #cart-items-container {
     overflow-y: auto; 
-    min-height: 50px; /* Gives it some space */
-    max-height: 200px; /* Set a max-height */
-    padding-right: 10px; /* for scrollbar */
+    min-height: 50px;
+    max-height: 200px; /* <-- This makes ONLY the item list scroll */
+    padding-right: 10px;
     border-bottom: 1px solid #eee;
 }
 
-/* THIS IS THE FIXED BOTTOM PART */
+/* FIX: THIS IS THE FIXED BOTTOM PART */
 .cart-checkout-container {
-    flex-shrink: 0; /* Prevents this from shrinking */
+    flex-shrink: 0;
     padding-top: 1.5rem;
-    overflow-y: auto; /* If form is too long, it will scroll */
+    overflow-y: auto; /* The FORM will scroll if the screen is tiny */
 }
 
 .cart-item {
@@ -594,9 +596,9 @@ section {
     font-family: var(--font-body);
     font-size: 1rem;
 }
-/* Style for Google Maps Dropdown */
+/* FIX: Style for Google Maps Dropdown */
 .pac-container {
-    z-index: 9999 !important;
+    z-index: 9999 !important; /* Makes it appear over the modal */
     font-family: var(--font-body);
 }
 
@@ -791,7 +793,7 @@ section {
     animation: jiggle 0.5s ease-in-out;
 }
 
-/* ======== NEW FOOTER STYLES ======== */
+/* ======== FIX: FOOTER STYLES ======== */
 .main-footer {
     background-color: var(--color-text);
     color: #ccc;
