@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order - Mom's Hair Oils</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,700;1,400&family=Great+Vibes&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="navbar">
+            <div class="logo">Mom's</div>
+            
+            <button id="menu-toggle" class="menu-toggle-btn">
+                <span>☰</span>
+            </button>
+            
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="index.html#story">Our Story</a></li>
+                <li><a href="index.html#products">Our Products</a></li>
+                <li><a href="index.html#reviews">Testimonials</a></li>
+                <li><a href="index.html#about">About Us</a></li>
+            </ul>
+            
+            <a href="order.html" class="cart-icon">🛒</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="order" class="order-section">
+            <h3 class="section-subtitle">Place Your Order</h3>
+
+            <div class="whatsapp-order">
+                <p>Prefer to order on WhatsApp?</p>
+                <a href="https://wa.me/919952532391?text=Hi!%20I'd%20like%20to%20place%20an%20order%20for%20Mom's%20Hair%20Oil." class="btn-whatsapp" target="_blank">
+                    Order on WhatsApp
+                </a>
+                <p class="or-divider">--- OR ---</p>
+                <p>Fill out the form below</p>
+            </div>
+            
+            <form id="orderForm" action="https://formspree.io/f/your-unique-id" method="POST" enctype="multipart/form-data">
+                
+                <h4>Step 1: Choose Your Oils</h4>
+                <div class="form-group-checkbox">
+                    <input type="checkbox" id="product1" name="product1" value="190">
+                    <label for="product1">Nourish & Shine Oil (100ml) - <strong>₹190</strong> <del>₹240</del></label>
+                </div>
+                <div class="form-group-checkbox">
+                    <input type="checkbox" id="product2" name="product2" value="190">
+                    <label for="product2">Anti-Grey Hair Oil (100ml) - <strong>₹190</strong> <del>₹240</del></label>
+                </div>
+                <div class="form-group-checkbox">
+                    <input type="checkbox" id="product3" name="product3" value="360">
+                    <label for="product3">Combo Pack (Both Oils) - <strong>₹360</strong></label>
+                </div>
+
+                <h4>Step 2: Your Shipping Details</h4>
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number (for WhatsApp updates)</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Full Address (House No, Street, Landmark)</label>
+                    <textarea id="address" name="address" rows="3" required></textarea>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" name="city" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pincode">Pincode</label>
+                        <input type="text" id="pincode" name="pincode" required>
+                    </div>
+                </div>
+
+                <h4>Step 3: Complete Payment</h4>
+                <div class="total-amount">
+                    <strong>Your Total Amount: ₹<span id="totalAmount">0</span></strong>
+                    <p>+ Free Delivery Above 599</p>
+                </div>
+                <p>Please pay the total amount using Google Pay or by scanning the QR code. <strong>Upload a screenshot of your payment to confirm the order.</strong></p>
+                
+                <div class="payment-options">
+                    <div class="qr-code">
+                        <img src="4.png" alt="Scan QR Code to Pay" style="max-width: 150px; border: 1px solid #ccc; padding: 5px;">
+                        <p>Scan to Pay</p>
+                    </div>
+                    <div class="gpay">
+                        <p><strong>Or pay to UPI ID:</strong><br> your-upi-id@okhdfcbank</p>
+                    </div>
+                </div>
+
+                <h4>Step 4: Confirm Order</h4>
+                <div class="form-group">
+                    <label for="screenshot">Upload Payment Screenshot (Required)</label>
+                    <input type="file" id="screenshot" name="screenshot" accept="image/*" required>
+                </div>
+                
+                <button type="submit" class="btn btn-gold-large btn-submit">Place My Order</button>
+
+            </form>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <p><strong>Contact (WhatsApp):</strong> +91 9952532391 | <strong>Instagram:</strong> @its_moms_hair_oil</p>
+        <p>© 2025 Mom’s Hair Oils. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
