@@ -155,21 +155,25 @@ document.addEventListener("DOMContentLoaded", function() {
         const name = document.getElementById("name").value;
         const phone = document.getElementById("phone").value;
         const address = document.getElementById("address").value;
+        const notes = document.getElementById("notes").value; // Get notes
 
-        if (name || phone || address) {
+        if (name || phone || address || notes) {
             message += `\n\n*My Details:*`;
             if (name) message += `\nName: ${name}`;
             if (phone) message += `\nPhone: ${phone}`;
             if (address) message += `\nAddress: ${address}`;
+            if (notes) message += `\nNotes: ${notes}`; // Add notes
         }
         
         const whatsappUrl = `https://wa.me/919952532391?text=${encodeURIComponent(message)}`;
         whatsappBtn.href = whatsappUrl;
     }
     
+    // Add event listeners for all form fields
     document.getElementById("name").addEventListener('input', updateWhatsAppLink);
     document.getElementById("phone").addEventListener('input', updateWhatsAppLink);
     document.getElementById("address").addEventListener('input', updateWhatsAppLink);
+    document.getElementById("notes").addEventListener('input', updateWhatsAppLink);
 
 
     // Handle the "Submit Order" (email) button
