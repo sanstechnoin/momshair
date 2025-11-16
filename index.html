@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mom's Hair Oils — Wisdom in Every Drop</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,700;1,400&family=Great+Vibes&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="navbar">
+            <div class="logo">Mom's</div>
+            <ul class="nav-menu">
+                <li><a href="#story">Our Story</a></li>
+                <li><a href="#products">Our Oils</a></li>
+                <li><a href="#reviews">Testimonials</a></li>
+                <li><a href="#order" class="btn btn-gold">Order Now</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>Mom's Hair Oils</h1>
+                <h2>— Wisdom in Every Drop</h2>
+                <p>Rooted in Tradition. Crafted with Love. Delivered to Your Home.</p>
+                <a href="#order" class="btn btn-gold-large">Order Your Bottle</a>
+            </div>
+            <div class="hero-image">
+                <img src="1.png" alt="Mom's Hair Oil Bottle">
+            </div>
+        </section>
+
+        <section id="story" class="text-section">
+            <h3 class="section-subtitle">Our Family's Secret, Shared With You</h3>
+            <p>For generations, the women in our family have trusted a secret hair-oil formula created by our grandmother. Today, my mother continues that tradition—handcrafting each bottle in small batches using pure, natural ingredients.</p>
+            <p>Now, for the first time, we are bringing this treasured formula to your home.</p>
+        </section>
+
+        <section id="products" class="products-section">
+            <h3 class="section-subtitle">Our Handcrafted Oils</h3>
+            <div class="products-grid">
+                <div class="product-card">
+                    <img src="1.png" alt="Nourish & Shine Hair Oil" class="product-image">
+                    <h4>Nourish & Shine Hair Oil</h4>
+                    <p>For everyday strength, softness, and natural glow.</p>
+                    <ul class="benefits-list">
+                        <li>Deep nourishment for hair & scalp</li>
+                        <li>Adds natural shine</li>
+                        <li>Reduces frizz and dryness</li>
+                        <li>Helps strengthen roots</li>
+                    </ul>
+                    <a href="#order" class="btn btn-gold">Order Now</a>
+                </div>
+                <div class="product-card">
+                    <img src="2.png" alt="Anti-Grey Hair Oil" class="product-image">
+                    <h4>Anti-Grey Hair Oil</h4>
+                    <p>Slow down greying the natural way.</p>
+                    <ul class="benefits-list">
+                        <li>Helps slow early greying</li>
+                        <li>Darkens appearance of grey strands</li>
+                        <li>Strengthens weak roots</li>
+                        <li>Reduces hair fall and breakage</li>
+                    </ul>
+                    <a href="#order" class="btn btn-gold">Order Now</a>
+                </div>
+            </div>
+            <div class="text-section-small">
+                <h4>Safe for Kids Too</h4>
+                <p>Our oils are gentle, natural, and free from chemicals — making them safe for daily use for children.</p>
+            </div>
+        </section>
+
+        <section class="features-section">
+            <h3 class="section-subtitle">Pure, Potent & Proven</h3>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <span>🌿</span>
+                    <h5>100% Natural</h5>
+                    <p>No chemicals, no mineral oil, no artificial fragrance.</p>
+                </div>
+                <div class="feature-item">
+                    <span>🤲</span>
+                    <h5>Handcrafted</h5>
+                    <p>Made fresh in small batches using traditional methods.</p>
+                </div>
+                <div class="feature-item">
+                    <span>📜</span>
+                    <h5>Family Recipe</h5>
+                    <p>A formulation that has protected our hair for decades.</p>
+                </div>
+                <div class="feature-item">
+                    <span>📦</span>
+                    <h5>Ready to Ship</h5>
+                    <p>Freshly prepared & delivered straight to your doorstep.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="reviews" class="testimonial-section">
+            <h3 class="section-subtitle">Happy Customers</h3>
+            <div class="testimonial-content">
+                <div class="testimonial-image">
+                    <img src="5.png" alt="Happy Customer Testimonial">
+                </div>
+                <div class="testimonial-quotes">
+                    <blockquote>
+                        <p>“My hair feels softer, stronger, and visibly healthier.”</p>
+                    </blockquote>
+                    <blockquote>
+                        <p>“The anti-grey oil reduced early greys within weeks. So grateful!”</p>
+                    </blockquote>
+                    <blockquote>
+                        <p>“The smell, the texture, everything feels pure and handmade.”</p>
+                    </blockquote>
+                </div>
+            </div>
+        </section>
+
+        <section id="order" class="order-section">
+            <h3 class="section-subtitle">Get Your Bottle of Mom's Hair Oil</h3>
+            <form id="orderForm" action="[YOUR_FORM_HANDLER_URL]" method="POST" enctype="multipart/form-data">
+                
+                <h4>Step 1: Choose Your Oils</h4>
+                <div class="form-group-checkbox">
+                    <input type="checkbox" id="product1" name="product1" value="190">
+                    <label for="product1">Nourish & Shine Oil (100ml) - <strong>₹190</strong> <del>₹240</del></label>
+                </div>
+                <div class="form-group-checkbox">
+                    <input type="checkbox" id="product2" name="product2" value="190">
+                    <label for="product2">Anti-Grey Hair Oil (100ml) - <strong>₹190</strong> <del>₹240</del></label>
+                </div>
+                <div class="form-group-checkbox">
+                    <input type="checkbox" id="product3" name="product3" value="360">
+                    <label for="product3">Combo Pack (Both Oils) - <strong>₹360</strong></label>
+                </div>
+
+                <h4>Step 2: Your Shipping Details</h4>
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number (for WhatsApp updates)</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Full Address (House No, Street, Landmark)</label>
+                    <textarea id="address" name="address" rows="3" required></textarea>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" name="city" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pincode">Pincode</label>
+                        <input type="text" id="pincode" name="pincode" required>
+                    </div>
+                </div>
+
+                <h4>Step 3: Complete Payment</h4>
+                <div class="total-amount">
+                    <strong>Your Total Amount: ₹<span id="totalAmount">0</span></strong>
+                    <p>+ Free Delivery Above 599</p>
+                </div>
+                <p>Please pay the total amount using Google Pay or by scanning the QR code. <strong>Upload a screenshot of your payment to confirm the order.</strong></p>
+                
+                <div class="payment-options">
+                    <div class="qr-code">
+                        <img src="4.png" alt="Scan QR Code to Pay" style="max-width: 150px; border: 1px solid #ccc; padding: 5px;">
+                        <p>Scan to Pay</p>
+                        <p style="color:red; font-size: 0.8rem;">(Replace this with your actual QR code)</p>
+                    </div>
+                    <div class="gpay">
+                        <p><strong>Or pay to UPI ID:</strong><br> your-upi-id@okhdfcbank</p>
+                    </div>
+                </div>
+
+                <h4>Step 4: Confirm Order</h4>
+                <div class="form-group">
+                    <label for="screenshot">Upload Payment Screenshot (Required)</label>
+                    <input type="file" id="screenshot" name="screenshot" accept="image/*" required>
+                </div>
+                
+                <button type="submit" class="btn btn-gold-large btn-submit">Place My Order</button>
+
+            </form>
+        </section>
+
+        <section id="about" class="about-section">
+            <h3 class="section-subtitle">About Us</h3>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>We are a small family business sharing our grandmother’s wisdom with the world. Every bottle is made with patience, care, and generations of knowledge.</p>
+                    <p>When you order from us, you support a tradition of natural beauty and a mother’s heartfelt craft.</p>
+                </div>
+                <div class="about-image">
+                    <img src="3.png" alt="Mom's Hair Oil two bottles">
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="main-footer">
+        <p><strong>Contact (WhatsApp):</strong> +91 9952532391 | <strong>Instagram:</strong> @its_moms_hair_oil</p>
+        <p>© 2025 Mom’s Hair Oils. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
