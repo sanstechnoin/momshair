@@ -812,4 +812,29 @@ section {
     .instagram-grid {
         grid-template-columns: 1fr 1fr;
     }
+
+    /* ======== NEW CART MODAL FIX ======== */
+
+/* This is the white pop-up box */
+.cart-modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 80vh; /* Set modal height to 80% of the screen */
 }
+
+/* This is the DIV containing your cart items */
+.cart-items-list {
+    flex-grow: 1; /* Allows this div to grow */
+    overflow-y: auto; /* ADDS THE SCROLLBAR *only* to this div */
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+}
+
+/* This is the DIV containing your checkout form (Name, Phone, etc.) */
+.cart-checkout-form {
+    flex-shrink: 0; /* Prevents this div from shrinking */
+    padding-top: 1rem;
+    overflow-y: auto; /* Makes the form scrollable if screen is tiny */
+}
+}
+
