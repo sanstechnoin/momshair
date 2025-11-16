@@ -22,6 +22,8 @@ body {
     background-color: var(--color-bg);
     color: var(--color-text);
     line-height: 1.7;
+    /* Add padding for sticky header */
+    padding-top: 80px; 
 }
 
 h1, h2, h3, h4, h5 {
@@ -95,13 +97,16 @@ section {
     background-color: var(--color-gold-dark);
 }
 
-/* ======== HEADER & NAV ======== */
+/* ======== HEADER & NAV (NEW) ======== */
 .main-header {
     background-color: white;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    position: sticky;
+    position: fixed; /* Changed to fixed */
     top: 0;
+    left: 0;
+    width: 100%;
     z-index: 100;
+    height: 80px; /* Set a fixed height */
 }
 .navbar {
     display: flex;
@@ -109,7 +114,8 @@ section {
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 1rem 2rem;
+    padding: 0 2rem; /* Adjusted padding */
+    height: 100%;
 }
 .logo {
     font-family: var(--font-brand);
@@ -135,12 +141,28 @@ section {
     color: var(--color-gold);
 }
 
+.cart-icon {
+    font-size: 1.5rem;
+    text-decoration: none;
+    margin-left: 1.5rem;
+}
+
+.menu-toggle-btn {
+    display: none; /* Hidden on desktop */
+    font-size: 1.8rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text);
+}
+
+
 /* ======== HERO SECTION ======== */
 .hero-section {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 80vh;
+    min-height: calc(80vh - 80px); /* Adjust for header */
     background-color: white;
 }
 .hero-content {
@@ -290,6 +312,36 @@ section {
     border-bottom: 2px solid #eee;
     padding-bottom: 0.5rem;
 }
+
+/* NEW WHATSAPP BUTTON STYLES */
+.whatsapp-order {
+    text-align: center;
+    padding: 2rem 1rem;
+    background: #fdfdfb;
+    border-bottom: 2px dashed #eee;
+}
+.btn-whatsapp {
+    display: inline-block;
+    background-color: #25D366;
+    color: white;
+    padding: 0.8rem 1.8rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin: 1rem 0;
+    transition: all 0.3s ease;
+}
+.btn-whatsapp:hover {
+    background-color: #128C7E;
+}
+.or-divider {
+    font-weight: 600;
+    color: #999;
+    margin: 1.5rem 0 0.5rem;
+}
+
 .form-group {
     margin-bottom: 1.5rem;
 }
@@ -376,6 +428,28 @@ section {
     cursor: pointer;
 }
 
+/* ======== ABOUT US SECTION ======== */
+.about-section {
+    background-color: white;
+}
+.about-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+.about-image img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+.about-text p {
+    font-size: 1.15rem;
+    margin-bottom: 1.5rem;
+}
+
 /* ======== FOOTER ======== */
 .main-footer {
     background-color: var(--color-text);
@@ -392,7 +466,7 @@ section {
     text-decoration: none;
 }
 
-/* ======== RESPONSIVE DESIGN ======== */
+/* ======== RESPONSIVE DESIGN (UPDATED) ======== */
 @media (max-width: 992px) {
     .hero-section {
         flex-direction: column;
@@ -416,86 +490,62 @@ section {
     .testimonial-content {
         grid-template-columns: 1fr;
     }
+    .about-content {
+        grid-template-columns: 1fr;
+    }
+    .about-image {
+        order: -1; 
+        margin-bottom: 2rem;
+    }
 }
 
+/* NEW MOBILE HEADER STYLES */
 @media (max-width: 768px) {
     h1 { font-size: 4rem; }
     .section-subtitle { font-size: 2rem; }
     
-    /* === UPDATED HEADER CODE === */
-    .navbar { 
-        flex-direction: column; /* Stacks logo and menu */
+    .navbar {
+        justify-content: space-between;
     }
-    .logo { 
-        margin-bottom: 1rem; /* Space below logo */
+    
+    .menu-toggle-btn {
+        display: block; /* Show hamburger icon */
+        order: 2; /* Set order */
     }
+
+    .logo {
+        order: 1;
+    }
+    
+    .cart-icon {
+        order: 3;
+        margin-left: 1rem;
+    }
+    
     .nav-menu {
-        flex-direction: column; /* Stacks menu items vertically */
-        align-items: center;  /* Centers all items */
-        padding-left: 0;
+        display: none; /* Hide menu by default */
+        flex-direction: column;
+        position: absolute;
+        top: 80px; /* Position below header */
+        left: 0;
         width: 100%;
+        background: white;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        padding: 1rem 0;
     }
+
+    .nav-menu.open {
+        display: flex; /* Show menu when 'open' class is added */
+    }
+    
     .nav-menu li {
-        margin: 0.5rem 0; /* Adds vertical spacing between items */
+        margin: 1rem 0;
         text-align: center;
         width: 100%;
     }
-    .nav-menu a.btn {
-        display: block; /* Makes the button fill the width */
-        width: 80%;
-        margin: 0.5rem auto 0;
-    }
-    /* === END OF HEADER UPDATE === */
 
     .features-grid { grid-template-columns: 1fr; }
     .form-grid { grid-template-columns: 1fr; }
     .payment-options { flex-direction: column; }
     .qr-code { margin-bottom: 1.5rem; }
-
-    /* Fix for About Us section */
-    .about-content {
-        grid-template-columns: 1fr;
-    }
-    .about-image {
-        order: -1; /* Show image on top on mobile */
-        margin-bottom: 2rem;
-    }
-}
-
-/* ======== ADD THIS TO THE BOTTOM OF YOUR STYLE.CSS FILE ======== */
-
-.about-section {
-    background-color: white;
-}
-
-.about-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-    align-items: center;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-.about-image img {
-    width: 100%;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-.about-text p {
-    font-size: 1.15rem;
-    margin-bottom: 1.5rem;
-}
-
-/* Responsive adjustment for the new section */
-@media (max-width: 768px) {
-    .about-content {
-        grid-template-columns: 1fr;
-    }
-    .about-image {
-        order: -1; /* Show image on top on mobile */
-        margin-bottom: 2rem;
-    }
-
 }
