@@ -1,6 +1,6 @@
 /* ========
-   GLOBAL FUNCTIONS
-   (Must be here for Google Maps to work)
+    GLOBAL FUNCTIONS
+    (Must be here for Google Maps to work)
 ======== */
 
 function initAutocomplete() {
@@ -21,7 +21,7 @@ function initAutocomplete() {
 
 
 /* ========
-   MAIN SCRIPT (runs after page loads)
+    MAIN SCRIPT (runs after page loads)
 ======== */
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -51,7 +51,12 @@ document.addEventListener("DOMContentLoaded", function() {
     const whatsappBtn = document.getElementById("whatsapp-order-btn");
     const formContainer = document.getElementById("order-form-container");
     const thankYouMessage = document.getElementById("thank-you-message");
-    const manualTotalPriceEl = document.getElementById("manual-total-price"); // Get manual total el
+    const manualTotalPriceEl = document.getElementById("manual-total-price");
+    
+    // NEW: Order Number Elements
+    const orderNumInput = document.getElementById("order-number-input");
+    const orderNumDisplay = document.getElementById("order-number");
+
 
     // Cart state
     let cart = {}; // Example: { p1: { name: '...', price: 190, quantity: 2 }, ... }
@@ -161,6 +166,20 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
 
+        //
+        // NEW: GENERATE AND DISPLAY ORDER NUMBER
+        //
+        if (orderNumInput && orderNumDisplay) { // Check if elements exist
+            if (!orderNumInput.value) { // Only generate if it's empty
+                const newOrderNum = String(Date.now()).slice(-6); // Creates a 6-digit number
+                orderNumInput.value = `M-${newOrderNum}`; // e.g., M-123456
+            }
+            orderNumDisplay.innerText = orderNumInput.value; // Display it
+        }
+        //
+        // END OF NEW BLOCK
+        //
+
         // Update total price
         cartTotalPriceEl.textContent = `₹${total.toFixed(2)}`;
         if (manualTotalPriceEl) {
@@ -173,6 +192,12 @@ document.addEventListener("DOMContentLoaded", function() {
     function updateWhatsAppLink() {
         let message = "Hi! I'd like to place an order:\n";
         let total = 0;
+
+        // NEW: Get the order number
+        const orderNumber = document.getElementById("order-number-input").value;
+        if (orderNumber) {
+            message += `\n*Order Number: ${orderNumber}*\n`;
+        }
 
         for (let id in cart) {
             const item = cart[id];
@@ -238,6 +263,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     cart = {};
                     updateCartCount();
                     document.querySelectorAll('.quantity-controls input').forEach(input => input.value = 0);
+                    
+                    // NEW: Clear the order number
+                    document.getElementById("order-number-input").value = "";
+
                 } else {
                     response.json().then(data => {
                         if (Object.hasOwn(data, 'errors')) {
