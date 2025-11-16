@@ -5,11 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>Mom's Hair Oils — Wisdom in Every Drop</title>
-    <meta name="description" content="Discover our 100% natural, handcrafted hair oils made from a secret family recipe. Nourish your hair and slow greying.">
-    
-    <meta property="og:title" content="Mom's Hair Oils — Wisdom in Every Drop">
-    <meta property="og:description" content="100% natural, handcrafted oils from a secret family recipe.">
-    <meta property="og:type" content="website">
     <meta property="og:url" content="https://sanstechnoin.github.io/momshair/"> <meta property="og:image" content="https://sanstechnoin.github.io/momshair/1.png"> <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Mom's Hair Oils — Wisdom in Every Drop">
     <meta name="twitter:description" content="100% natural, handcrafted oils from a secret family recipe.">
@@ -20,8 +15,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,700;1,400&family=Great+Vibes&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    </head>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&libraries=places&callback=initAutocomplete" async defer></script>
+</head>
 <body>
 
     <header class="main-header">
@@ -44,7 +40,7 @@
     </header>
 
     <main>
-        <section class="hero-section">
+       <section class="hero-section">
             <div class="hero-content">
                 <h1>Mom's Hair Oils</h1>
                 <h2>— Wisdom in Every Drop</h2>
@@ -248,6 +244,7 @@
                 </div>
             </div>
         </section>
+
     </main>
     
     <div id="cart-modal" class="cart-modal">
@@ -258,71 +255,74 @@
             <div id="cart-items-container">
                 </div>
 
-            <div class="cart-total">
-                <strong>Total:</strong>
-                <strong id="cart-total-price">₹0.00</strong>
-            </div>
+            <div class="cart-checkout-container">
+                <div class="cart-total">
+                    <strong>Total:</strong>
+                    <strong id="cart-total-price">₹0.00</strong>
+                </div>
 
-            <div id="order-form-container">
-                
-                <form id="orderForm" action="https://formbold.com/s/94nDZ" method="POST" enctype="multipart/form-data">
-                    <p>Please fill in your details to complete the order.</p>
-                    <input type="hidden" id="cart-contents" name="cart_contents" value="">
+                <div id="order-form-container">
+                    
+                    <form id="orderForm" action="https://formbold.com/s/94nDZ" method="POST" enctype="multipart/form-data">
+                        <p>Please fill in your details to complete the order.</p>
+                        <input type="hidden" id="cart-contents" name="cart_contents" value="">
 
-                    <div class="form-group">
-                        <label for="name">Full Name</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Phone Number (for WhatsApp updates)</label>
-                        <input type="tel" id="phone" name="phone" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="address">Full Address</label>
-                        <textarea id="address" name="address" rows="3" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="notes">Notes (for address correction, etc.)</label>
-                        <textarea id="notes" name="notes" rows="2"></textarea>
-                    </div>
-
-                    <div class="payment-manual-section">
-                        <h4>Step 1: Complete Payment</h4>
-                        <p>Please pay <strong><span id="manual-total-price">₹0.00</span></strong> to complete your order.</p>
-                        
-                        <div class="payment-options-manual">
-                            <div class="qr-code-manual">
-                                <img src="qr.png" alt="Scan QR Code to Pay"> <p>Scan to Pay</p>
-                            </div>
-                            <div class="gpay-manual">
-                                <p><strong>Or pay to UPI ID:</strong><br> your-upi-id@okhdfcbank</p>
-                                <p style="font-size: 0.9rem; color: #777;">(Please replace this with your real UPI ID)</p>
-                            </div>
-                        </div>
-                        
-                        <h4>Step 2: Confirm Order</h4>
                         <div class="form-group">
-                            <label for="screenshot">Upload Payment Screenshot (Required)</label>
-                            <input type="file" id="screenshot" name="payment_screenshot" accept="image/*" required>
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number (for WhatsApp updates)</label>
+                            <input type="tel" id="phone" name="phone" required>
                         </div>
                         
-                        <div class="form-group-checkbox">
-                            <input type="checkbox" id="payment-confirm" name="payment_confirmed" value="yes" required>
-                            <label for="payment-confirm">I have completed the payment and uploaded the screenshot.</label>
+                        <div class="form-group">
+                            <label for="address">Full Address (Start typing and select)</label>
+                            <input type="text" id="address" name="address" required>
                         </div>
-                    </div>
-                    <div class="cart-buttons">
-                        <button type="submit" class="btn-submit-email">Submit Order</button>
-                        <a id="whatsapp-order-btn" class="btn-whatsapp" href="#" target="_blank">Order via WhatsApp</a>
-                    </div>
-                </form>
-            </div>
+                        
+                        <div class="form-group">
+                            <label for="notes">Notes (for address correction, etc.)</label>
+                            <textarea id="notes" name="notes" rows="2"></textarea>
+                        </div>
 
-            <div id="thank-you-message" style="display: none; text-align: center; padding: 2rem 0;">
-                <h4>Thanks for the order!</h4>
-                <p>We will update you soon via WhatsApp.</p>
-            </div>
+                        <div class="payment-manual-section">
+                            <h4>Step 1: Complete Payment</h4>
+                            <p>Please pay <strong><span id="manual-total-price">₹0.00</span></strong> to complete your order.</p>
+                            
+                            <div class="payment-options-manual">
+                                <div class="qr-code-manual">
+                                    <img src="qr.png" alt="Scan QR Code to Pay"> <p>Scan to Pay</p>
+                                </div>
+                                <div class="gpay-manual">
+                                    <p><strong>Or pay to UPI ID:</strong><br> your-upi-id@okhdfcbank</p>
+                                    <p style="font-size: 0.9rem; color: #777;">(Please replace this with your real UPI ID)</p>
+                                </div>
+                            </div>
+                            
+                            <h4>Step 2: Confirm Order</h4>
+                            <div class="form-group">
+                                <label for="screenshot">Upload Payment Screenshot (Required)</label>
+                                <input type="file" id="screenshot" name="payment_screenshot" accept="image/*" required>
+                            </div>
+                            
+                            <div class="form-group-checkbox">
+                                <input type="checkbox" id="payment-confirm" name="payment_confirmed" value="yes" required>
+                                <label for="payment-confirm">I have completed the payment and uploaded the screenshot.</label>
+                            </div>
+                        </div>
+                        <div class="cart-buttons">
+                            <button type="submit" class="btn-submit-email">Submit Order</button>
+                            <a id="whatsapp-order-btn" class="btn-whatsapp" href="#" target="_blank">Order via WhatsApp</a>
+                        </div>
+                    </form>
+                </div>
 
+                <div id="thank-you-message" style="display: none; text-align: center; padding: 2rem 0;">
+                    <h4>Thanks for the order!</h4>
+                    <p>We will update you soon via WhatsApp.</p>
+                </div>
+            </div>
         </div>
     </div>
 
