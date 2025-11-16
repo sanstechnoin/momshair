@@ -422,15 +422,44 @@ section {
     h1 { font-size: 4rem; }
     .section-subtitle { font-size: 2rem; }
     
-    .navbar { flex-direction: column; }
-    .logo { margin-bottom: 1rem; }
-    .nav-menu { padding-left: 0; }
-    .nav-menu li { margin: 0 0.75rem; }
+    /* === UPDATED HEADER CODE === */
+    .navbar { 
+        flex-direction: column; /* Stacks logo and menu */
+    }
+    .logo { 
+        margin-bottom: 1rem; /* Space below logo */
+    }
+    .nav-menu {
+        flex-direction: column; /* Stacks menu items vertically */
+        align-items: center;  /* Centers all items */
+        padding-left: 0;
+        width: 100%;
+    }
+    .nav-menu li {
+        margin: 0.5rem 0; /* Adds vertical spacing between items */
+        text-align: center;
+        width: 100%;
+    }
+    .nav-menu a.btn {
+        display: block; /* Makes the button fill the width */
+        width: 80%;
+        margin: 0.5rem auto 0;
+    }
+    /* === END OF HEADER UPDATE === */
 
     .features-grid { grid-template-columns: 1fr; }
     .form-grid { grid-template-columns: 1fr; }
     .payment-options { flex-direction: column; }
     .qr-code { margin-bottom: 1.5rem; }
+
+    /* Fix for About Us section */
+    .about-content {
+        grid-template-columns: 1fr;
+    }
+    .about-image {
+        order: -1; /* Show image on top on mobile */
+        margin-bottom: 2rem;
+    }
 }
 
 /* ======== ADD THIS TO THE BOTTOM OF YOUR STYLE.CSS FILE ======== */
@@ -468,4 +497,5 @@ section {
         order: -1; /* Show image on top on mobile */
         margin-bottom: 2rem;
     }
+
 }
