@@ -11,7 +11,6 @@
     --color-red: #5D2A1F;
 }
 
-/* TIER 2: Smooth Scrolling */
 html {
     scroll-behavior: smooth;
 }
@@ -367,7 +366,6 @@ section {
     margin-bottom: 1.5rem;
     border-radius: 0 8px 8px 0;
 }
-/* TIER 2: Star Rating Style */
 .testimonial-quotes .stars {
     font-size: 1.5rem;
     color: var(--color-gold);
@@ -456,7 +454,7 @@ section {
 }
 /* Style for when FAQ is active/open */
 .faq-item.active .faq-answer {
-    max-height: 200px; /* Set to a height larger than any possible answer */
+    max-height: 200px; 
 }
 .faq-item.active .faq-icon {
     transform: rotate(45deg);
@@ -526,9 +524,13 @@ section {
     border-bottom: 2px solid #eee;
     padding-bottom: 1rem;
 }
+
+/* UPDATED CART SCROLL */
 #cart-items-container {
     overflow-y: auto; 
     flex-grow: 1;
+    min-height: 50px; /* Show something even when empty */
+    max-height: 200px; /* Allows 3-4 items before scrolling */
 }
 .cart-item {
     display: flex;
@@ -556,6 +558,7 @@ section {
 
 #order-form-container {
     margin-top: 1.5rem;
+    overflow-y: auto; /* Allows form to scroll if needed on small screens */
 }
 .form-group {
     margin-bottom: 1.5rem;
@@ -620,7 +623,7 @@ section {
 
 /* ======== LIGHTBOX STYLES ======== */
 .lightbox-modal {
-    display: none; /* Fixed: Was visible on load */
+    display: none; 
     position: fixed;
     z-index: 300; 
     left: 0;
@@ -699,6 +702,28 @@ section {
     border-radius: 8px;
     border: 1px solid #eee;
 }
+
+/* ======== FOOTER (UPDATED) ======== */
+.main-footer {
+    background-color: var(--color-text);
+    color: #ccc;
+    text-align: center;
+    padding: 2.5rem 2rem;
+    margin-top: 3rem;
+}
+.main-footer p {
+    margin-bottom: 0.75rem; /* Added space between lines */
+    line-height: 1.5;
+}
+.main-footer a {
+    color: white;
+    text-decoration: none;
+}
+.footer-credit {
+    font-size: 0.8rem; /* Smaller text for the credit */
+    color: #999;
+}
+
 
 /* TIER 2: Cart Jiggle Animation */
 @keyframes jiggle {
