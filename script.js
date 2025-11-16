@@ -1,6 +1,18 @@
 document.addEventListener("DOMContentLoaded", function() {
     
-    // Get references to the checkboxes and the total amount span
+    // --- NEW: Hamburger Menu ---
+    const menuToggle = document.getElementById("menu-toggle");
+    const navMenu = document.getElementById("nav-menu");
+
+    if (menuToggle) {
+        menuToggle.addEventListener("click", function() {
+            navMenu.classList.toggle("open");
+        });
+    }
+
+    // --- OLD: Order Form Calculator ---
+    // We check if these elements exist before adding listeners
+    // This stops errors on the homepage (where there is no form)
     const product1 = document.getElementById("product1");
     const product2 = document.getElementById("product2");
     const product3 = document.getElementById("product3");
@@ -21,12 +33,20 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         
         // Update the total amount on the page
-        totalAmountSpan.textContent = total;
+        if (totalAmountSpan) {
+            totalAmountSpan.textContent = total;
+        }
     }
 
-    // Add event listeners to each checkbox
-    product1.addEventListener("change", calculateTotal);
-    product2.addEventListener("change", calculateTotal);
-    product3.addEventListener("change", calculateTotal);
+    // Add event listeners only if the elements exist
+    if (product1) {
+        product1.addEventListener("change", calculateTotal);
+    }
+    if (product2) {
+        product2.addEventListener("change", calculateTotal);
+    }
+    if (product3) {
+        product3.addEventListener("change", calculateTotal);
+    }
 
 });
