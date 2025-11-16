@@ -250,9 +250,9 @@ section {
     cursor: pointer;
 }
 .product-card h4 {
-    font-size: 1.3rem; /* <-- TITLE FONT SIZE REDUCED */
+    font-size: 1.3rem; /* <-- FIX: Title font size reduced */
     margin-bottom: 0.5rem;
-    min-height: 2.6rem; /* Ensures cards align even if one title wraps */
+    min-height: 2.6rem; /* Ensures cards align */
 }
 .product-card > p {
     font-style: italic;
@@ -303,7 +303,7 @@ section {
     padding: 0.5rem 0;
     margin: 0;
     border-radius: 0;
-    -webkit-appearance: none;
+    -webkit-appearance: none; /* Fix for iOS */
 }
 .btn-quantity {
     background-color: var(--color-gold);
@@ -535,13 +535,12 @@ section {
     min-height: 50px; /* Gives it some space */
     max-height: 200px; /* Set a max-height */
     padding-right: 10px; /* for scrollbar */
+    border-bottom: 1px solid #eee;
 }
 
 /* THIS IS THE FIXED BOTTOM PART */
 .cart-checkout-container {
     flex-shrink: 0; /* Prevents this from shrinking */
-    border-top: 2px solid #333;
-    margin-top: 1.5rem;
     padding-top: 1.5rem;
     overflow-y: auto; /* If form is too long, it will scroll */
 }
@@ -551,7 +550,10 @@ section {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #f4f4f4;
+}
+.cart-item:last-child {
+    border-bottom: none;
 }
 .cart-item-info {
     font-size: 1.1rem;
@@ -565,6 +567,8 @@ section {
     justify-content: space-between;
     font-size: 1.5rem;
     font-weight: bold;
+    border-top: 2px solid #333;
+    padding-top: 1rem;
 }
 
 #order-form-container {
@@ -595,7 +599,6 @@ section {
     z-index: 9999 !important;
     font-family: var(--font-body);
 }
-
 
 .cart-buttons {
     display: grid;
@@ -788,6 +791,22 @@ section {
     animation: jiggle 0.5s ease-in-out;
 }
 
+/* ======== NEW FOOTER STYLES ======== */
+.main-footer {
+    background-color: var(--color-text);
+    color: #ccc;
+    text-align: center;
+    padding: 2.5rem 2rem;
+    margin-top: 3rem;
+}
+.main-footer p {
+    margin-bottom: 0.5rem;
+}
+.footer-credit {
+    font-size: 0.8rem;
+    color: #888;
+}
+
 
 /* ======== RESPONSIVE DESIGN ======== */
 @media (max-width: 992px) {
@@ -863,7 +882,7 @@ section {
     .instagram-grid {
         grid-template-columns: 1fr 1fr;
     }
-    
+
     .payment-options-manual {
         flex-direction: column;
         align-items: flex-start;
