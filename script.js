@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const whatsappBtn = document.getElementById("whatsapp-order-btn");
     const formContainer = document.getElementById("order-form-container");
     const thankYouMessage = document.getElementById("thank-you-message");
-    const manualTotalPriceEl = document.getElementById("manual-total-price"); // <-- NEW
+    const manualTotalPriceEl = document.getElementById("manual-total-price"); // Get manual total el
 
     // Cart state
     let cart = {}; // Example: { p1: { name: '...', price: 190, quantity: 2 }, ... }
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function() {
         submitBtn.disabled = false;
 
         if (Object.keys(cart).length === 0) {
-            cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
+            cartItemsContainer.innerHTML = "<p style='padding: 1rem 0;'>Your cart is empty.</p>";
         } else {
             formContainer.style.display = "block"; // Show form
             for (let id in cart) {
@@ -137,7 +137,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Update total price
         cartTotalPriceEl.textContent = `₹${total.toFixed(2)}`;
-        manualTotalPriceEl.textContent = `₹${total.toFixed(2)}`; // <-- NEW: Update manual total
+        if (manualTotalPriceEl) {
+            manualTotalPriceEl.textContent = `₹${total.toFixed(2)}`; // Update manual total
+        }
         updateWhatsAppLink();
     }
 
@@ -301,3 +303,21 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
 });
+
+// --- NEW: GOOGLE MAPS AUTOCOMPLETE FUNCTION ---
+// This function is called by the script tag in your HTML <head>
+function initAutocomplete() {
+    const addressInput = document.getElementById('address');
+    
+    if (addressInput) {
+        const autocomplete = new google.maps.places.Autocomplete(addressInput, {
+            types: ['address'], // Only search for street addresses
+            componentRestrictions: { 'country': 'in' } // Restrict search to India
+        });
+
+        autocomplete.addListener('place_changed', ()_ => {
+            const place = autocomplete.getPlace();
+            console.log("Selected place:", place.formatted_address);
+        });
+    }
+}
