@@ -14,12 +14,19 @@
     <header class="main-header">
         <nav class="navbar">
             <div class="logo">Mom's</div>
-            <ul class="nav-menu">
-                <li><a href="#story">Our Story</a></li>
-                <li><a href="#products">Our Oils</a></li>
-                <li><a href="#reviews">Testimonials</a></li>
-                <li><a href="#order" class="btn btn-gold">Order Now</a></li>
+            
+            <button id="menu-toggle" class="menu-toggle-btn">
+                <span>☰</span>
+            </button>
+            
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="index.html#story">Our Story</a></li>
+                <li><a href="index.html#products">Our Products</a></li>
+                <li><a href="index.html#reviews">Testimonials</a></li>
+                <li><a href="index.html#about">About Us</a></li>
             </ul>
+            
+            <a href="order.html" class="cart-icon">🛒</a>
         </nav>
     </header>
 
@@ -29,7 +36,7 @@
                 <h1>Mom's Hair Oils</h1>
                 <h2>— Wisdom in Every Drop</h2>
                 <p>Rooted in Tradition. Crafted with Love. Delivered to Your Home.</p>
-                <a href="#order" class="btn btn-gold-large">Order Your Bottle</a>
+                <a href="order.html" class="btn btn-gold-large">Order Your Bottle</a>
             </div>
             <div class="hero-image">
                 <img src="1.png" alt="Mom's Hair Oil Bottle">
@@ -55,7 +62,7 @@
                         <li>Reduces frizz and dryness</li>
                         <li>Helps strengthen roots</li>
                     </ul>
-                    <a href="#order" class="btn btn-gold">Order Now</a>
+                    <a href="order.html" class="btn btn-gold">Order Now</a>
                 </div>
                 <div class="product-card">
                     <img src="2.png" alt="Anti-Grey Hair Oil" class="product-image">
@@ -67,7 +74,7 @@
                         <li>Strengthens weak roots</li>
                         <li>Reduces hair fall and breakage</li>
                     </ul>
-                    <a href="#order" class="btn btn-gold">Order Now</a>
+                    <a href="order.html" class="btn btn-gold">Order Now</a>
                 </div>
             </div>
             <div class="text-section-small">
@@ -120,77 +127,6 @@
                     </blockquote>
                 </div>
             </div>
-        </section>
-
-        <section id="order" class="order-section">
-            <h3 class="section-subtitle">Get Your Bottle of Mom's Hair Oil</h3>
-            <form id="orderForm" action="[YOUR_FORM_HANDLER_URL]" method="POST" enctype="multipart/form-data">
-                
-                <h4>Step 1: Choose Your Oils</h4>
-                <div class="form-group-checkbox">
-                    <input type="checkbox" id="product1" name="product1" value="190">
-                    <label for="product1">Nourish & Shine Oil (100ml) - <strong>₹190</strong> <del>₹240</del></label>
-                </div>
-                <div class="form-group-checkbox">
-                    <input type="checkbox" id="product2" name="product2" value="190">
-                    <label for="product2">Anti-Grey Hair Oil (100ml) - <strong>₹190</strong> <del>₹240</del></label>
-                </div>
-                <div class="form-group-checkbox">
-                    <input type="checkbox" id="product3" name="product3" value="360">
-                    <label for="product3">Combo Pack (Both Oils) - <strong>₹360</strong></label>
-                </div>
-
-                <h4>Step 2: Your Shipping Details</h4>
-                <div class="form-group">
-                    <label for="name">Full Name</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="phone">Phone Number (for WhatsApp updates)</label>
-                    <input type="tel" id="phone" name="phone" required>
-                </div>
-                <div class="form-group">
-                    <label for="address">Full Address (House No, Street, Landmark)</label>
-                    <textarea id="address" name="address" rows="3" required></textarea>
-                </div>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="city">City</label>
-                        <input type="text" id="city" name="city" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="pincode">Pincode</label>
-                        <input type="text" id="pincode" name="pincode" required>
-                    </div>
-                </div>
-
-                <h4>Step 3: Complete Payment</h4>
-                <div class="total-amount">
-                    <strong>Your Total Amount: ₹<span id="totalAmount">0</span></strong>
-                    <p>+ Free Delivery Above 599</p>
-                </div>
-                <p>Please pay the total amount using Google Pay or by scanning the QR code. <strong>Upload a screenshot of your payment to confirm the order.</strong></p>
-                
-                <div class="payment-options">
-                    <div class="qr-code">
-                        <img src="4.png" alt="Scan QR Code to Pay" style="max-width: 150px; border: 1px solid #ccc; padding: 5px;">
-                        <p>Scan to Pay</p>
-                        <p style="color:red; font-size: 0.8rem;">(Replace this with your actual QR code)</p>
-                    </div>
-                    <div class="gpay">
-                        <p><strong>Or pay to UPI ID:</strong><br> your-upi-id@okhdfcbank</p>
-                    </div>
-                </div>
-
-                <h4>Step 4: Confirm Order</h4>
-                <div class="form-group">
-                    <label for="screenshot">Upload Payment Screenshot (Required)</label>
-                    <input type="file" id="screenshot" name="screenshot" accept="image/*" required>
-                </div>
-                
-                <button type="submit" class="btn btn-gold-large btn-submit">Place My Order</button>
-
-            </form>
         </section>
 
         <section id="about" class="about-section">
