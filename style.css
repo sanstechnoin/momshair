@@ -9,8 +9,11 @@
     --color-gold: #B58A3F;
     --color-gold-dark: #a17b3a;
     --color-red: #5D2A1F;
-    --color-green: #4CAF50;
-    --color-green-dark: #45a049;
+}
+
+/* TIER 2: Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
 }
 
 * {
@@ -19,15 +22,12 @@
     padding: 0;
 }
 
-html {
-    scroll-behavior: smooth;
-}
-
 body {
     font-family: var(--font-body);
     background-color: var(--color-bg);
     color: var(--color-text);
     line-height: 1.7;
+    padding-top: 80px; 
 }
 
 h1, h2, h3, h4, h5 {
@@ -66,23 +66,18 @@ h2 {
     margin: 0.75rem auto 0;
 }
 
-.section-intro {
-    text-align: center;
-    max-width: 700px;
-    margin: -1rem auto 3rem;
-    font-size: 1.1rem;
-    color: #555;
-}
-
 section {
     padding: 5rem 2rem;
     max-width: 1200px;
     margin: 0 auto;
 }
 
-img {
-    max-width: 100%;
-    height: auto;
+.section-intro {
+    text-align: center;
+    font-size: 1.15rem;
+    max-width: 700px;
+    margin: -2rem auto 3rem;
+    color: #555;
 }
 
 /* ======== BUTTONS ======== */
@@ -118,9 +113,12 @@ img {
 .main-header {
     background-color: white;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    position: sticky;
+    position: fixed; 
     top: 0;
+    left: 0;
+    width: 100%;
     z-index: 100;
+    height: 80px; 
 }
 .navbar {
     display: flex;
@@ -128,7 +126,8 @@ img {
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 1rem 2rem;
+    padding: 0 2rem; 
+    height: 100%;
 }
 .logo {
     font-family: var(--font-brand);
@@ -154,46 +153,46 @@ img {
     color: var(--color-gold);
 }
 
-/* Cart Icon */
+/* Header Cart Button */
 .cart-icon-btn {
+    font-size: 1.5rem;
+    text-decoration: none;
+    margin-left: 1.5rem;
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 1.5rem;
     position: relative;
 }
 #cart-item-count {
     position: absolute;
     top: -5px;
     right: -10px;
-    background-color: var(--color-red);
+    background: var(--color-red);
     color: white;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
     font-size: 0.8rem;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-weight: 600;
+    font-family: var(--font-heading);
+    border-radius: 50%;
+    padding: 2px 6px;
+    line-height: 1;
 }
 
-/* Mobile Menu Toggle */
 .menu-toggle-btn {
-    display: none;
+    display: none; 
     font-size: 1.8rem;
     background: none;
     border: none;
     cursor: pointer;
-    z-index: 101;
+    color: var(--color-text);
 }
+
 
 /* ======== HERO SECTION ======== */
 .hero-section {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 80vh;
+    min-height: calc(80vh - 80px); 
     background-color: white;
 }
 .hero-content {
@@ -228,8 +227,9 @@ img {
 /* ======== PRODUCTS SECTION ======== */
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
+    margin-bottom: 3rem;
 }
 .product-card {
     background-color: white;
@@ -238,76 +238,95 @@ img {
     padding: 2rem;
     text-align: center;
     box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 .product-image {
     max-width: 100%;
     height: 250px;
     object-fit: contain;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem; 
     cursor: pointer;
-}
-.product-thumbnails {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-}
-.product-thumbnails img {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    border: 2px solid #eee;
-    border-radius: 5px;
-    cursor: pointer;
-}
-.product-thumbnails img:hover {
-    border-color: var(--color-gold);
 }
 .product-card h4 {
-    font-size: 1.5rem;
+    font-size: 1.3rem; /* <-- TITLE FONT SIZE REDUCED */
     margin-bottom: 0.5rem;
+    min-height: 2.6rem; /* Ensures cards align even if one title wraps */
 }
 .product-card > p {
     font-style: italic;
     color: #666;
     margin-bottom: 1.5rem;
-    min-height: 50px;
+    flex-grow: 1;
 }
+
+/* Product Thumbnails */
+.product-thumbnails {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+}
+.product-thumbnails img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border: 2px solid #eee;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+.product-thumbnails img:hover {
+    border-color: var(--color-gold);
+}
+
+
+/* Product Price & Quantity */
 .product-price {
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--color-red);
-    margin-bottom: 1.5rem;
+    margin: 1rem 0;
 }
 .quantity-controls {
     display: flex;
     justify-content: center;
     align-items: center;
 }
+.quantity-controls input {
+    width: 50px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border: 1px solid #ccc;
+    padding: 0.5rem 0;
+    margin: 0;
+    border-radius: 0;
+    -webkit-appearance: none;
+}
 .btn-quantity {
     background-color: var(--color-gold);
     color: white;
     border: none;
+    font-size: 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
     width: 40px;
     height: 40px;
-    font-size: 1.5rem;
-    font-weight: bold;
-    cursor: pointer;
+    line-height: 40px;
+    padding: 0;
     border-radius: 5px;
+}
+.btn-quantity:first-child {
+    border-radius: 5px 0 0 5px;
+}
+.btn-quantity:last-child {
+    border-radius: 0 5px 5px 0;
 }
 .btn-quantity:hover {
     background-color: var(--color-gold-dark);
 }
-.quantity-controls input {
-    width: 50px;
-    height: 40px;
-    text-align: center;
-    border: 1px solid #ccc;
-    margin: 0 0.5rem;
-    font-size: 1.2rem;
-    font-family: var(--font-heading);
-}
-
 
 /* ======== FEATURES SECTION ======== */
 .features-section {
@@ -329,78 +348,98 @@ img {
     margin-bottom: 0.5rem;
 }
 
-/* ======== TESTIMONIAL SECTION ======== */
+/* ======== TESTIMONIAL SECTION (UPDATED) ======== */
 .testimonial-section {
     background-color: #fdfdfb;
 }
-.testimonial-quotes {
+.testimonial-content {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-}
-.stars {
-    color: var(--color-gold);
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+    grid-template-columns: 1fr; 
+    gap: 2rem; 
+    align-items: center;
+    max-width: 800px; 
+    margin: 0 auto;
 }
 .testimonial-quotes blockquote {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     font-style: italic;
     padding: 1.5rem;
     border-left: 4px solid var(--color-gold);
     background: white;
+    margin-bottom: 1.5rem;
     border-radius: 0 8px 8px 0;
 }
+/* TIER 2: Star Rating Style */
+.testimonial-quotes .stars {
+    font-size: 1.5rem;
+    color: var(--color-gold);
+    margin-bottom: 0.5rem;
+}
 
-/* ======== INGREDIENTS SECTION ======== */
+
+/* ======== INGREDIENTS SECTION STYLES ======== */
+.ingredients-section {
+    background-color: white;
+}
 .ingredients-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
 }
 .ingredient-card {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
+    background-color: var(--color-bg);
+    border: 1px solid #eee;
+    padding: 2.5rem;
+    border-radius: 10px;
     border-top: 4px solid var(--color-gold);
 }
 .ingredient-card h4 {
     font-size: 1.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-red);
 }
 .ingredient-card ul {
     list-style: none;
+    padding: 0;
 }
 .ingredient-card li {
-    font-size: 1.1rem;
-    margin-bottom: 0.75rem;
-    padding-left: 10px;
-    border-left: 2px solid var(--color-bg);
+    font-size: 1.05rem;
+    margin-bottom: 1.25rem;
+    line-height: 1.6;
+}
+.ingredient-card li strong {
+    color: var(--color-text);
+    display: inline;
 }
 
-/* ======== FAQ SECTION ======== */
+/* ======== FAQ SECTION STYLES ======== */
+.faq-section {
+    background-color: #fdfdfb;
+}
 .faq-container {
     max-width: 800px;
     margin: 0 auto;
 }
 .faq-item {
-    background: white;
-    margin-bottom: 1rem;
-    border: 1px solid #eee;
-    border-radius: 5px;
+    border-bottom: 1px solid #ddd;
 }
 .faq-question {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     width: 100%;
     background: none;
     border: none;
-    padding: 1.5rem;
-    font-size: 1.2rem;
-    font-family: var(--font-heading);
-    cursor: pointer;
     text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 0.5rem;
+    cursor: pointer;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+.faq-question:hover {
+    color: var(--color-gold);
 }
 .faq-icon {
     font-size: 1.5rem;
@@ -410,58 +449,63 @@ img {
 .faq-answer {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease;
+    transition: max-height 0.4s ease, padding 0.4s ease;
 }
 .faq-answer p {
-    padding: 0 1.5rem 1.5rem;
-    font-size: 1.1rem;
+    padding: 0 0.5rem 1.5rem;
+    font-size: 1.05rem;
+    line-height: 1.7;
 }
+/* Style for when FAQ is active/open */
 .faq-item.active .faq-answer {
-    max-height: 200px;
+    max-height: 200px; /* Set to a height larger than any possible answer */
 }
 .faq-item.active .faq-icon {
     transform: rotate(45deg);
 }
 
-/* ======== ABOUT US SECTION ======== */
+
+/* ======== ABOUT US SECTION (UPDATED) ======== */
 .about-section {
     background-color: white;
 }
 .about-content {
-    max-width: 800px;
+    display: grid;
+    grid-template-columns: 1fr; 
+    gap: 0;
+    align-items: center;
+    max-width: 800px; 
     margin: 0 auto;
-    text-align: center;
+    text-align: center; 
 }
 .about-text p {
     font-size: 1.15rem;
     margin-bottom: 1.5rem;
 }
 
-/* ======== CART MODAL (THE FIX) ======== */
+/* ======== CART MODAL STYLES (UPDATED) ======== */
 .cart-modal {
-    display: none; /* Hidden by default */
+    display: none; 
     position: fixed;
-    z-index: 1000;
+    z-index: 200;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0,0,0,0.6);
 }
 .cart-modal-content {
     background-color: #fefefe;
-    margin: 10vh auto;
+    margin: 5vh auto; /* Gives more space from top */
     padding: 2rem;
-    border-radius: 10px;
     width: 90%;
     max-width: 600px;
+    border-radius: 10px;
     position: relative;
-    
-    /* This is the hotel-style layout */
+    max-height: 90vh; /* Use max-height */
     display: flex;
     flex-direction: column;
-    max-height: 80vh; 
 }
 .cart-modal-close {
     color: #aaa;
@@ -471,59 +515,61 @@ img {
     font-size: 2rem;
     font-weight: bold;
     cursor: pointer;
-    border: none;
     background: none;
+    border: none;
 }
-.cart-modal-content h3 {
+.cart-modal-close:hover {
+    color: #333;
+}
+.cart-modal h3 {
     font-size: 2rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 1rem;
+    flex-shrink: 0; /* Prevents title from shrinking */
 }
 
-/* SCROLLABLE ITEM LIST */
+/* THIS IS THE SCROLLABLE PART */
 #cart-items-container {
-    flex-grow: 1; /* Allows this div to grow */
-    overflow-y: auto; /* ADDS THE SCROLLBAR */
-    border-bottom: 1px solid #eee;
-    padding-bottom: 1rem;
+    overflow-y: auto; 
+    min-height: 50px; /* Gives it some space */
+    max-height: 200px; /* Set a max-height */
+    padding-right: 10px; /* for scrollbar */
 }
+
+/* THIS IS THE FIXED BOTTOM PART */
+.cart-checkout-container {
+    flex-shrink: 0; /* Prevents this from shrinking */
+    border-top: 2px solid #333;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    overflow-y: auto; /* If form is too long, it will scroll */
+}
+
 .cart-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem 0;
-    border-bottom: 1px solid #f4f4f4;
+    border-bottom: 1px solid #eee;
 }
-.cart-item-details {
+.cart-item-info {
     font-size: 1.1rem;
 }
 .cart-item-price {
+    font-size: 1.1rem;
     font-weight: 600;
-}
-.cart-item-remove {
-    color: #aaa;
-    font-weight: bold;
-    cursor: pointer;
-    margin-left: 1rem;
-}
-.cart-item-remove:hover {
-    color: var(--color-red);
-}
-
-/* FIXED BOTTOM (TOTAL & FORM) */
-.cart-checkout-container {
-    flex-shrink: 0; /* Prevents this from shrinking */
-    overflow-y: auto; /* Makes form scrollable if screen is tiny */
-    padding-top: 1rem;
 }
 .cart-total {
     display: flex;
     justify-content: space-between;
     font-size: 1.5rem;
     font-weight: bold;
-    padding: 1rem 0;
 }
 
-/* Form Styles */
+#order-form-container {
+    margin-top: 1.5rem;
+}
 .form-group {
     margin-bottom: 1.5rem;
 }
@@ -535,7 +581,8 @@ img {
 }
 .form-group input[type="text"],
 .form-group input[type="tel"],
-.form-group textarea {
+.form-group textarea,
+.form-group input[type="file"] {
     width: 100%;
     padding: 0.8rem 1rem;
     border: 1px solid #ccc;
@@ -543,207 +590,69 @@ img {
     font-family: var(--font-body);
     font-size: 1rem;
 }
-/* This styles the Google Maps dropdown */
+/* Style for Google Maps Dropdown */
 .pac-container {
-    font-family: var(--font-body) !important;
-    z-index: 99999 !important; /* Needs to be on top of the modal */
+    z-index: 9999 !important;
+    font-family: var(--font-body);
 }
+
+
 .cart-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
-}
-.btn-submit-email, .btn-whatsapp {
-    padding: 1rem;
-    border-radius: 5px;
-    text-decoration: none;
-    color: white;
-    font-family: var(--font-heading);
-    font-weight: 600;
-    font-size: 1rem;
-    text-align: center;
-    border: none;
-    cursor: pointer;
+    margin-top: 2rem;
 }
 .btn-submit-email {
     background-color: var(--color-gold);
+    color: white;
+    padding: 0.8rem 1.8rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
 }
 .btn-submit-email:hover {
     background-color: var(--color-gold-dark);
 }
+.btn-submit-email:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
 .btn-whatsapp {
-    background-color: var(--color-green);
+    display: block;
+    text-align: center;
+    background-color: #25D366;
+    color: white;
+    padding: 0.8rem 1.8rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
 }
 .btn-whatsapp:hover {
-    background-color: var(--color-green-dark);
+    background-color: #128C7E;
 }
 
-/* ======== LIGHTBOX MODAL ======== */
-.lightbox-modal {
-    display: none;
-    position: fixed;
-    z-index: 1001;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.8);
-    justify-content: center;
-    align-items: center;
-}
-.lightbox-content {
-    position: relative;
-    max-width: 90%;
-    max-height: 90%;
-}
-.lightbox-content img {
-    max-height: 90vh;
-    max-width: 90vw;
-}
-.lightbox-close, .lightbox-prev, .lightbox-next {
-    position: absolute;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 3rem;
-    cursor: pointer;
-}
-.lightbox-close {
-    top: 1rem;
-    right: 2rem;
-}
-.lightbox-prev, .lightbox-next {
-    top: 50%;
-    transform: translateY(-50%);
-}
-.lightbox-prev { left: 1rem; }
-.lightbox-next { right: 1rem; }
-
-/* ======== INSTAGRAM FEED ======== */
-.instagram-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-}
-.instagram-grid img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    border-radius: 5px;
-}
-
-/* ======== FOOTER ======== */
-.main-footer {
-    background-color: var(--color-text);
-    color: #ccc;
-    text-align: center;
-    padding: 2.5rem 2rem;
-    margin-top: 3rem;
-}
-.main-footer p {
-    margin-bottom: 0.5rem;
-}
-.footer-credit {
-    font-size: 0.8rem;
-    color: #888;
-}
-
-/* ======== RESPONSIVE DESIGN ======== */
-@media (max-width: 992px) {
-    .products-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-    .features-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-    .testimonial-quotes {
-        grid-template-columns: 1fr;
-    }
-    .ingredients-grid {
-        grid-template-columns: 1fr;
-    }
-    .hero-section {
-        flex-direction: column;
-        text-align: center;
-        padding-top: 3rem;
-    }
-    .hero-content {
-        padding-right: 0;
-        order: 2;
-    }
-    .hero-image {
-        order: 1;
-        margin-bottom: 2rem;
-    }
-}
-
-@media (max-width: 768px) {
-    h1 { font-size: 4rem; }
-    .section-subtitle { font-size: 2rem; }
-    
-    /* MOBILE HEADER FIX */
-    .menu-toggle-btn {
-        display: block;
-    }
-    .nav-menu {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 80px; /* Height of header */
-        left: 0;
-        width: 100%;
-        background: white;
-        padding: 1rem 0;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    }
-    .nav-menu.active {
-        display: flex;
-    }
-    .nav-menu li {
-        margin: 1rem 0;
-        text-align: center;
-    }
-    
-    .products-grid {
-        grid-template-columns: 1fr;
-    }
-    .features-grid {
-        grid-template-columns: 1fr;
-    }
-    .instagram-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-    .cart-buttons {
-        grid-template-columns: 1fr;
-    }
-    .about-content {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* ========
-   ADD THIS TO THE BOTTOM OF YOUR STYLE.CSS
-======== */
-
-/* Styles for Manual Payment (Option 2) in Cart */
+/* ======== MANUAL PAYMENT STYLES ======== */
 .payment-manual-section {
     border-top: 1px dashed #ccc;
     margin-top: 1.5rem;
     padding-top: 1.5rem;
 }
-
 .payment-manual-section h4 {
     font-size: 1.2rem;
     font-family: var(--font-heading);
     color: var(--color-red);
     margin-bottom: 1rem;
 }
-
 .payment-manual-section p {
     margin-bottom: 1rem;
 }
-
 .payment-options-manual {
     display: flex;
     gap: 2rem;
@@ -753,7 +662,6 @@ img {
     border-radius: 8px;
     margin-bottom: 1.5rem;
 }
-
 .qr-code-manual img {
     width: 120px;
     height: 120px;
@@ -764,13 +672,10 @@ img {
     font-size: 0.9rem;
     margin-bottom: 0;
 }
-
 .gpay-manual p {
     margin-bottom: 0.5rem;
     line-height: 1.4;
 }
-
-/* Style for the "I have paid" checkbox */
 .form-group-checkbox {
     display: flex;
     align-items: center;
@@ -789,8 +694,176 @@ img {
     font-family: var(--font-body);
 }
 
-/* Responsive fix for manual payment section */
-@media (max-width: 480px) {
+/* ======== LIGHTBOX STYLES ======== */
+.lightbox-modal {
+    display: none; 
+    position: fixed;
+    z-index: 300; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.85);
+    align-items: center;
+    justify-content: center;
+}
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+.lightbox-content {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+}
+.lightbox-content img {
+    width: 100%;
+    height: auto;
+}
+.lightbox-prev, .lightbox-next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    padding: 16px;
+    margin-top: -50px;
+    color: white;
+    font-weight: bold;
+    font-size: 24px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+    -webkit-user-select: none;
+    background: none;
+    border: none;
+}
+.lightbox-prev {
+    left: 0;
+    border-radius: 3px 0 0 3px;
+}
+.lightbox-next {
+    right: 0;
+    border-radius: 0 3px 3px 0;
+}
+.lightbox-prev:hover, .lightbox-next:hover {
+    background-color: rgba(255,255,255,0.2);
+}
+
+/* ======== INSTAGRAM FEED STYLES ======== */
+.instagram-feed-section {
+    background-color: #fdfdfb;
+}
+.instagram-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+.instagram-grid img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+/* TIER 2: Cart Jiggle Animation */
+@keyframes jiggle {
+    0% { transform: scale(1); }
+    25% { transform: scale(1.1) rotate(-3deg); }
+    50% { transform: scale(1.1) rotate(3deg); }
+    75% { transform: scale(1.1) rotate(-3deg); }
+    100% { transform: scale(1) rotate(0); }
+}
+.cart-icon-btn.jiggle {
+    animation: jiggle 0.5s ease-in-out;
+}
+
+
+/* ======== RESPONSIVE DESIGN ======== */
+@media (max-width: 992px) {
+    .hero-section {
+        flex-direction: column;
+        text-align: center;
+        padding-top: 3rem;
+    }
+    .hero-content {
+        padding-right: 0;
+        order: 2;
+    }
+    .hero-image {
+        order: 1;
+        margin-bottom: 2rem;
+    }
+    .features-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    h1 { font-size: 4rem; }
+    .section-subtitle { font-size: 2rem; }
+    
+    .navbar {
+        justify-content: space-between;
+    }
+    
+    .menu-toggle-btn {
+        display: block; 
+        order: 2; 
+    }
+
+    .logo {
+        order: 1;
+    }
+    
+    .cart-icon-btn {
+        order: 3;
+        margin-left: 1rem;
+    }
+    
+    .nav-menu {
+        display: none; 
+        flex-direction: column;
+        position: absolute;
+        top: 80px; 
+        left: 0;
+        width: 100%;
+        background: white;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        padding: 1rem 0;
+    }
+
+    .nav-menu.open {
+        display: flex; 
+    }
+    
+    .nav-menu li {
+        margin: 1rem 0;
+        text-align: center;
+        width: 100%;
+    }
+
+    .features-grid { grid-template-columns: 1fr; }
+    .cart-buttons { grid-template-columns: 1fr; }
+    
+    .ingredients-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .instagram-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
     .payment-options-manual {
         flex-direction: column;
         align-items: flex-start;
