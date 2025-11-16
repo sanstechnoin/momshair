@@ -2,26 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale-1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>Mom's Hair Oils — Wisdom in Every Drop</title>
+    <meta name="description" content="Discover our 100% natural, handcrafted hair oils made from a secret family recipe. Nourish your hair and slow greying.">
+    
+    <meta property="og:title" content="Mom's Hair Oils — Wisdom in Every Drop">
+    <meta property="og:description" content="100% natural, handcrafted oils from a secret family recipe.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sanstechnoin.github.io/momshair/"> 
+    <meta property="og:image" content="https://sanstechnoin.github.io/momshair/1.png"> 
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Mom's Hair Oils — Wisdom in Every Drop">
+    <meta name="twitter:description" content="100% natural, handcrafted oils from a secret family recipe.">
+    <meta name="twitter:image" content="https://sanstechnoin.github.io/momshair/1.png"> 
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,700;1,400&family=Great+Vibes&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <script src="httpshttps://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&libraries=places&callback=initAutocomplete" async defer></script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&libraries=places&callback=initAutocomplete" async defer></script>
 </head>
 <body>
 
     <header class="main-header">
         <nav class="navbar">
             <div class="logo">Mom's</div>
-            <ul class="nav-menu">
-                <li><a href="#story">Our Story</a></li>
-                <li><a href="#products">Our Oils</a></li>
-                <li><a href="#reviews">Testimonials</a></li>
-                <li><a href="#order" class="btn btn-gold">Order Now</a></li>
+            
+            <button id="menu-toggle" class="menu-toggle-btn">
+                <span>☰</span>
+            </button>
+            
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="index.html#story">Our Story</a></li>
+                <li><a href="index.html#products">Our Products</a></li>
+                <li><a href="index.html#reviews">Testimonials</a></li>
+                <li><a href="index.html#about">About Us</a></li>
             </ul>
+            
+            <button class="cart-icon-btn" id="open-cart-btn">🛒 <span id="cart-item-count">0</span></button>
         </nav>
     </header>
 
@@ -31,7 +53,7 @@
                 <h1>Mom's Hair Oils</h1>
                 <h2>— Wisdom in Every Drop</h2>
                 <p>Rooted in Tradition. Crafted with Love. Delivered to Your Home.</p>
-                <a href="#order" class="btn btn-gold-large">Order Your Bottle</a>
+                <a href="#products" class="btn btn-gold-large">Order Your Bottle</a>
             </div>
             <div class="hero-image">
                 <img src="1.png" alt="Mom's Hair Oil Bottle">
@@ -47,34 +69,57 @@
         <section id="products" class="products-section">
             <h3 class="section-subtitle">Our Handcrafted Oils</h3>
             <div class="products-grid">
+                
                 <div class="product-card">
-                    <img src="1.png" alt="Nourish & Shine Hair Oil" class="product-image">
+                    <img src="2.png" alt="Nourish & Shine Hair Oil" class="product-image" onclick="openLightbox(0, 0)">
+                    <div class="product-thumbnails">
+                        <img src="2.png" alt="Nourish Oil" onclick="openLightbox(0, 0)">
+                        <img src="3.png" alt="Nourish Oil 2" onclick="openLightbox(0, 1)">
+                    </div>
                     <h4>Nourish & Shine Hair Oil</h4>
                     <p>For everyday strength, softness, and natural glow.</p>
-                    <ul class="benefits-list">
-                        <li>Deep nourishment for hair & scalp</li>
-                        <li>Adds natural shine</li>
-                        <li>Reduces frizz and dryness</li>
-                        <li>Helps strengthen roots</li>
-                    </ul>
-                    <a href="#order" class="btn btn-gold">Order Now</a>
+                    <div class="product-price">₹190.00</div>
+                    
+                    <div class="quantity-controls">
+                        <button class="btn-quantity" onclick="changeQuantity('p1', -1)">-</button>
+                        <input type="text" id="quantity-p1" value="0" readonly>
+                        <button class="btn-quantity" onclick="changeQuantity('p1', 1, 'Nourish & Shine Oil', 190)">+</button>
+                    </div>
                 </div>
+
                 <div class="product-card">
-                    <img src="2.png" alt="Anti-Grey Hair Oil" class="product-image">
+                    <img src="3.png" alt="Anti-Grey Hair Oil" class="product-image" onclick="openLightbox(1, 0)">
+                    <div class="product-thumbnails">
+                        <img src="3.png" alt="Anti-Grey Oil" onclick="openLightbox(1, 0)">
+                        <img src="4.png" alt="Anti-Grey Oil 2" onclick="openLightbox(1, 1)">
+                    </div>
                     <h4>Anti-Grey Hair Oil</h4>
                     <p>Slow down greying the natural way.</p>
-                    <ul class="benefits-list">
-                        <li>Helps slow early greying</li>
-                        <li>Darkens appearance of grey strands</li>
-                        <li>Strengthens weak roots</li>
-                        <li>Reduces hair fall and breakage</li>
-                    </ul>
-                    <a href="#order" class="btn btn-gold">Order Now</a>
+                    <div class="product-price">₹190.00</div>
+                    
+                    <div class="quantity-controls">
+                        <button class="btn-quantity" onclick="changeQuantity('p2', -1)">-</button>
+                        <input type="text" id="quantity-p2" value="0" readonly>
+                        <button class="btn-quantity" onclick="changeQuantity('p2', 1, 'Anti-Grey Hair Oil', 190)">+</button>
+                    </div>
                 </div>
-            </div>
-            <div class="text-section-small">
-                <h4>Safe for Kids Too</h4>
-                <p>Our oils are gentle, natural, and free from chemicals — making them safe for daily use for children.</p>
+
+                <div class="product-card">
+                    <img src="4.png" alt="Combo Pack" class="product-image" onclick="openLightbox(2, 0)">
+                    <div class="product-thumbnails">
+                        <img src="4.png" alt="Combo" onclick="openLightbox(2, 0)">
+                        <img src="5.png" alt="Combo 2" onclick="openLightbox(2, 1)">
+                    </div>
+                    <h4>Combo Pack (Both Oils)</h4>
+                    <p>Get the best of both worlds and save!</p>
+                    <div class="product-price">₹360.00</div>
+                    
+                    <div class="quantity-controls">
+                        <button class="btn-quantity" onclick="changeQuantity('p3', -1)">-</button>
+                        <input type="text" id="quantity-p3" value="0" readonly>
+                        <button class="btn-quantity" onclick="changeQuantity('p3', 1, 'Combo Pack', 360)">+</button>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -103,121 +148,71 @@
                 </div>
             </div>
         </section>
-
+        
         <section id="reviews" class="testimonial-section">
             <h3 class="section-subtitle">Happy Customers</h3>
             <div class="testimonial-content">
-                <div class="testimonial-image">
-                    <img src="5.png" alt="Happy Customer Testimonial">
-                </div>
                 <div class="testimonial-quotes">
                     <blockquote>
+                        <div class="stars">★★★★★</div>
                         <p>“My hair feels softer, stronger, and visibly healthier.”</p>
                     </blockquote>
                     <blockquote>
+                        <div class="stars">★★★★★</div>
                         <p>“The anti-grey oil reduced early greys within weeks. So grateful!”</p>
                     </blockquote>
                     <blockquote>
+                        <div class="stars">★★★★☆</div>
                         <p>“The smell, the texture, everything feels pure and handmade.”</p>
                     </blockquote>
                 </div>
             </div>
         </section>
 
-        <section id="order" class="order-section">
-            <h3 class="section-subtitle">Get Your Bottle of Mom's Hair Oil</h3>
-            <form id="orderForm" action="[YOUR_FORM_HANDLER_URL]" method="POST" enctype="multipart/form-data">
-                
-                <h4>Step 1: Choose Your Oils</h4>
-                <div class="form-group-checkbox">
-                    <input type="checkbox" id="product1" name="product1" value="190">
-                    <label for="product1">Nourish & Shine Oil (100ml) - <strong>₹190</strong> <del>₹240</del></label>
-                </div>
-                <div class="form-group-checkbox">
-                    <input type="checkbox" id="product2" name="product2" value="190">
-                    <label for="product2">Anti-Grey Hair Oil (100ml) - <strong>₹190</strong> <del>₹240</del></label>
-                </div>
-                <div class="form-group-checkbox">
-                    <input type="checkbox" id="product3" name="product3" value="360">
-                    <label for="product3">Combo Pack (Both Oils) - <strong>₹360</strong></label>
-                </div>
-
-                <h4>Step 2: Your Shipping Details</h4>
-                <div class="form-group">
-                    <label for="name">Full Name</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="phone">Phone Number (for WhatsApp updates)</label>
-                    <input type="tel" id="phone" name="phone" required>
+        <section id="ingredients" class="ingredients-section">
+            <h3 class="section-subtitle">Wisdom in Every Drop: Our Ingredients</h3>
+            <p class="section-intro">We use only pure, cold-pressed oils and hand-picked herbs, just like our grandmother did. No chemicals, no mineral oil, no artificial fragrance. Ever.</p>
+            
+            <div class="ingredients-grid">
+                <div class="ingredient-card">
+                    <h4>Nourish & Shine Oil</h4>
+                    <ul>
+                        <li><strong>🥥 Coconut Oil:</strong> Deeply conditions and adds a natural, healthy shine.</li>
+                        <li><strong>🌺 Hibiscus Flower:</strong> Rich in amino acids, it helps strengthen roots and reduce frizz.</li>
+                        <li><strong>🌿 Amla (Indian Gooseberry):</strong> A powerhouse of Vitamin C, it promotes hair growth and scalp health.</li>
+                        <li><strong>🌰 Almond Oil:</strong> Seals in moisture and adds softness, making hair manageable.</li>
+                    </ul>
                 </div>
                 
-                <div class="form-group">
-                    <label for="address-input">Full Address (Start typing and select)</label>
-                    <input type="text" id="address-input" name="address" required>
-                </div>
-
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="city">City</label>
-                        <input type="text" id="city" name="city" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="pincode">Pincode</label>
-                        <input type="text" id="pincode" name="pincode" required>
-                    </div>
-                </div>
-                <p style="font-size: 0.9rem; color: #666;">(City and Pincode will be auto-filled soon. For now, please type them.)</p>
-
-                <h4>Step 3: Complete Payment</h4>
-                <div class="total-amount">
-                    <strong>Your Total Amount: ₹<span id="totalAmount">0</span></strong>
-                    <p>+ Free Delivery Above 599</p>
-                </div>
-                <p>Please pay the total amount using Google Pay or by scanning the QR code. <strong>Upload a screenshot of your payment to confirm the order.</strong></p>
-                
-                <div class="payment-options">
-                    <div class="qr-code">
-                        <img src="qrcode.png" alt="Scan QR Code to Pay" style="max-width: 150px; border: 1px solid #ccc; padding: 5px;">
-                        <p>Scan to Pay</p>
-                        <p style="color:red; font-size: 0.8rem;">(Replace this with your actual QR code)</p>
-                    </div>
-                    <div class="gpay">
-                        <p><strong>Or pay to UPI ID:</strong><br> vabinanthana@okaxis</p>
-                    </div>
-                </div>
-
-                <h4>Step 4: Confirm Order</h4>
-                <div class="form-group">
-                    <label for="screenshot">Upload Payment Screenshot (Required)</label>
-                    <input type="file" id="screenshot" name="screenshot" accept="image/*" required>
-                </div>
-                
-                <button type="submit" class="btn btn-gold-large btn-submit">Place My Order</button>
-
-            </form>
-        </section>
-
-        <section id="about" class="about-section">
-            <h3 class="section-subtitle">About Us</h3>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>We are a small family business sharing our grandmother’s wisdom with the world. Every bottle is made with patience, care, and generations of knowledge.</p>
-                    <p>When you order from us, you support a tradition of natural beauty and a mother’s heartfelt craft.</p>
-                </div>
-                <div class="about-image">
-                    <img src="3.png" alt="Mom's Hair Oil two bottles">
+                <div class="ingredient-card">
+                    <h4>Anti-Grey Hair Oil</h4>
+                    <ul>
+                        <li><strong>⚫ Bhringraj (King of Herbs):</strong> Traditionally used to help slow premature greying and reduce hair fall.</li>
+                        <li><strong>🌱 Curry Leaves:</strong> Packed with antioxidants that help maintain natural pigment and strengthen hair follicles.</li>
+                        <li><strong>⚫ Black Sesame Oil:</strong> A warming oil used in Ayurveda to nourish the scalp and support natural hair color.</li>
+                        <li><strong>🍃 Neem:</strong> Known for its clarifying properties, it helps keep the scalp healthy and free from dandruff.</li>
+                    </ul>
                 </div>
             </div>
         </section>
 
-    </main>
-
-    <footer class="main-footer">
-        <p><strong>Contact (WhatsApp):</strong> +91 9952532391 | <strong>Instagram:</strong> @its_moms_hair_oil</p>
-        <p>© 2025 Mom’s Hair Oils. All Rights Reserved.</p>
-    </footer>
-
-    <script src="script.js"></script>
-</body>
-</html>
+        <section id="faq" class="faq-section">
+            <h3 class="section-subtitle">Frequently Asked Questions</h3>
+            
+            <div class="faq-container">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>How long until I see results?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Consistency is key! Most users report seeing a difference in hair texture, softness, and reduced hair fall within 3-4 weeks. Slowing premature greying can take 2-3 months of regular use.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Is this safe for colored or chemically treated hair?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq
