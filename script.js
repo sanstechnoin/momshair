@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const whatsappBtn = document.getElementById("whatsapp-order-btn");
     const formContainer = document.getElementById("order-form-container");
     const thankYouMessage = document.getElementById("thank-you-message");
-    const manualTotalPriceEl = document.getElementById("manual-total-price");
+    const manualTotalPriceEl = document.getElementById("manual-total-price"); // Get manual total el
 
     // Cart state
     let cart = {}; // Example: { p1: { name: '...', price: 190, quantity: 2 }, ... }
