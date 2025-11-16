@@ -54,7 +54,11 @@
             <div class="products-grid">
                 
                 <div class="product-card">
-                    <img src="1.png" alt="Nourish & Shine Hair Oil" class="product-image">
+                    <img src="2.png" alt="Nourish & Shine Hair Oil" class="product-image" onclick="openLightbox(0, 0)">
+                    <div class="product-thumbnails">
+                        <img src="2.png" alt="Nourish Oil" onclick="openLightbox(0, 0)">
+                        <img src="3.png" alt="Nourish Oil 2" onclick="openLightbox(0, 1)">
+                    </div>
                     <h4>Nourish & Shine Hair Oil</h4>
                     <p>For everyday strength, softness, and natural glow.</p>
                     <div class="product-price">₹190.00</div>
@@ -67,7 +71,11 @@
                 </div>
 
                 <div class="product-card">
-                    <img src="2.png" alt="Anti-Grey Hair Oil" class="product-image">
+                    <img src="3.png" alt="Anti-Grey Hair Oil" class="product-image" onclick="openLightbox(1, 0)">
+                    <div class="product-thumbnails">
+                        <img src="3.png" alt="Anti-Grey Oil" onclick="openLightbox(1, 0)">
+                        <img src="4.png" alt="Anti-Grey Oil 2" onclick="openLightbox(1, 1)">
+                    </div>
                     <h4>Anti-Grey Hair Oil</h4>
                     <p>Slow down greying the natural way.</p>
                     <div class="product-price">₹190.00</div>
@@ -80,7 +88,11 @@
                 </div>
 
                 <div class="product-card">
-                    <img src="3.png" alt="Combo Pack" class="product-image">
+                    <img src="4.png" alt="Combo Pack" class="product-image" onclick="openLightbox(2, 0)">
+                    <div class="product-thumbnails">
+                        <img src="4.png" alt="Combo" onclick="openLightbox(2, 0)">
+                        <img src="5.png" alt="Combo 2" onclick="openLightbox(2, 1)">
+                    </div>
                     <h4>Combo Pack (Both Oils)</h4>
                     <p>Get the best of both worlds and save!</p>
                     <div class="product-price">₹360.00</div>
@@ -124,9 +136,6 @@
         <section id="reviews" class="testimonial-section">
             <h3 class="section-subtitle">Happy Customers</h3>
             <div class="testimonial-content">
-                <div class="testimonial-image">
-                    <img src="5.png" alt="Happy Customer Testimonial">
-                </div>
                 <div class="testimonial-quotes">
                     <blockquote>
                         <p>“My hair feels softer, stronger, and visibly healthier.”</p>
@@ -148,9 +157,6 @@
                     <p>We are a small family business sharing our grandmother’s wisdom with the world. Every bottle is made with patience, care, and generations of knowledge.</p>
                     <p>When you order from us, you support a tradition of natural beauty and a mother’s heartfelt craft.</p>
                 </div>
-                <div class="about-image">
-                    <img src="3.png" alt="Mom's Hair Oil two bottles">
-                </div>
             </div>
         </section>
 
@@ -171,9 +177,7 @@
 
             <div id="order-form-container">
                 <form id="orderForm" action="https://formspree.io/f/your-unique-id" method="POST">
-                    
                     <p>Please fill in your details to complete the order.</p>
-
                     <input type="hidden" id="cart-contents" name="cart_contents" value="">
 
                     <div class="form-group">
@@ -201,6 +205,15 @@
                 <p>We will update you soon via WhatsApp.</p>
             </div>
 
+        </div>
+    </div>
+
+    <div id="lightbox-modal" class="lightbox-modal">
+        <button id="lightbox-close" class="lightbox-close">&times;</button>
+        <button id="lightbox-prev" class="lightbox-prev">&lt;</button>
+        <button id="lightbox-next" class="lightbox-next">&gt;</button>
+        <div class="lightbox-content">
+            <img id="lightbox-image" src="" alt="Enlarged product image">
         </div>
     </div>
 
