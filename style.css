@@ -506,8 +506,7 @@ section {
     border-radius: 10px;
     position: relative;
     max-height: 90vh; /* Use max-height */
-    display: flex;
-    flex-direction: column;
+    overflow-y: auto;
 }
 .cart-modal-close {
     color: #aaa;
@@ -533,7 +532,6 @@ section {
 
 /* FIX: THIS IS THE SCROLLABLE PART */
 #cart-items-container {
-    overflow-y: auto; 
     min-height: 50px;
     max-height: 200px; /* <-- This makes ONLY the item list scroll */
     padding-right: 10px;
@@ -542,9 +540,7 @@ section {
 
 /* FIX: THIS IS THE FIXED BOTTOM PART */
 .cart-checkout-container {
-    flex-shrink: 0;
     padding-top: 1.5rem;
-    overflow-y: auto; /* The FORM will scroll if the screen is tiny */
 }
 
 .cart-item {
@@ -890,3 +886,4 @@ section {
         align-items: flex-start;
     }
 }
+
