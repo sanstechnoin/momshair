@@ -67,6 +67,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 delete cart[productId];
             }
         }
+        
+        // TIER 2: Add to Cart "Jiggle" Confirmation
+        if (amount > 0) {
+            openCartBtn.classList.add('jiggle');
+            setTimeout(() => {
+                openCartBtn.classList.remove('jiggle');
+            }, 500); // 500ms matches the CSS animation
+        }
 
         // Update the quantity display on the product card
         const quantityInput = document.getElementById(`quantity-${productId}`);
@@ -96,6 +104,11 @@ document.addEventListener("DOMContentLoaded", function() {
         // Reset form and thank you message
         formContainer.style.display = "none";
         thankYouMessage.style.display = "none";
+        
+        // Reset submit button in case it was in "Sending..." state
+        const submitBtn = orderForm.querySelector("button[type='submit']");
+        submitBtn.textContent = "Submit Order";
+        submitBtn.disabled = false;
 
         if (Object.keys(cart).length === 0) {
             cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
@@ -210,7 +223,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // --- NEW LIGHTBOX GALLERY LOGIC ---
+    // --- LIGHTBOX GALLERY LOGIC ---
 
     const lightboxModal = document.getElementById("lightbox-modal");
     const lightboxImage = document.getElementById("lightbox-image");
@@ -218,8 +231,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const prevBtn = document.getElementById("lightbox-prev");
     const nextBtn = document.getElementById("lightbox-next");
 
-    // Define your product galleries
-    // *** IMAGES UPDATED AS REQUESTED ***
+    // Galleries based on your last request
     const galleries = [
         ['2.png', '3.png'], // Gallery for Product 1 (Nourish)
         ['3.png', '4.png'], // Gallery for Product 2 (Anti-Grey)
@@ -261,5 +273,25 @@ document.addEventListener("DOMContentLoaded", function() {
         nextBtn.addEventListener("click", showNextImage);
         prevBtn.addEventListener("click", showPrevImage);
     }
+    
+    // --- FAQ ACCORDION LOGIC ---
+    document.querySelectorAll('.faq-question').forEach(button => {
+        button.addEventListener('click', () => {
+            const faqItem = button.parentElement;
+            
+            // Check if the item is already active
+            const isActive = faqItem.classList.contains('active');
+            
+            // Close all other open items
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // If it wasn't active, open it
+            if (!isActive) {
+                faqItem.classList.add('active');
+            }
+        });
+    });
 
 });
