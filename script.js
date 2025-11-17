@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const thankYouMessage = document.getElementById("thank-you-message");
     const manualTotalPriceEl = document.getElementById("manual-total-price");
     
-    // NEW: Order Number Elements
+    // Order Number Elements
     const orderNumInput = document.getElementById("order-number-input");
     const orderNumDisplay = document.getElementById("order-number");
 
