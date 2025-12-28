@@ -35,10 +35,10 @@
             
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                 <ul class="navbar-nav gap-4">
-                    <li class="nav-item"><a class="nav-link fw-bold" href="#process">Our Process</a></li>
-                    <li class="nav-item"><a class="nav-link fw-bold" href="#ritual">The Ritual</a></li>
-                    <li class="nav-item"><a class="nav-link fw-bold" href="#shop">Shop Batch</a></li>
-                    <li class="nav-item"><a class="nav-link fw-bold" href="#reviews">Stories</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold close-menu" href="#process">Our Process</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold close-menu" href="#ritual">The Ritual</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold close-menu" href="#shop">Shop Batch</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold close-menu" href="#reviews">Stories</a></li>
                 </ul>
             </div>
             
@@ -264,12 +264,8 @@
             <h3 class="font-heading mb-3">Mom's Hair Oils</h3>
             <p class="text-white-50 mb-4">Made with ❤️ in India.</p>
             <div class="d-flex justify-content-center gap-4 mb-4">
-                <a href="https://wa.me/919952532391" target="_blank" class="text-white fs-2 hover-gold">
-                    <i class="bi bi-whatsapp"></i>
-                </a>
-                <a href="https://instagram.com/its_moms_hair_oil" target="_blank" class="text-white fs-2 hover-gold">
-                    <i class="bi bi-instagram"></i>
-                </a>
+                <a href="https://wa.me/919952532391" target="_blank" class="text-white fs-2 hover-gold"><i class="bi bi-whatsapp"></i></a>
+                <a href="https://instagram.com/its_moms_hair_oil" target="_blank" class="text-white fs-2 hover-gold"><i class="bi bi-instagram"></i></a>
             </div>
             <div class="small border-top border-secondary pt-4 text-white-50">
                 <p class="mb-1">© 2025 Mom's Hair Oils. All Rights Reserved.</p>
@@ -294,9 +290,7 @@
                     <form id="checkoutForm">
                         <h6 class="text-uppercase text-muted fw-bold mb-3 small">Step 1: Payment</h6>
                         <div class="bg-light p-4 rounded mb-4 text-center">
-                            <button type="button" class="btn btn-success btn-lg w-100 mb-3 d-md-none shadow" data-bs-toggle="modal" data-bs-target="#upiInstructionModal">
-                                <i class="bi bi-phone"></i> Tap to Pay (GPay / UPI)
-                            </button>
+                            <button type="button" class="btn btn-success btn-lg w-100 mb-3 d-md-none shadow" data-bs-toggle="modal" data-bs-target="#upiInstructionModal"><i class="bi bi-phone"></i> Tap to Pay (GPay / UPI)</button>
                             <div class="d-none d-md-block mb-3">
                                 <img src="qrcode.png" alt="UPI QR" style="width: 120px;" class="border p-1 bg-white">
                                 <p class="small text-muted mt-2">Scan with any UPI App</p>
@@ -305,15 +299,9 @@
                         </div>
                         <h6 class="text-uppercase text-muted fw-bold mb-3 small">Step 2: Shipping & Confirmation</h6>
                         <div class="row g-3">
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" id="custName" placeholder="Full Name" required>
-                            </div>
-                            <div class="col-md-6">
-                                <input type="tel" class="form-control" id="custPhone" placeholder="WhatsApp Number" required>
-                            </div>
-                            <div class="col-12">
-                                <textarea class="form-control" id="custAddress" rows="2" placeholder="Full Address with Pincode" required></textarea>
-                            </div>
+                            <div class="col-md-6"><input type="text" class="form-control" id="custName" placeholder="Full Name" required></div>
+                            <div class="col-md-6"><input type="tel" class="form-control" id="custPhone" placeholder="WhatsApp Number" required></div>
+                            <div class="col-12"><textarea class="form-control" id="custAddress" rows="2" placeholder="Full Address with Pincode" required></textarea></div>
                             <div class="col-12">
                                 <label class="form-label small fw-bold">Payment Proof (Screenshot OR Transaction ID)</label>
                                 <div class="input-group mb-2">
@@ -325,76 +313,29 @@
                             <div class="col-12">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="termsCheck" required>
-                                    <label class="form-check-label small text-muted" for="termsCheck">
-                                        I agree to the terms. No returns on opened bottles.
-                                    </label>
+                                    <label class="form-check-label small text-muted" for="termsCheck">I agree to the terms. No returns on opened bottles.</label>
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer flex-column">
-                    <button type="button" class="btn btn-primary w-100 py-2 fs-5" onclick="placeOrder()">
-                        Place Order <i class="bi bi-arrow-right"></i>
-                    </button>
+                    <button type="button" class="btn btn-primary w-100 py-2 fs-5" onclick="placeOrder()">Place Order <i class="bi bi-arrow-right"></i></button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="upiInstructionModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-warning-subtle">
-                    <h5 class="modal-title fw-bold">⚠️ Before you pay...</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <p class="fs-5">Please <strong>COPY the Reference Code (UTR)</strong> from your payment app after paying.</p>
-                    <p class="text-muted">You will need to PASTE it in the "Payment Proof" field to confirm your order.</p>
-                    <a id="btn-proceed-pay" href="#" class="btn btn-success w-100 btn-lg mt-3">
-                        I Understand, Proceed to Pay <i class="bi bi-box-arrow-up-right"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="orderSuccessModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content text-center p-5">
-                <div class="mb-4 text-primary">
-                    <i class="bi bi-heart-fill" style="font-size: 3.5rem;"></i>
-                </div>
-                <h3 class="fw-bold mb-3 font-heading">Thank You for Trusting Us! 🌿</h3>
-                <p class="mb-4 text-muted">We have received your order request. Since every bottle is packed with care, we personally verify every payment.</p>
-                <div class="alert alert-success border-0 bg-success-subtle mb-4">
-                    <h6 class="fw-bold mb-1"><i class="bi bi-clock-history"></i> Next Steps:</h6>
-                    <p class="mb-0 small">Please allow <strong>4 - 8 Hours</strong> for payment confirmation. You will receive a WhatsApp update as soon as we verify it.</p>
-                </div>
-                <p class="small text-muted mb-4">Shipment starts within 24 hours of confirmation.</p>
-                <button type="button" class="btn btn-primary w-100 btn-lg" onclick="window.location.href='tracker.html'">
-                    Track My Order
-                </button>
-            </div>
-        </div>
-    </div>
+    <div class="modal fade" id="upiInstructionModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-warning-subtle"><h5 class="modal-title fw-bold">⚠️ Before you pay...</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body text-center"><p class="fs-5">Please <strong>COPY the Reference Code (UTR)</strong> from your payment app after paying.</p><p class="text-muted">You will need to PASTE it in the "Payment Proof" field to confirm your order.</p><a id="btn-proceed-pay" href="#" class="btn btn-success w-100 btn-lg mt-3">I Understand, Proceed to Pay <i class="bi bi-box-arrow-up-right"></i></a></div></div></div></div>
+    
+    <div class="modal fade" id="orderSuccessModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-5"><div class="mb-4 text-primary"><i class="bi bi-heart-fill" style="font-size: 3.5rem;"></i></div><h3 class="fw-bold mb-3 font-heading">Thank You for Trusting Us! 🌿</h3><p class="mb-4 text-muted">We have received your order request. Since every bottle is packed with care, we personally verify every payment.</p><div class="alert alert-success border-0 bg-success-subtle mb-4"><h6 class="fw-bold mb-1"><i class="bi bi-clock-history"></i> Next Steps:</h6><p class="mb-0 small">Please allow <strong>4 - 8 Hours</strong> for payment confirmation.</p></div><p class="small text-muted mb-4">Shipment starts within 24 hours of confirmation.</p><button type="button" class="btn btn-primary w-100 btn-lg" onclick="window.location.href='tracker.html'">Track My Order</button></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, setDoc, doc, serverTimestamp, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyA659yIOvlhVTm8-S6RtUDPXxVM8dZZ_kM",
-            authDomain: "momshairoil-3010.firebaseapp.com",
-            projectId: "momshairoil-3010",
-            storageBucket: "momshairoil-3010.firebasestorage.app",
-            messagingSenderId: "884566098620",
-            appId: "1:884566098620:web:bca34f4f82d7b6712ec6b9"
-        };
-
+        const firebaseConfig = { apiKey: "AIzaSyA659yIOvlhVTm8-S6RtUDPXxVM8dZZ_kM", authDomain: "momshairoil-3010.firebaseapp.com", projectId: "momshairoil-3010", storageBucket: "momshairoil-3010.firebasestorage.app", messagingSenderId: "884566098620", appId: "1:884566098620:web:bca34f4f82d7b6712ec6b9" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
@@ -409,100 +350,63 @@
         // --- SCROLL TO TOP ---
         window.onscroll = function() {
             const btn = document.getElementById("scrollTopBtn");
-            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-                btn.classList.remove("d-none");
-                btn.classList.add("d-flex");
-            } else {
-                btn.classList.add("d-none");
-                btn.classList.remove("d-flex");
-            }
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) { btn.classList.remove("d-none"); btn.classList.add("d-flex"); }
+            else { btn.classList.add("d-none"); btn.classList.remove("d-flex"); }
         };
         window.scrollToTop = function() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
-        // --- INVENTORY LISTENER ---
-        const productsMap = {
-            'p1': { btnId: 'btn-p1', stockId: 'stock-p1' },
-            'p2': { btnId: 'btn-p2', stockId: 'stock-p2' },
-            'p3': { btnId: 'btn-p3', stockId: 'stock-p3' }
-        };
+        // --- MOBILE MENU CLOSE FIX ---
+        document.addEventListener("DOMContentLoaded", function(){
+            const navLinks = document.querySelectorAll('.close-menu');
+            const menuToggle = document.getElementById('navbarNav');
+            const bsCollapse = new bootstrap.Collapse(menuToggle, {toggle:false});
+            navLinks.forEach((l) => {
+                l.addEventListener('click', () => { bsCollapse.hide() });
+            });
+        });
 
+        // --- INVENTORY ---
+        const productsMap = { 'p1': { btnId: 'btn-p1', stockId: 'stock-p1' }, 'p2': { btnId: 'btn-p2', stockId: 'stock-p2' }, 'p3': { btnId: 'btn-p3', stockId: 'stock-p3' } };
         onSnapshot(collection(db, "products"), (snapshot) => {
             snapshot.forEach((doc) => {
                 const prod = productsMap[doc.id];
                 if (prod) {
-                    const data = doc.data();
-                    const stock = data.stock || 0;
-                    const btn = document.getElementById(prod.btnId);
-                    const stockTxt = document.getElementById(prod.stockId);
-
+                    const data = doc.data(); const stock = data.stock || 0;
+                    const btn = document.getElementById(prod.btnId); const stockTxt = document.getElementById(prod.stockId);
                     if (stock > 0) {
-                        btn.innerHTML = "Add to Cart";
-                        btn.classList.remove("btn-preorder");
-                        btn.classList.add("btn-primary");
-                        stockTxt.innerHTML = `<i class="bi bi-check-circle"></i> Only ${stock} bottles left!`;
-                        stockTxt.className = "text-success fw-bold mb-2 small";
+                        btn.innerHTML = "Add to Cart"; btn.classList.remove("btn-preorder"); btn.classList.add("btn-primary");
+                        stockTxt.innerHTML = `<i class="bi bi-check-circle"></i> Only ${stock} bottles left!`; stockTxt.className = "text-success fw-bold mb-2 small";
                     } else {
-                        btn.innerHTML = "Pre-Order Now";
-                        btn.classList.remove("btn-primary");
-                        btn.classList.add("btn-preorder");
-                        stockTxt.innerHTML = `<i class="bi bi-hourglass-split"></i> Batch Cooking... Ships in 5-7 Days`;
-                        stockTxt.className = "text-accent fw-bold mb-2 small";
+                        btn.innerHTML = "Pre-Order Now"; btn.classList.remove("btn-primary"); btn.classList.add("btn-preorder");
+                        stockTxt.innerHTML = `<i class="bi bi-hourglass-split"></i> Batch Cooking... Ships in 5-7 Days`; stockTxt.className = "text-accent fw-bold mb-2 small";
                     }
                 }
             });
         });
 
-        // --- CART & ORDER LOGIC ---
-        window.cart = [];
-        let currentTotal = 0;
-
+        // --- CART ---
+        window.cart = []; let currentTotal = 0;
         window.addToCart = function(name, price) {
-            window.cart.push({ name, price });
-            updateCartDisplay();
-            const cartBtn = document.querySelector('.btn-outline-primary');
-            cartBtn.classList.add('cart-animate');
+            window.cart.push({ name, price }); updateCartDisplay();
+            const cartBtn = document.querySelector('.btn-outline-primary'); cartBtn.classList.add('cart-animate');
             setTimeout(() => { cartBtn.classList.remove('cart-animate'); }, 500);
         }
-
-        window.updateCartDisplay = function() {
-            document.getElementById('cart-count').innerText = window.cart.length;
-        }
-
+        window.updateCartDisplay = function() { document.getElementById('cart-count').innerText = window.cart.length; }
+        
         window.prepareCheckout = function() {
             const cartItemsContainer = document.getElementById('cart-items');
             const totalEl = document.getElementById('cart-total');
             const proceedPayBtn = document.getElementById('btn-proceed-pay');
-            
-            if (window.cart.length === 0) {
-                cartItemsContainer.innerHTML = '<p class="text-center text-muted">Your cart is empty.</p>';
-                totalEl.innerText = '₹0.00';
-                return;
-            }
-
-            let html = '<ul class="list-group list-group-flush">';
-            currentTotal = 0;
+            if (window.cart.length === 0) { cartItemsContainer.innerHTML = '<p class="text-center text-muted">Your cart is empty.</p>'; totalEl.innerText = '₹0.00'; return; }
+            let html = '<ul class="list-group list-group-flush">'; currentTotal = 0;
             window.cart.forEach((item, index) => {
                 currentTotal += item.price;
-                html += `
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        ${item.name}
-                        <span>₹${item.price}</span>
-                        <button class="btn btn-sm btn-outline-danger ms-2" onclick="removeFromCart(${index})">&times;</button>
-                    </li>`;
+                html += `<li class="list-group-item d-flex justify-content-between align-items-center">${item.name}<span>₹${item.price}</span><button class="btn btn-sm btn-outline-danger ms-2" onclick="removeFromCart(${index})">&times;</button></li>`;
             });
-            html += '</ul>';
-            cartItemsContainer.innerHTML = html;
-            totalEl.innerText = '₹' + currentTotal;
-
-            const upiLink = `upi://pay?pa=vabinanthana@okaxis&pn=MomsHairOil&am=${currentTotal}.00&cu=INR`;
-            proceedPayBtn.href = upiLink;
+            html += '</ul>'; cartItemsContainer.innerHTML = html; totalEl.innerText = '₹' + currentTotal;
+            proceedPayBtn.href = `upi://pay?pa=vabinanthana@okaxis&pn=MomsHairOil&am=${currentTotal}.00&cu=INR`;
         }
-
-        window.removeFromCart = function(index) {
-            window.cart.splice(index, 1);
-            window.updateCartDisplay();
-            window.prepareCheckout(); 
-        }
+        window.removeFromCart = function(index) { window.cart.splice(index, 1); window.updateCartDisplay(); window.prepareCheckout(); }
 
         window.placeOrder = async function() {
             const name = document.getElementById('custName').value;
@@ -513,18 +417,13 @@
             const terms = document.getElementById('termsCheck').checked;
 
             if (window.cart.length === 0) return alert("Cart is empty!");
-            if (!name || !phone || !address) return alert("Please fill in shipping details.");
-            if (!txnId && !hasScreenshot) return alert("Please enter Transaction ID or upload a screenshot.");
-            if (!terms) return alert("Please accept the terms.");
+            if (!name || !phone || !address) return alert("Please fill details.");
+            if (!txnId && !hasScreenshot) return alert("Please provide payment proof.");
+            if (!terms) return alert("Please accept terms.");
 
-            const btn = event.target;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = "Processing...";
-            btn.disabled = true;
-
+            const btn = event.target; const originalText = btn.innerHTML; btn.innerHTML = "Processing..."; btn.disabled = true;
             const orderId = "M-" + Math.floor(100000 + Math.random() * 900000);
-            let itemsString = "";
-            window.cart.forEach(item => { itemsString += `${item.name} (₹${item.price})\n`; });
+            let itemsString = ""; window.cart.forEach(item => { itemsString += `${item.name} (₹${item.price})\n`; });
 
             try {
                 // 1. SAVE TO FIREBASE
@@ -535,7 +434,7 @@
                     status: "Pending Verification", timestamp: serverTimestamp()
                 });
 
-                // 2. SEND AUTO-EMAIL TO ADMIN
+                // 2. SEND AUTO-EMAIL TO ADMIN (Silent)
                 fetch(`https://formsubmit.co/ajax/${masterEmail}`, {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
@@ -550,11 +449,9 @@
                     })
                 });
 
-                // 3. WHATSAPP CONFIRMATION
-              //  const orderText = `*New Order: ${orderId}*%0A%0A*Name:* ${name}%0A*Items:*%0A${itemsString.replace(/\n/g, '%0A')}*Total:* ₹${currentTotal}%0A*Txn Ref:* ${txnId}`;
-              //  window.open(`https://wa.me/919952532391?text=${orderText}`, '_blank');
+                // 3. WHATSAPP REMOVED (As requested)
                 
-                // 4. SHOW SUCCESS MODAL
+                // 4. SHOW SUCCESS
                 const checkoutModal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
                 checkoutModal.hide();
                 const successModal = new bootstrap.Modal(document.getElementById('orderSuccessModal'));
@@ -562,7 +459,7 @@
 
             } catch (error) {
                 console.error("Error:", error);
-                alert("Error placing order. Please try again.");
+                alert("Error placing order.");
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
@@ -570,4 +467,3 @@
     </script>
 </body>
 </html>
-
