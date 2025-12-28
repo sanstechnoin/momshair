@@ -16,6 +16,10 @@
 </head>
 <body>
 
+    <button onclick="scrollToTop()" id="scrollTopBtn" class="btn btn-primary rounded-circle shadow-lg d-none align-items-center justify-content-center">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
     <div class="bg-primary text-white text-center py-2 small fw-bold">
         ✨ Launch Offer: Heirloom Pricing Ends Soon! ✨
     </div>
@@ -47,7 +51,7 @@
         <div class="container">
             <div class="row align-items-center flex-column-reverse flex-lg-row">
                 <div class="col-lg-6 text-center text-lg-start mt-4 mt-lg-0">
-                    <span class="text-accent text-uppercase fw-bold ls-2">Since 1985 • 100% Natural</span>
+                    <span class="text-accent text-uppercase fw-bold ls-2">Since 1995 • 100% Natural</span>
                     <h1 class="display-3 font-heading fw-bold text-primary my-3">Sun-Dried Herbs,<br><em>Slow-Cooked Magic.</em></h1>
                     <p class="lead text-muted mb-4">We source raw herbs, sun-dry them for 3 days, and slow-cook them in small batches. No machines. Just patience.</p>
                     <div class="d-flex gap-3 justify-content-center justify-content-lg-start">
@@ -95,6 +99,43 @@
         </div>
     </section>
 
+    <section id="ritual" class="py-5 bg-primary text-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h2 class="font-heading display-5 mb-4 text-white">The Sunday Ritual</h2>
+                    <p class="lead mb-4 text-white-50">Hair care is not a chore; it's a moment to breathe. Reconnect with yourself with our 3-step traditional method.</p>
+                    <ul class="list-unstyled mt-4">
+                        <li class="mb-4 d-flex align-items-start">
+                            <i class="bi bi-1-circle-fill text-accent fs-3 me-3"></i>
+                            <div>
+                                <h5 class="fw-bold mb-1">Warm It Up</h5>
+                                <p class="small text-white-50">Place the bottle in warm water for 2 minutes to activate the herbs.</p>
+                            </div>
+                        </li>
+                        <li class="mb-4 d-flex align-items-start">
+                            <i class="bi bi-2-circle-fill text-accent fs-3 me-3"></i>
+                            <div>
+                                <h5 class="fw-bold mb-1">Massage Gently</h5>
+                                <p class="small text-white-50">Apply to scalp and massage for 10 minutes to boost circulation.</p>
+                            </div>
+                        </li>
+                        <li class="mb-4 d-flex align-items-start">
+                            <i class="bi bi-3-circle-fill text-accent fs-3 me-3"></i>
+                            <div>
+                                <h5 class="fw-bold mb-1">Let It Rest</h5>
+                                <p class="small text-white-50">Leave for at least 1 hour (or overnight) before washing.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img src="3.png" alt="Hair Oil Ritual" class="img-fluid rounded shadow-lg border border-4 border-white" style="max-height: 450px; object-fit: cover;">
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="shop" class="py-5 bg-cream">
         <div class="container">
             <div class="text-center mb-5">
@@ -103,7 +144,6 @@
             </div>
 
             <div class="row g-4 justify-content-center">
-                
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm product-card">
                         <span class="badge bg-danger position-absolute top-0 end-0 m-3">36% OFF</span>
@@ -111,9 +151,7 @@
                         <div class="card-body d-flex flex-column text-center">
                             <h5 class="card-title font-heading fw-bold">Daily Nourish Blend</h5>
                             <p class="card-text text-muted small">Hibiscus & Amla. For softness & shine.</p>
-                            
                             <small id="stock-p1" class="text-accent fw-bold mb-2">Checking Stock...</small>
-                            
                             <div class="my-2">
                                 <span class="text-decoration-line-through text-muted me-2">₹299</span>
                                 <span class="text-primary fw-bold fs-4">₹190</span>
@@ -132,9 +170,7 @@
                         <div class="card-body d-flex flex-column text-center">
                             <h5 class="card-title font-heading fw-bold">Root Restoration</h5>
                             <p class="card-text text-muted small">Bhringraj & Curry Leaf. For strength & pigment.</p>
-                            
                             <small id="stock-p2" class="text-accent fw-bold mb-2">Checking Stock...</small>
-
                             <div class="my-2">
                                 <span class="text-decoration-line-through text-muted me-2">₹349</span>
                                 <span class="text-primary fw-bold fs-4">₹190</span>
@@ -153,9 +189,7 @@
                         <div class="card-body d-flex flex-column text-center bg-light-gold">
                             <h5 class="card-title font-heading fw-bold">The Complete Care Duo</h5>
                             <p class="card-text text-muted small">1 Nourish + 1 Restoration. The full ritual.</p>
-                            
                             <small id="stock-p3" class="text-accent fw-bold mb-2">Checking Stock...</small>
-
                             <div class="my-2">
                                 <span class="text-decoration-line-through text-muted me-2">₹648</span>
                                 <span class="text-primary fw-bold fs-3">₹360</span>
@@ -166,7 +200,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
@@ -174,7 +207,7 @@
     <section id="reviews" class="py-5 bg-white">
         <div class="container">
             <h2 class="font-heading text-primary text-center mb-5">Love Notes</h2>
-            <div class="row g-4">
+            <div id="reviews-container" class="row g-4">
                 <div class="col-md-4">
                     <div class="card border-0 bg-light p-4 h-100">
                         <div class="text-accent mb-2">★★★★★</div>
@@ -197,20 +230,28 @@
                     </div>
                 </div>
             </div>
+            <div class="text-center mt-4">
+                <a href="tracker.html" class="btn btn-outline-primary btn-sm rounded-pill">
+                    Track Order & Write Review
+                </a>
+            </div>
         </div>
     </section>
 
-    <footer class="bg-dark text-secondary py-5">
+    <footer class="bg-dark text-white py-5">
         <div class="container text-center">
-            <h3 class="font-heading text-white mb-3">Mom's Hair Oils</h3>
-            <p class="mb-4">Handcrafted in India.</p>
-            <div class="small border-top border-secondary pt-4">
+            <h3 class="font-heading mb-3">Mom's Hair Oils</h3>
+            <p class="text-white-50 mb-4">Handcrafted in India.</p>
+            <div class="d-flex justify-content-center gap-4 mb-4">
+                <a href="https://wa.me/919952532391" target="_blank" class="text-white fs-2 hover-gold"><i class="bi bi-whatsapp"></i></a>
+                <a href="https://instagram.com/its_moms_hair_oil" target="_blank" class="text-white fs-2 hover-gold"><i class="bi bi-instagram"></i></a>
+            </div>
+            <div class="small border-top border-secondary pt-4 text-white-50">
                 <p class="mb-1">© 2025 Mom's Hair Oils. All Rights Reserved.</p>
                 <p class="mb-1"><strong>Contact:</strong> +91 9952532391</p>
             </div>
         </div>
     </footer>
-
 
     <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -220,17 +261,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    
                     <div id="cart-items" class="mb-4"></div>
-                    
                     <div class="d-flex justify-content-between border-top pt-3 mb-4">
                         <span class="h5">Total</span>
                         <span class="h5 fw-bold text-primary" id="cart-total">₹0.00</span>
                     </div>
-
                     <form id="checkoutForm">
                         <h6 class="text-uppercase text-muted fw-bold mb-3 small">Step 1: Payment</h6>
-                        
                         <div class="bg-light p-4 rounded mb-4 text-center">
                             <button type="button" class="btn btn-success btn-lg w-100 mb-3 d-md-none shadow" data-bs-toggle="modal" data-bs-target="#upiInstructionModal">
                                 <i class="bi bi-phone"></i> Tap to Pay (GPay / UPI)
@@ -241,7 +278,6 @@
                             </div>
                             <p class="mb-0 fw-bold">UPI ID: <span class="text-primary">vabinanthana@okaxis</span></p>
                         </div>
-
                         <h6 class="text-uppercase text-muted fw-bold mb-3 small">Step 2: Shipping & Confirmation</h6>
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -264,18 +300,14 @@
                             <div class="col-12">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="termsCheck" required>
-                                    <label class="form-check-label small text-muted" for="termsCheck">
-                                        I agree to the terms. No returns on opened bottles.
-                                    </label>
+                                    <label class="form-check-label small text-muted" for="termsCheck">I agree to the terms. No returns on opened bottles.</label>
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer flex-column">
-                    <button type="button" class="btn btn-primary w-100 py-2 fs-5" onclick="placeOrder()">
-                        Place Order <i class="bi bi-arrow-right"></i>
-                    </button>
+                    <button type="button" class="btn btn-primary w-100 py-2 fs-5" onclick="placeOrder()">Place Order <i class="bi bi-arrow-right"></i></button>
                 </div>
             </div>
         </div>
@@ -291,9 +323,7 @@
                 <div class="modal-body text-center">
                     <p class="fs-5">Please <strong>COPY the Reference Code (UTR)</strong> from your payment app after paying.</p>
                     <p class="text-muted">You will need to PASTE it in the "Payment Proof" field to confirm your order.</p>
-                    <a id="btn-proceed-pay" href="#" class="btn btn-success w-100 btn-lg mt-3">
-                        I Understand, Proceed to Pay <i class="bi bi-box-arrow-up-right"></i>
-                    </a>
+                    <a id="btn-proceed-pay" href="#" class="btn btn-success w-100 btn-lg mt-3">I Understand, Proceed to Pay <i class="bi bi-box-arrow-up-right"></i></a>
                 </div>
             </div>
         </div>
@@ -302,32 +332,23 @@
     <div class="modal fade" id="orderSuccessModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content text-center p-5">
-                <div class="mb-4 text-primary">
-                    <i class="bi bi-heart-fill" style="font-size: 3.5rem;"></i>
-                </div>
+                <div class="mb-4 text-primary"><i class="bi bi-heart-fill" style="font-size: 3.5rem;"></i></div>
                 <h3 class="fw-bold mb-3 font-heading">Thank You for Trusting Us! 🌿</h3>
                 <p class="mb-4 text-muted">We have received your order request. Since every bottle is packed with care, we personally verify every payment.</p>
-                
                 <div class="alert alert-success border-0 bg-success-subtle mb-4">
                     <h6 class="fw-bold mb-1"><i class="bi bi-clock-history"></i> Next Steps:</h6>
                     <p class="mb-0 small">Please allow <strong>4 - 8 Hours</strong> for payment confirmation. You will receive a WhatsApp update as soon as we verify it.</p>
                 </div>
-
-                <p class="small text-muted mb-4">Shipment usually starts within 24 hours of confirmation.</p>
-
-                <button type="button" class="btn btn-primary w-100 btn-lg" onclick="window.location.href='tracker.html'">
-                    Track My Order
-                </button>
+                <p class="small text-muted mb-4">Shipment starts within 24 hours of confirmation.</p>
+                <button type="button" class="btn btn-primary w-100 btn-lg" onclick="window.location.href='tracker.html'">Track My Order</button>
             </div>
         </div>
     </div>
 
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, setDoc, doc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, setDoc, doc, serverTimestamp, onSnapshot, query, where, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA659yIOvlhVTm8-S6RtUDPXxVM8dZZ_kM",
@@ -341,37 +362,45 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- REAL-TIME INVENTORY LISTENER ---
-        // This makes the Index page change instantly when Admin changes stock
+        // --- SCROLL TO TOP ---
+        window.onscroll = function() {
+            const btn = document.getElementById("scrollTopBtn");
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                btn.classList.remove("d-none");
+                btn.classList.add("d-flex");
+            } else {
+                btn.classList.add("d-none");
+                btn.classList.remove("d-flex");
+            }
+        };
+        window.scrollToTop = function() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+        // --- INVENTORY LISTENER ---
         const productsMap = {
-            'p1': { btnId: 'btn-p1', stockId: 'stock-p1', name: 'Daily Nourish' },
-            'p2': { btnId: 'btn-p2', stockId: 'stock-p2', name: 'Restoration' },
-            'p3': { btnId: 'btn-p3', stockId: 'stock-p3', name: 'Combo' }
+            'p1': { btnId: 'btn-p1', stockId: 'stock-p1' },
+            'p2': { btnId: 'btn-p2', stockId: 'stock-p2' },
+            'p3': { btnId: 'btn-p3', stockId: 'stock-p3' }
         };
 
-        // Listen to the 'products' collection
         onSnapshot(collection(db, "products"), (snapshot) => {
             snapshot.forEach((doc) => {
                 const prod = productsMap[doc.id];
                 if (prod) {
                     const data = doc.data();
                     const stock = data.stock || 0;
-                    
                     const btn = document.getElementById(prod.btnId);
                     const stockTxt = document.getElementById(prod.stockId);
 
                     if (stock > 0) {
-                        // IN STOCK MODE
                         btn.innerHTML = "Add to Cart";
                         btn.classList.remove("btn-preorder");
                         btn.classList.add("btn-primary");
                         stockTxt.innerHTML = `<i class="bi bi-check-circle"></i> Only ${stock} bottles left!`;
                         stockTxt.className = "text-success fw-bold mb-2 small";
                     } else {
-                        // PRE-ORDER MODE
                         btn.innerHTML = "Pre-Order Now";
                         btn.classList.remove("btn-primary");
-                        btn.classList.add("btn-preorder"); // Orange color defined in CSS
+                        btn.classList.add("btn-preorder");
                         stockTxt.innerHTML = `<i class="bi bi-hourglass-split"></i> Batch Cooking... Ships in 5-7 Days`;
                         stockTxt.className = "text-accent fw-bold mb-2 small";
                     }
@@ -379,7 +408,33 @@
             });
         });
 
-        // --- GLOBAL VARS ---
+        // --- LOAD APPROVED REVIEWS ---
+        async function loadReviews() {
+            const container = document.getElementById('reviews-container');
+            const q = query(collection(db, "reviews"), where("status", "==", "approved"), limit(3));
+            const snapshot = await getDocs(q);
+
+            if (!snapshot.empty) {
+                let html = '';
+                snapshot.forEach(doc => {
+                    const r = doc.data();
+                    let stars = '';
+                    for(let i=0; i<r.rating; i++) stars += '★';
+                    html += `
+                        <div class="col-md-4">
+                            <div class="card border-0 bg-light p-4 h-100">
+                                <div class="text-accent mb-2">${stars}</div>
+                                <p class="fst-italic text-muted">"${r.text}"</p>
+                                <footer class="blockquote-footer mt-2">${r.name}</footer>
+                            </div>
+                        </div>`;
+                });
+                container.innerHTML = html;
+            }
+        }
+        loadReviews();
+
+        // --- CART & ORDER LOGIC ---
         window.cart = [];
         let currentTotal = 0;
 
@@ -392,8 +447,7 @@
         }
 
         window.updateCartDisplay = function() {
-            const countBadge = document.getElementById('cart-count');
-            countBadge.innerText = window.cart.length;
+            document.getElementById('cart-count').innerText = window.cart.length;
         }
 
         window.prepareCheckout = function() {
@@ -409,7 +463,6 @@
 
             let html = '<ul class="list-group list-group-flush">';
             currentTotal = 0;
-            
             window.cart.forEach((item, index) => {
                 currentTotal += item.price;
                 html += `
@@ -417,11 +470,9 @@
                         ${item.name}
                         <span>₹${item.price}</span>
                         <button class="btn btn-sm btn-outline-danger ms-2" onclick="removeFromCart(${index})">&times;</button>
-                    </li>
-                `;
+                    </li>`;
             });
             html += '</ul>';
-            
             cartItemsContainer.innerHTML = html;
             totalEl.innerText = '₹' + currentTotal;
 
@@ -454,32 +505,22 @@
             btn.disabled = true;
 
             const orderId = "M-" + Math.floor(100000 + Math.random() * 900000);
-            
             let itemsString = "";
-            window.cart.forEach(item => {
-                itemsString += `${item.name} (₹${item.price})\n`;
-            });
+            window.cart.forEach(item => { itemsString += `${item.name} (₹${item.price})\n`; });
 
             try {
                 await setDoc(doc(db, "orders", orderId), {
-                    orderId: orderId,
-                    name: name,
-                    phone: phone,
-                    address: address,
-                    items: itemsString,
-                    total: currentTotal,
+                    orderId: orderId, name: name, phone: phone, address: address,
+                    items: itemsString, total: currentTotal,
                     txnId: txnId || "Screenshot Uploaded",
-                    status: "Pending Verification", 
-                    timestamp: serverTimestamp()
+                    status: "Pending Verification", timestamp: serverTimestamp()
                 });
 
                 const orderText = `*New Order: ${orderId}*%0A%0A*Name:* ${name}%0A*Items:*%0A${itemsString.replace(/\n/g, '%0A')}*Total:* ₹${currentTotal}%0A*Txn Ref:* ${txnId}`;
-                
                 window.open(`https://wa.me/919952532391?text=${orderText}`, '_blank');
                 
                 const checkoutModal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
                 checkoutModal.hide();
-
                 const successModal = new bootstrap.Modal(document.getElementById('orderSuccessModal'));
                 successModal.show();
 
