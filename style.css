@@ -34,6 +34,18 @@ body {
     color: white;
 }
 
+/* Pre-Order Button Style */
+.btn-preorder {
+    background-color: var(--color-accent);
+    color: white;
+    border: none;
+    font-weight: bold;
+}
+.btn-preorder:hover {
+    background-color: #a3661e;
+    color: white;
+}
+
 .text-accent { color: var(--color-accent) !important; }
 .bg-accent { background-color: var(--color-accent) !important; }
 .bg-cream { background-color: var(--color-cream) !important; }
@@ -53,7 +65,23 @@ body {
 }
 .ls-2 { letter-spacing: 2px; }
 
-/* Fix Navbar on Mobile */
+/* Mobile Navbar Fix */
 .navbar-toggler:focus {
     box-shadow: none;
+}
+
+/* Cart Jiggle Animation */
+@keyframes cart-bounce {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.2); }
+    50% { transform: scale(0.9); }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.cart-animate {
+    animation: cart-bounce 0.5s ease-in-out;
+    background-color: var(--color-accent) !important;
+    border-color: var(--color-accent) !important;
+    color: white !important;
 }
