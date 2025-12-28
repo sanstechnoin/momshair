@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Mom's Hair Oil</title>
+    
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     
@@ -17,28 +19,23 @@
         .status-Shipped { background-color: #cfe2ff; color: #084298; border-color: #b6d4fe; }
         .status-Delivered { background-color: #212529; color: #fff; border-color: #212529; }
 
-        /* LOGIN OVERLAY STYLES */
+        /* Login Overlay */
         #login-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #1B4D3E; /* Brand Green */
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #1B4D3E; z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
         }
         .login-box {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            text-align: center;
-            width: 90%;
-            max-width: 400px;
+            background: white; padding: 2.5rem; border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; width: 90%; max-width: 400px;
         }
-
-        /* Hide Dashboard initially */
         #admin-content { display: none; }
+
+        /* Dashboard Cards */
+        .card-header { font-weight: 600; }
+        .stock-live { font-size: 0.9rem; font-weight: bold; }
+        .text-preorder { color: #C17C28; }
+        .text-instock { color: #198754; }
     </style>
 </head>
 <body>
@@ -66,34 +63,72 @@
 
         <div class="container-fluid mt-4">
             
-            <div class="row mb-4">
-                <div class="col-md-8 mx-auto">
-                    <div class="card shadow-sm border-primary">
-                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0"><i class="bi bi-box-seam"></i> Stock Management</h5>
-                            <span class="badge bg-white text-primary">Live Updates</span>
+            <div class="row g-4 mb-4">
+                
+                <div class="col-lg-7">
+                    <div class="card shadow-sm border-primary h-100">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between">
+                            <span><i class="bi bi-box-seam"></i> Inventory Control</span>
+                            <span class="badge bg-white text-primary">Live Database</span>
                         </div>
-                        <div class="card-body bg-white">
-                            <p class="small text-muted mb-3"><i class="bi bi-info-circle"></i> Set Stock to <strong>0</strong> to automatically switch the website to "Pre-Order" mode.</p>
-                            
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">Daily Nourish</label>
-                                    <input type="number" id="qty-p1" class="form-control text-center" value="0">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 border-end">
+                                    <h6 class="text-muted text-uppercase small fw-bold mb-3">Current Website Status</h6>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span>Daily Nourish:</span>
+                                        <span id="live-p1" class="stock-live">Loading...</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span>Restoration:</span>
+                                        <span id="live-p2" class="stock-live">Loading...</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span>Combo Pack:</span>
+                                        <span id="live-p3" class="stock-live">Loading...</span>
+                                    </div>
+                                    
+                                    <div class="alert alert-info mt-3 py-2 small">
+                                        <i class="bi bi-info-circle"></i> If Stock is <strong>0</strong>, site shows "Pre-Order".
+                                    </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">Restoration Oil</label>
-                                    <input type="number" id="qty-p2" class="form-control text-center" value="0">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">Combo Pack</label>
-                                    <input type="number" id="qty-p3" class="form-control text-center" value="0">
+
+                                <div class="col-md-6 ps-md-4">
+                                    <h6 class="text-muted text-uppercase small fw-bold mb-3">Update Stock Count</h6>
+                                    
+                                    <div class="input-group input-group-sm mb-2">
+                                        <span class="input-group-text">Nourish</span>
+                                        <input type="number" id="qty-p1" class="form-control text-center">
+                                    </div>
+                                    <div class="input-group input-group-sm mb-2">
+                                        <span class="input-group-text">Restore</span>
+                                        <input type="number" id="qty-p2" class="form-control text-center">
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <span class="input-group-text">Combo</span>
+                                        <input type="number" id="qty-p3" class="form-control text-center">
+                                    </div>
+
+                                    <button class="btn btn-sm btn-success w-100" onclick="saveInventory()">
+                                        <i class="bi bi-check-circle"></i> Save Changes
+                                    </button>
                                 </div>
                             </div>
-                            
-                            <button class="btn btn-success w-100 mt-3" onclick="saveInventory()">
-                                <i class="bi bi-save"></i> Update Website Stock
-                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="card shadow-sm border-warning h-100">
+                        <div class="card-header bg-warning text-dark d-flex justify-content-between">
+                            <span><i class="bi bi-star-half"></i> Pending Reviews</span>
+                            <span class="badge bg-dark text-white" id="review-count">0</span>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul id="pending-reviews-list" class="list-group list-group-flush" style="max-height: 250px; overflow-y:auto;">
+                                <li class="list-group-item text-center text-muted py-4">Loading reviews...</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -101,7 +136,7 @@
 
             <div class="card shadow-sm">
                 <div class="card-header bg-white py-3 border-bottom">
-                    <h5 class="mb-0"><i class="bi bi-list-check"></i> Recent Orders</h5>
+                    <h5 class="mb-0"><i class="bi bi-list-check"></i> Order Management</h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -110,8 +145,8 @@
                                 <tr class="text-center align-middle">
                                     <th>Date</th>
                                     <th>Order ID</th>
-                                    <th class="text-start">Customer Info</th>
-                                    <th style="width: 20%;" class="text-start">Shipping To</th>
+                                    <th class="text-start">Customer</th>
+                                    <th style="width: 20%;" class="text-start">Address</th>
                                     <th>Total & UTR</th>
                                     <th>Status</th>
                                     <th>Actions</th>
@@ -129,7 +164,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, updateDoc, orderBy, query, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, orderBy, query, setDoc, getDoc, where, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA659yIOvlhVTm8-S6RtUDPXxVM8dZZ_kM",
@@ -143,23 +178,18 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- PASSWORD PROTECTION LOGIC ---
+        // --- AUTH ---
         window.checkLogin = function() {
             const pass = document.getElementById('admin-pass').value;
-            const errorMsg = document.getElementById('login-error');
-            const overlay = document.getElementById('login-overlay');
-            const content = document.getElementById('admin-content');
-
             if (pass === "brindharani") {
-                overlay.style.display = 'none';
-                content.style.display = 'block';
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('admin-content').style.display = 'block';
                 sessionStorage.setItem("adminLoggedIn", "true");
-                
-                // Load data only after login
                 loadOrders();
                 loadInventory();
+                loadPendingReviews();
             } else {
-                errorMsg.style.display = 'block';
+                document.getElementById('login-error').style.display = 'block';
             }
         };
 
@@ -168,142 +198,169 @@
             location.reload();
         };
 
-        // Check if already logged in (on refresh)
         if (sessionStorage.getItem("adminLoggedIn") === "true") {
             document.getElementById('login-overlay').style.display = 'none';
             document.getElementById('admin-content').style.display = 'block';
             loadOrders();
             loadInventory();
+            loadPendingReviews();
         }
 
-        // --- INVENTORY LOGIC ---
+        // --- INVENTORY LOGIC (SPLIT VIEW) ---
         async function loadInventory() {
             const pIds = ['p1', 'p2', 'p3'];
             for (const pid of pIds) {
-                const docRef = doc(db, "products", pid);
-                const docSnap = await getDoc(docRef);
+                const docSnap = await getDoc(doc(db, "products", pid));
+                let val = 0;
+                
                 if (docSnap.exists()) {
-                    document.getElementById(`qty-${pid}`).value = docSnap.data().stock;
+                    val = docSnap.data().stock;
                 } else {
-                    await setDoc(docRef, { stock: 10 }); 
-                    document.getElementById(`qty-${pid}`).value = 10;
+                    await setDoc(doc(db, "products", pid), { stock: 10 });
+                    val = 10;
+                }
+
+                // Update Input Fields (Right Side)
+                document.getElementById(`qty-${pid}`).value = val;
+
+                // Update Status Text (Left Side)
+                const liveEl = document.getElementById(`live-${pid}`);
+                if (val > 0) {
+                    liveEl.innerHTML = `${val} <span class="badge bg-success">In Stock</span>`;
+                    liveEl.classList.remove('text-preorder');
+                } else {
+                    liveEl.innerHTML = `0 <span class="badge bg-warning text-dark">Pre-Order</span>`;
+                    liveEl.classList.add('text-preorder');
                 }
             }
         }
 
         window.saveInventory = async function() {
             try {
-                const p1 = parseInt(document.getElementById('qty-p1').value);
-                const p2 = parseInt(document.getElementById('qty-p2').value);
-                const p3 = parseInt(document.getElementById('qty-p3').value);
+                await updateDoc(doc(db, "products", "p1"), { stock: parseInt(document.getElementById('qty-p1').value) });
+                await updateDoc(doc(db, "products", "p2"), { stock: parseInt(document.getElementById('qty-p2').value) });
+                await updateDoc(doc(db, "products", "p3"), { stock: parseInt(document.getElementById('qty-p3').value) });
+                
+                alert("Stock Updated!");
+                loadInventory(); // Refresh view
+            } catch (e) { alert("Error updating stock"); }
+        }
 
-                await updateDoc(doc(db, "products", "p1"), { stock: p1 });
-                await updateDoc(doc(db, "products", "p2"), { stock: p2 });
-                await updateDoc(doc(db, "products", "p3"), { stock: p3 });
+        // --- REVIEW LOGIC ---
+        async function loadPendingReviews() {
+            const list = document.getElementById('pending-reviews-list');
+            const countBadge = document.getElementById('review-count');
+            const q = query(collection(db, "reviews"), where("status", "==", "pending"));
+            const snapshot = await getDocs(q);
+            
+            countBadge.innerText = snapshot.size;
 
-                alert("Stock Updated! Website will reflect changes immediately.");
-            } catch (error) {
-                console.error("Error saving stock:", error);
-                alert("Error updating stock.");
+            if (snapshot.empty) {
+                list.innerHTML = '<li class="list-group-item text-center text-muted">No pending reviews.</li>';
+                return;
+            }
+
+            let html = '';
+            snapshot.forEach(docSnap => {
+                const r = docSnap.data();
+                html += `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div style="max-width: 70%;">
+                            <strong>${r.name}</strong> <span class="text-warning">(${r.rating}★)</span><br>
+                            <small class="text-muted">"${r.text}"</small>
+                        </div>
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-sm btn-success" onclick="approveReview('${docSnap.id}')" title="Approve">✔</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteReview('${docSnap.id}')" title="Delete">✖</button>
+                        </div>
+                    </li>
+                `;
+            });
+            list.innerHTML = html;
+        }
+
+        window.approveReview = async function(id) {
+            await updateDoc(doc(db, "reviews", id), { status: "approved" });
+            loadPendingReviews();
+        }
+
+        window.deleteReview = async function(id) {
+            if(confirm("Delete this review permanently?")) {
+                await deleteDoc(doc(db, "reviews", id));
+                loadPendingReviews();
             }
         }
 
-        // --- WHATSAPP NOTIFY FUNCTION ---
+        // --- WHATSAPP LOGIC ---
         window.sendWhatsappUpdate = function(phone, name, orderId, status) {
             let msg = "";
+            const trackerLink = window.location.href.replace('admin.html', 'tracker.html');
             
-            // Customize message based on status
             if(status === "Payment Received") {
-                msg = `Hello ${name}, we have received your payment for Order ID ${orderId}. We are now preparing your fresh batch! 🌿`;
+                msg = `Hello ${name}, we received your payment for Order ${orderId}. Preparing your batch now! 🌿`;
             } else if (status === "Shipped") {
-                msg = `Great news ${name}! Your Mom's Hair Oil (Order ${orderId}) has been SHIPPED! 🚚 It will reach you soon.`;
+                msg = `Great news ${name}! Order ${orderId} has been SHIPPED! 🚚 Track it here: ${trackerLink}`;
             } else if (status === "Delivered") {
-                msg = `Hi ${name}, your order ${orderId} is marked as Delivered. We hope you love the oil! Please share your review. ✨`;
+                msg = `Hi ${name}, your order ${orderId} is Delivered. We hope you love it! ✨\n\nPlease confirm delivery and leave a review here:\n${trackerLink}`;
             } else {
-                msg = `Hello ${name}, an update on your Order ${orderId}. Current Status: ${status}.`;
+                msg = `Hello ${name}, update on Order ${orderId}: ${status}.`;
             }
-
-            // Open WhatsApp
             window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
-        // --- LOAD ORDERS ---
+        // --- ORDERS LOGIC ---
         async function loadOrders() {
             const tableBody = document.getElementById('tableBody');
+            const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
+            const querySnapshot = await getDocs(q);
             
-            try {
-                const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
-                const querySnapshot = await getDocs(q);
+            let html = '';
+            querySnapshot.forEach((doc) => {
+                const order = doc.data();
+                const date = order.timestamp ? new Date(order.timestamp.seconds * 1000).toLocaleDateString() : 'N/A';
                 
-                let html = '';
-                if (querySnapshot.empty) {
-                    tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-5">No orders found yet.</td></tr>';
-                    return;
-                }
+                let statusClass = "status-Pending";
+                if (order.status && order.status.includes("Payment")) statusClass = "status-Payment";
+                if (order.status && order.status.includes("Shipped")) statusClass = "status-Shipped";
+                if (order.status && order.status.includes("Delivered")) statusClass = "status-Delivered";
 
-                querySnapshot.forEach((doc) => {
-                    const order = doc.data();
-                    const date = order.timestamp ? new Date(order.timestamp.seconds * 1000).toLocaleDateString() : 'N/A';
-                    
-                    // Logic for Status Colors
-                    let statusClass = "status-Pending";
-                    if (order.status && order.status.includes("Payment")) statusClass = "status-Payment";
-                    if (order.status && order.status.includes("Shipped")) statusClass = "status-Shipped";
-                    if (order.status && order.status.includes("Delivered")) statusClass = "status-Delivered";
-
-                    html += `
-                        <tr class="text-center">
-                            <td><small>${date}</small></td>
-                            <td><span class="badge bg-secondary">${order.orderId || doc.id}</span></td>
-                            <td class="text-start">
-                                <strong>${order.name}</strong><br>
-                                <a href="https://wa.me/${order.phone}" target="_blank" class="text-decoration-none small text-success">
-                                    <i class="bi bi-whatsapp"></i> ${order.phone}
-                                </a>
-                            </td>
-                            <td class="text-start"><small>${order.address}</small></td>
-                            <td>
-                                <strong>₹${order.total}</strong><br>
-                                <small class="text-muted">UTR: ${order.txnId || 'N/A'}</small>
-                            </td>
-                            <td>
-                                <select class="form-select form-select-sm status-select ${statusClass}" onchange="updateStatus('${doc.id}', this.value)">
-                                    <option value="Pending Verification" ${order.status === 'Pending Verification' ? 'selected' : ''}>Pending Verif.</option>
-                                    <option value="Payment Received" ${order.status === 'Payment Received' ? 'selected' : ''}>Payment Received</option>
-                                    <option value="Shipped" ${order.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
-                                    <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
-                                </select>
-                            </td>
-                            <td>
-                                <div class="d-flex flex-column gap-1">
-                                    <button class="btn btn-sm btn-outline-primary" onclick="alert('Items:\\n' + '${order.items}'.replace(/\\n/g, '\\n'))">
-                                        <i class="bi bi-eye"></i> Details
-                                    </button>
-                                    <button class="btn btn-sm btn-success" onclick="sendWhatsappUpdate('${order.phone}', '${order.name}', '${order.orderId}', '${order.status}')">
-                                        <i class="bi bi-whatsapp"></i> Notify
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                });
-                tableBody.innerHTML = html;
-            } catch (error) {
-                console.error("Error loading orders:", error);
-                tableBody.innerHTML = `<tr><td colspan="7" class="text-center text-danger">Error loading data. Check Console.</td></tr>`;
-            }
+                html += `
+                    <tr class="text-center">
+                        <td><small>${date}</small></td>
+                        <td><span class="badge bg-secondary">${order.orderId || doc.id}</span></td>
+                        <td class="text-start">
+                            <strong>${order.name}</strong><br>
+                            <a href="https://wa.me/${order.phone}" target="_blank" class="text-success small text-decoration-none">
+                                <i class="bi bi-whatsapp"></i> ${order.phone}
+                            </a>
+                        </td>
+                        <td class="text-start"><small>${order.address}</small></td>
+                        <td>
+                            <strong>₹${order.total}</strong><br>
+                            <small class="text-muted">UTR: ${order.txnId || 'N/A'}</small>
+                        </td>
+                        <td>
+                            <select class="form-select form-select-sm status-select ${statusClass}" onchange="updateStatus('${doc.id}', this.value)">
+                                <option value="Pending Verification" ${order.status === 'Pending Verification' ? 'selected' : ''}>Pending</option>
+                                <option value="Payment Received" ${order.status === 'Payment Received' ? 'selected' : ''}>Paid</option>
+                                <option value="Shipped" ${order.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                                <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                            </select>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-column gap-1">
+                                <button class="btn btn-sm btn-outline-primary" onclick="alert('${order.items}'.replace(/\\n/g, '\\n'))">Details</button>
+                                <button class="btn btn-sm btn-success" onclick="sendWhatsappUpdate('${order.phone}', '${order.name}', '${order.orderId}', '${order.status}')">Notify</button>
+                            </div>
+                        </td>
+                    </tr>`;
+            });
+            tableBody.innerHTML = html;
         }
 
         window.updateStatus = async function(docId, newStatus) {
-            try {
-                const orderRef = doc(db, "orders", docId);
-                await updateDoc(orderRef, { status: newStatus });
-                // Don't alert here to be faster, just reload
-                loadOrders(); 
-            } catch (e) {
-                console.error("Error updating status: ", e);
-                alert("Error updating status");
-            }
+            await updateDoc(doc(db, "orders", docId), { status: newStatus });
+            loadOrders(); 
         }
     </script>
 </body>
