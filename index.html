@@ -551,8 +551,8 @@
                 });
 
                 // 3. WHATSAPP CONFIRMATION
-                const orderText = `*New Order: ${orderId}*%0A%0A*Name:* ${name}%0A*Items:*%0A${itemsString.replace(/\n/g, '%0A')}*Total:* ₹${currentTotal}%0A*Txn Ref:* ${txnId}`;
-                window.open(`https://wa.me/919952532391?text=${orderText}`, '_blank');
+              //  const orderText = `*New Order: ${orderId}*%0A%0A*Name:* ${name}%0A*Items:*%0A${itemsString.replace(/\n/g, '%0A')}*Total:* ₹${currentTotal}%0A*Txn Ref:* ${txnId}`;
+              //  window.open(`https://wa.me/919952532391?text=${orderText}`, '_blank');
                 
                 // 4. SHOW SUCCESS MODAL
                 const checkoutModal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
@@ -570,3 +570,4 @@
     </script>
 </body>
 </html>
+
