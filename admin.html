@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Mom's Hair Oil</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f4f6f9; }
+        .status-select { min-width: 140px; cursor: pointer; }
+        /* Status Colors */
+        .status-Received { background-color: #e2e3e5; color: #333; }
+        .status-Confirmed { background-color: #cfe2ff; color: #084298; }
+        .status-Cooking { background-color: #fff3cd; color: #856404; }
+        .status-Shipped { background-color: #d1e7dd; color: #0f5132; }
+        .status-Delivered { background-color: #198754; color: white; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">Admin Panel 🛡️</span>
+            <button class="btn btn-outline-light btn-sm" onclick="location.reload()">Refresh Data</button>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0">Order Management</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr><td colspan="7" class="text-center">Loading orders...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, orderBy, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // YOUR SPECIFIC CONFIGURATION
+        const firebaseConfig = {
+            apiKey: "AIzaSyA659yIOvlhVTm8-S6RtUDPXxVM8dZZ_kM",
+            authDomain: "momshairoil-3010.firebaseapp.com",
+            projectId: "momshairoil-3010",
+            storageBucket: "momshairoil-3010.firebasestorage.app",
+            messagingSenderId: "884566098620",
+            appId: "1:884566098620:web:bca34f4f82d7b6712ec6b9"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Load Orders
+        async function loadOrders() {
+            const tableBody = document.getElementById('tableBody');
+            
+            try {
+                const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                let html = '';
+                if (querySnapshot.empty) {
+                    tableBody.innerHTML = '<tr><td colspan="7" class="text-center">No orders found yet.</td></tr>';
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const order = doc.data();
+                    const date = order.timestamp ? new Date(order.timestamp.seconds * 1000).toLocaleDateString() : 'N/A';
+                    const statusClass = `status-${order.status || 'Received'}`;
+
+                    html += `
+                        <tr>
+                            <td><small>${date}</small></td>
+                            <td><span class="badge bg-secondary">${order.orderId || doc.id}</span></td>
+                            <td>
+                                <strong>${order.name}</strong><br>
+                                <a href="https://wa.me/${order.phone}" target="_blank" class="text-decoration-none small">
+                                    📞 ${order.phone}
+                                </a><br>
+                                <small class="text-muted">${order.address}</small>
+                            </td>
+                            <td><small>${order.items.replace(/\n/g, '<br>')}</small></td>
+                            <td><strong>₹${order.total}</strong></td>
+                            <td>
+                                <select class="form-select form-select-sm status-select ${statusClass}" onchange="updateStatus('${doc.id}', this.value)">
+                                    <option value="Received" ${order.status === 'Received' ? 'selected' : ''}>Received</option>
+                                    <option value="Confirmed" ${order.status === 'Confirmed' ? 'selected' : ''}>Payment OK</option>
+                                    <option value="Cooking" ${order.status === 'Cooking' ? 'selected' : ''}>Cooking/Drying</option>
+                                    <option value="Shipped" ${order.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                                    <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary" onclick="alert('Please ask customer for screenshot on WhatsApp if missing.')">📷 Check</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                tableBody.innerHTML = html;
+            } catch (error) {
+                console.error("Error loading orders:", error);
+                tableBody.innerHTML = `<tr><td colspan="7" class="text-center text-danger">Error loading data. Check Console.</td></tr>`;
+            }
+        }
+
+        // Make updateStatus global so HTML can use it
+        window.updateStatus = async function(docId, newStatus) {
+            try {
+                const orderRef = doc(db, "orders", docId);
+                await updateDoc(orderRef, { status: newStatus });
+                alert("Status updated to " + newStatus);
+                loadOrders(); // Refresh table to show new color
+            } catch (e) {
+                console.error("Error updating status: ", e);
+                alert("Error updating status");
+            }
+        }
+
+        loadOrders();
+    </script>
+</body>
+</html>
