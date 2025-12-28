@@ -91,44 +91,17 @@
                             <div class="row">
                                 <div class="col-12 col-lg-6 border-lg-end mobile-mb">
                                     <h6 class="text-muted text-uppercase small fw-bold mb-3">Current Website Status</h6>
-                                    
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <span>Daily Nourish:</span>
-                                        <span id="live-p1" class="stock-live">Loading...</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <span>Restoration:</span>
-                                        <span id="live-p2" class="stock-live">Loading...</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span>Combo Pack:</span>
-                                        <span id="live-p3" class="stock-live">Loading...</span>
-                                    </div>
-                                    
-                                    <div class="alert alert-info mt-3 py-2 small">
-                                        <i class="bi bi-info-circle"></i> If Stock is <strong>0</strong>, site shows "Pre-Order".
-                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-3"><span>Daily Nourish:</span><span id="live-p1" class="stock-live">Loading...</span></div>
+                                    <div class="d-flex justify-content-between align-items-center mb-3"><span>Restoration:</span><span id="live-p2" class="stock-live">Loading...</span></div>
+                                    <div class="d-flex justify-content-between align-items-center"><span>Combo Pack:</span><span id="live-p3" class="stock-live">Loading...</span></div>
+                                    <div class="alert alert-info mt-3 py-2 small"><i class="bi bi-info-circle"></i> If Stock is <strong>0</strong>, site shows "Pre-Order".</div>
                                 </div>
-
                                 <div class="col-12 col-lg-6 ps-lg-4">
                                     <h6 class="text-muted text-uppercase small fw-bold mb-3">Update Stock Count</h6>
-                                    
-                                    <div class="input-group input-group-sm mb-2">
-                                        <span class="input-group-text">Nourish</span>
-                                        <input type="number" id="qty-p1" class="form-control text-center">
-                                    </div>
-                                    <div class="input-group input-group-sm mb-2">
-                                        <span class="input-group-text">Restore</span>
-                                        <input type="number" id="qty-p2" class="form-control text-center">
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <span class="input-group-text">Combo</span>
-                                        <input type="number" id="qty-p3" class="form-control text-center">
-                                    </div>
-
-                                    <button class="btn btn-sm btn-success w-100" onclick="saveInventory()">
-                                        <i class="bi bi-check-circle"></i> Save Changes
-                                    </button>
+                                    <div class="input-group input-group-sm mb-2"><span class="input-group-text">Nourish</span><input type="number" id="qty-p1" class="form-control text-center"></div>
+                                    <div class="input-group input-group-sm mb-2"><span class="input-group-text">Restore</span><input type="number" id="qty-p2" class="form-control text-center"></div>
+                                    <div class="input-group input-group-sm mb-3"><span class="input-group-text">Combo</span><input type="number" id="qty-p3" class="form-control text-center"></div>
+                                    <button class="btn btn-sm btn-success w-100" onclick="saveInventory()"><i class="bi bi-check-circle"></i> Save Changes</button>
                                 </div>
                             </div>
                         </div>
@@ -164,9 +137,7 @@
                                     <input type="email" id="master-email" class="form-control" placeholder="vabinanthana@gmail.com">
                                 </div>
                             </div>
-                            <button class="btn btn-dark" onclick="saveSettings()">
-                                Update Email <i class="bi bi-arrow-right-circle"></i>
-                            </button>
+                            <button class="btn btn-dark" onclick="saveSettings()">Update Email</button>
                         </div>
                     </div>
                 </div>
@@ -186,16 +157,34 @@
                                     <th class="text-start">Customer</th>
                                     <th style="width: 20%;" class="text-start">Address</th>
                                     <th>Total & UTR</th>
-                                    <th>Tracking #</th>
-                                    <th>Status</th>
+                                    <th>Tracking #</th> <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBody">
-                                <tr><td colspan="7" class="text-center py-5">Loading orders...</td></tr>
+                                <tr><td colspan="8" class="text-center py-5">Loading orders...</td></tr>
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="trackingInputModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">🚚 Shipping Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Enter the courier tracking number for this order.</p>
+                    <input type="text" id="newTrackingNumber" class="form-control form-control-lg" placeholder="e.g. AWB123456789">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="submitTracking()">Save & Update Status</button>
                 </div>
             </div>
         </div>
@@ -208,18 +197,14 @@
                     <button type="button" class="btn-close d-none" id="modalCloseBtn" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="modalBodyContent">
-                    
                     <div id="loadingState">
-                        <div class="mb-3">
-                            <i class="bi bi-hourglass-split sandclock-spin"></i>
-                        </div>
+                        <div class="mb-3"><i class="bi bi-hourglass-split sandclock-spin"></i></div>
                         <h5 class="fw-bold">Updating System...</h5>
                         <p class="text-muted small">Syncing with the live database.</p>
                         <div class="progress mt-3" style="height: 8px;">
                             <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 100%"></div>
                         </div>
                     </div>
-
                     <div id="successState" style="display: none;">
                         <i class="bi bi-check-circle-fill text-success" style="font-size: 3.5rem;"></i>
                         <h5 class="mt-3 fw-bold">Update Successful!</h5>
@@ -249,275 +234,163 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        let pendingOrderId = null;
+        let pendingStatus = null;
+
         // --- AUTH ---
         window.checkLogin = function() {
-            const pass = document.getElementById('admin-pass').value;
-            if (pass === "brindharani") {
+            if (document.getElementById('admin-pass').value === "brindharani") {
                 document.getElementById('login-overlay').style.display = 'none';
                 document.getElementById('admin-content').style.display = 'block';
                 sessionStorage.setItem("adminLoggedIn", "true");
-                
-                // LOAD ALL DATA
-                loadOrders();
-                loadInventory();
-                loadPendingReviews();
-                loadSettings(); 
-            } else {
-                document.getElementById('login-error').style.display = 'block';
-            }
+                loadOrders(); loadInventory(); loadPendingReviews(); loadSettings(); 
+            } else { document.getElementById('login-error').style.display = 'block'; }
         };
-
-        window.logout = function() {
-            sessionStorage.removeItem("adminLoggedIn");
-            location.reload();
-        };
-
+        window.logout = function() { sessionStorage.removeItem("adminLoggedIn"); location.reload(); };
         if (sessionStorage.getItem("adminLoggedIn") === "true") {
             document.getElementById('login-overlay').style.display = 'none';
             document.getElementById('admin-content').style.display = 'block';
-            loadOrders();
-            loadInventory();
-            loadPendingReviews();
-            loadSettings();
+            loadOrders(); loadInventory(); loadPendingReviews(); loadSettings();
         }
 
-        // --- SETTINGS (MASTER EMAIL) ---
-        async function loadSettings() {
-            try {
-                const docSnap = await getDoc(doc(db, "settings", "config"));
-                if(docSnap.exists() && docSnap.data().masterEmail) {
-                    document.getElementById('master-email').value = docSnap.data().masterEmail;
-                } else {
-                    document.getElementById('master-email').value = "vabinanthana@gmail.com";
-                }
-            } catch(e) { console.log("Settings load error", e); }
-        }
-
-        window.saveSettings = async function() {
-            const email = document.getElementById('master-email').value;
-            const updateModal = new bootstrap.Modal(document.getElementById('updateModal'));
-            
-            // Show Loading
-            document.getElementById('loadingState').style.display = 'block';
-            document.getElementById('successState').style.display = 'none';
-            document.getElementById('modalCloseBtn').classList.add('d-none');
-            updateModal.show();
-
-            try {
-                await new Promise(r => setTimeout(r, 1000)); // Visual delay
-                await setDoc(doc(db, "settings", "config"), { masterEmail: email });
-                
-                // Show Success
-                document.getElementById('loadingState').style.display = 'none';
-                document.getElementById('successState').style.display = 'block';
-                document.getElementById('modalCloseBtn').classList.remove('d-none');
-            } catch(e) {
-                alert("Error saving settings");
-                updateModal.hide();
-            }
-        }
-
-        // --- INVENTORY LOGIC (WITH SANDCLOCK MODAL) ---
+        // --- INVENTORY ---
         async function loadInventory() {
             const pIds = ['p1', 'p2', 'p3'];
             for (const pid of pIds) {
                 const docSnap = await getDoc(doc(db, "products", pid));
-                let val = 0;
-                
-                if (docSnap.exists()) {
-                    val = docSnap.data().stock;
-                } else {
-                    await setDoc(doc(db, "products", pid), { stock: 10 });
-                    val = 10;
-                }
-
-                // Update Input Fields (Right Side)
+                let val = docSnap.exists() ? docSnap.data().stock : 10;
+                if (!docSnap.exists()) await setDoc(doc(db, "products", pid), { stock: 10 });
                 document.getElementById(`qty-${pid}`).value = val;
-
-                // Update Status Text (Left Side)
                 const liveEl = document.getElementById(`live-${pid}`);
-                if (val > 0) {
-                    liveEl.innerHTML = `${val} <span class="badge bg-success">In Stock</span>`;
-                    liveEl.classList.remove('text-preorder');
-                } else {
-                    liveEl.innerHTML = `0 <span class="badge bg-warning text-dark">Pre-Order</span>`;
-                    liveEl.classList.add('text-preorder');
-                }
+                if (val > 0) { liveEl.innerHTML = `${val} <span class="badge bg-success">In Stock</span>`; liveEl.classList.remove('text-preorder'); }
+                else { liveEl.innerHTML = `0 <span class="badge bg-warning text-dark">Pre-Order</span>`; liveEl.classList.add('text-preorder'); }
             }
         }
-
         window.saveInventory = async function() {
-            // 1. Show Modal in Loading State
-            const updateModal = new bootstrap.Modal(document.getElementById('updateModal'));
-            document.getElementById('loadingState').style.display = 'block';
-            document.getElementById('successState').style.display = 'none';
-            document.getElementById('modalCloseBtn').classList.add('d-none'); // Hide X button
-            updateModal.show();
-
+            startLoading();
             try {
-                // 2. Perform Database Updates
-                const p1 = parseInt(document.getElementById('qty-p1').value);
-                const p2 = parseInt(document.getElementById('qty-p2').value);
-                const p3 = parseInt(document.getElementById('qty-p3').value);
-
                 await new Promise(r => setTimeout(r, 1500)); 
-
-                await updateDoc(doc(db, "products", "p1"), { stock: p1 });
-                await updateDoc(doc(db, "products", "p2"), { stock: p2 });
-                await updateDoc(doc(db, "products", "p3"), { stock: p3 });
-                
-                // 3. Switch Modal to Success State
-                loadInventory(); // Refresh view
-                document.getElementById('loadingState').style.display = 'none';
-                document.getElementById('successState').style.display = 'block';
-                document.getElementById('modalCloseBtn').classList.remove('d-none'); // Show X button
-
-            } catch (e) { 
-                console.error(e);
-                alert("Error updating stock. Check console.");
-                updateModal.hide();
-            }
+                await updateDoc(doc(db, "products", "p1"), { stock: parseInt(document.getElementById('qty-p1').value) });
+                await updateDoc(doc(db, "products", "p2"), { stock: parseInt(document.getElementById('qty-p2').value) });
+                await updateDoc(doc(db, "products", "p3"), { stock: parseInt(document.getElementById('qty-p3').value) });
+                loadInventory(); stopLoading();
+            } catch (e) { alert("Error."); stopLoading(); }
         }
 
-        // --- REVIEW LOGIC ---
+        // --- SETTINGS ---
+        async function loadSettings() {
+            try { const s = await getDoc(doc(db, "settings", "config")); if(s.exists()) document.getElementById('master-email').value = s.data().masterEmail || "vabinanthana@gmail.com"; } catch(e){}
+        }
+        window.saveSettings = async function() {
+            startLoading();
+            try { await new Promise(r => setTimeout(r, 1000)); await setDoc(doc(db, "settings", "config"), { masterEmail: document.getElementById('master-email').value }); stopLoading(); } catch(e){ alert("Error"); stopLoading(); }
+        }
+
+        // --- REVIEWS ---
         async function loadPendingReviews() {
             const list = document.getElementById('pending-reviews-list');
-            const countBadge = document.getElementById('review-count');
-            const q = query(collection(db, "reviews"), where("status", "==", "pending"));
-            const snapshot = await getDocs(q);
-            
-            countBadge.innerText = snapshot.size;
-
-            if (snapshot.empty) {
-                list.innerHTML = '<li class="list-group-item text-center text-muted">No pending reviews.</li>';
-                return;
-            }
-
+            const snapshot = await getDocs(query(collection(db, "reviews"), where("status", "==", "pending")));
+            document.getElementById('review-count').innerText = snapshot.size;
+            if (snapshot.empty) { list.innerHTML = '<li class="list-group-item text-center text-muted">No pending reviews.</li>'; return; }
             let html = '';
             snapshot.forEach(docSnap => {
                 const r = docSnap.data();
-                html += `
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div style="max-width: 70%;">
-                            <strong>${r.name}</strong> <span class="text-warning">(${r.rating}★)</span><br>
-                            <small class="text-muted">"${r.text}"</small>
-                        </div>
-                        <div class="d-flex gap-1">
-                            <button class="btn btn-sm btn-success" onclick="approveReview('${docSnap.id}')" title="Approve">✔</button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteReview('${docSnap.id}')" title="Delete">✖</button>
-                        </div>
-                    </li>
-                `;
+                html += `<li class="list-group-item d-flex justify-content-between align-items-center"><div style="max-width: 70%;"><strong>${r.name}</strong> <span class="text-warning">(${r.rating}★)</span><br><small class="text-muted">"${r.text}"</small></div><div class="d-flex gap-1"><button class="btn btn-sm btn-success" onclick="approveReview('${docSnap.id}')">✔</button><button class="btn btn-sm btn-danger" onclick="deleteReview('${docSnap.id}')">✖</button></div></li>`;
             });
             list.innerHTML = html;
         }
+        window.approveReview = async function(id) { await updateDoc(doc(db, "reviews", id), { status: "approved" }); loadPendingReviews(); }
+        window.deleteReview = async function(id) { if(confirm("Delete?")) { await deleteDoc(doc(db, "reviews", id)); loadPendingReviews(); } }
 
-        window.approveReview = async function(id) {
-            await updateDoc(doc(db, "reviews", id), { status: "approved" });
-            loadPendingReviews();
-        }
-
-        window.deleteReview = async function(id) {
-            if(confirm("Delete this review permanently?")) {
-                await deleteDoc(doc(db, "reviews", id));
-                loadPendingReviews();
-            }
-        }
-
-        // --- WHATSAPP LOGIC ---
-        window.sendWhatsappUpdate = function(phone, name, orderId, status) {
-            let msg = "";
-            const trackerLink = window.location.href.replace('admin.html', 'tracker.html');
-            
-            if(status === "Payment Received") {
-                msg = `Hello ${name}, we received your payment for Order ${orderId}. Preparing your batch now! 🌿`;
-            } else if (status === "Shipped") {
-                msg = `Great news ${name}! Order ${orderId} has been SHIPPED! 🚚 Track it here: ${trackerLink}`;
-            } else if (status === "Delivered") {
-                msg = `Hi ${name}, your order ${orderId} is Delivered. We hope you love it! ✨\n\nPlease confirm delivery and leave a review here:\n${trackerLink}`;
+        // --- ORDERS & TRACKING MODAL ---
+        window.updateStatus = function(docId, newStatus) {
+            if (newStatus === "Shipped") {
+                pendingOrderId = docId;
+                pendingStatus = newStatus;
+                document.getElementById('newTrackingNumber').value = ""; // Clear input
+                new bootstrap.Modal(document.getElementById('trackingInputModal')).show();
             } else {
-                msg = `Hello ${name}, update on Order ${orderId}: ${status}.`;
+                performUpdate(docId, newStatus);
             }
-            window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
-        // --- ORDERS LOGIC ---
+        window.submitTracking = function() {
+            const trackingNum = document.getElementById('newTrackingNumber').value.trim() || "NA";
+            bootstrap.Modal.getInstance(document.getElementById('trackingInputModal')).hide();
+            performUpdate(pendingOrderId, pendingStatus, trackingNum);
+        };
+
+        async function performUpdate(docId, newStatus, trackingNum = null) {
+            startLoading();
+            try {
+                let updateData = { status: newStatus };
+                if (trackingNum) updateData.trackingNumber = trackingNum;
+
+                await updateDoc(doc(db, "orders", docId), updateData);
+                loadOrders();
+                stopLoading();
+            } catch (e) { console.error(e); alert("Error updating order."); stopLoading(); }
+        }
+
         async function loadOrders() {
             const tableBody = document.getElementById('tableBody');
-            const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
-            const querySnapshot = await getDocs(q);
-            
+            const snapshot = await getDocs(query(collection(db, "orders"), orderBy("timestamp", "desc")));
             let html = '';
-            querySnapshot.forEach((doc) => {
-                const order = doc.data();
-                const date = order.timestamp ? new Date(order.timestamp.seconds * 1000).toLocaleDateString() : 'N/A';
-                
+            snapshot.forEach((doc) => {
+                const order = doc.data(); const date = order.timestamp ? new Date(order.timestamp.seconds * 1000).toLocaleDateString() : 'N/A';
                 let statusClass = "status-Pending";
                 if (order.status && order.status.includes("Payment")) statusClass = "status-Payment";
                 if (order.status && order.status.includes("Shipped")) statusClass = "status-Shipped";
                 if (order.status && order.status.includes("Delivered")) statusClass = "status-Delivered";
 
-                html += `
-                    <tr class="text-center">
-                        <td><small>${date}</small></td>
-                        <td><span class="badge bg-secondary">${order.orderId || doc.id}</span></td>
-                        <td class="text-start">
-                            <strong>${order.name}</strong><br>
-                            <a href="https://wa.me/${order.phone}" target="_blank" class="text-success small text-decoration-none">
-                                <i class="bi bi-whatsapp"></i> ${order.phone}
-                            </a>
-                        </td>
-                        <td class="text-start"><small>${order.address}</small></td>
-                        <td>
-                            <strong>₹${order.total}</strong><br>
-                            <small class="text-muted">UTR: ${order.txnId || 'N/A'}</small>
-                        </td>
-                        <td class="text-center">
-                        <span class="fw-bold text-dark">${order.trackingNumber || '-'}</span>
-                        </td>
-                        <td>
-                            <select class="form-select form-select-sm status-select ${statusClass}" onchange="updateStatus('${doc.id}', this.value)">
-                                <option value="Pending Verification" ${order.status === 'Pending Verification' ? 'selected' : ''}>Pending</option>
-                                <option value="Payment Received" ${order.status === 'Payment Received' ? 'selected' : ''}>Paid</option>
-                                <option value="Shipped" ${order.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
-                                <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
-                            </select>
-                        </td>
-                        <td>
-                            <div class="d-flex flex-column gap-1">
-                                <button class="btn btn-sm btn-outline-primary" onclick="alert('${order.items}'.replace(/\\n/g, '\\n'))">Details</button>
-                                <button class="btn btn-sm btn-success" onclick="sendWhatsappUpdate('${order.phone}', '${order.name}', '${order.orderId}', '${order.status}')">Notify</button>
-                            </div>
-                        </td>
-                    </tr>`;
+                html += `<tr class="text-center">
+                    <td><small>${date}</small></td>
+                    <td><span class="badge bg-secondary">${order.orderId || doc.id}</span></td>
+                    <td class="text-start"><strong>${order.name}</strong><br><a href="https://wa.me/${order.phone}" target="_blank" class="text-success small text-decoration-none"><i class="bi bi-whatsapp"></i> ${order.phone}</a></td>
+                    <td class="text-start"><small>${order.address}</small></td>
+                    <td><strong>₹${order.total}</strong><br><small class="text-muted">UTR: ${order.txnId || 'N/A'}</small></td>
+                    <td class="text-center"><span class="fw-bold text-dark">${order.trackingNumber || '-'}</span></td>
+                    <td>
+                        <select class="form-select form-select-sm status-select ${statusClass}" onchange="updateStatus('${doc.id}', this.value)">
+                            <option value="Pending Verification" ${order.status === 'Pending Verification' ? 'selected' : ''}>Pending</option>
+                            <option value="Payment Received" ${order.status === 'Payment Received' ? 'selected' : ''}>Paid</option>
+                            <option value="Shipped" ${order.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                            <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                        </select>
+                    </td>
+                    <td>
+                        <div class="d-flex flex-column gap-1">
+                            <button class="btn btn-sm btn-outline-primary" onclick="alert('${order.items}'.replace(/\\n/g, '\\n'))">Details</button>
+                            <button class="btn btn-sm btn-success" onclick="sendWhatsappUpdate('${order.phone}', '${order.name}', '${order.orderId}', '${order.status}')">Notify</button>
+                        </div>
+                    </td>
+                </tr>`;
             });
             tableBody.innerHTML = html;
         }
 
-    window.updateStatus = async function(docId, newStatus) {
-    try {
-        const orderRef = doc(db, "orders", docId);
-        let updateData = { status: newStatus };
+        window.sendWhatsappUpdate = function(phone, name, orderId, status) {
+            let msg = ""; const trackerLink = window.location.href.replace('admin.html', 'tracker.html');
+            if(status === "Payment Received") msg = `Hello ${name}, payment received for Order ${orderId}. Preparing your batch! 🌿`;
+            else if (status === "Shipped") msg = `Great news ${name}! Order ${orderId} has been SHIPPED! 🚚 Track here: ${trackerLink}`;
+            else if (status === "Delivered") msg = `Hi ${name}, order ${orderId} is Delivered. Please confirm & review: ${trackerLink}`;
+            else msg = `Hello ${name}, update on Order ${orderId}: ${status}.`;
+            window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+        };
 
-        // 🟢 IF STATUS IS SHIPPED -> ASK FOR TRACKING NUMBER
-        if (newStatus === "Shipped") {
-            const trackingNum = prompt("Enter Courier Tracking Number (e.g., AWB12345):");
-            // If user clicks Cancel, we don't save tracking, but we still update status
-            // If user enters nothing and clicks OK, we save "NA"
-            if (trackingNum !== null) {
-                updateData.trackingNumber = trackingNum.trim() !== "" ? trackingNum : "NA";
-            }
+        // --- HELPER FUNCTIONS FOR MODAL ---
+        function startLoading() {
+            const modal = new bootstrap.Modal(document.getElementById('updateModal'));
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('successState').style.display = 'none';
+            document.getElementById('modalCloseBtn').classList.add('d-none');
+            modal.show();
         }
-
-        await updateDoc(orderRef, updateData);
-        
-        // Refresh table to show new status and tracking number
-        loadOrders(); 
-    } catch (e) {
-        console.error("Error updating status: ", e);
-        alert("Error updating status. Check console.");
-    }
-}
+        function stopLoading() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('successState').style.display = 'block';
+            document.getElementById('modalCloseBtn').classList.remove('d-none');
+        }
     </script>
 </body>
 </html>
