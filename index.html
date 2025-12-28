@@ -24,10 +24,15 @@
 
     <nav class="navbar navbar-expand-lg navbar-light bg-cream sticky-top shadow-sm">
         <div class="container">
-            <a class="navbar-brand font-heading text-primary fw-bold fs-2" href="#">Mom's<span class="text-accent">Oil</span></a>
+            <a class="navbar-brand font-heading text-primary fw-bold fs-2 d-flex align-items-center" href="#">
+                <img src="apple-touch-icon.png" alt="Logo" width="40" height="40" class="me-2 rounded-circle">
+                <span>Mom's<span class="text-accent">Oil</span></span>
+            </a>
+            
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                 <ul class="navbar-nav gap-4">
                     <li class="nav-item"><a class="nav-link fw-bold" href="#process">Our Process</a></li>
@@ -36,6 +41,7 @@
                     <li class="nav-item"><a class="nav-link fw-bold" href="#reviews">Stories</a></li>
                 </ul>
             </div>
+            
             <button class="btn btn-outline-primary rounded-pill px-3 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#cartModal" onclick="prepareCheckout()">
                 <i class="bi bi-cart3"></i> <span id="cart-count" class="badge bg-primary rounded-circle">0</span>
             </button>
@@ -193,10 +199,58 @@
         </div>
     </section>
 
-    <section id="reviews" class="py-5 bg-white">
-        <div class="container">
+    <section id="reviews" class="py-5 bg-white overflow-hidden">
+        <div class="container-fluid">
             <h2 class="font-heading text-primary text-center mb-5">Love Notes</h2>
-            <div id="reviews-container" class="row g-4"></div>
+            
+            <div class="reviews-wrapper">
+                <div class="reviews-track">
+                    
+                    <div class="review-card-carousel">
+                        <div class="text-accent mb-2">★★★★★</div>
+                        <p class="fst-italic text-muted">"My hair feels softer, stronger, and visibly healthier. It finally feels like I'm feeding my hair something real."</p>
+                        <footer class="blockquote-footer mt-2">Divya S., Verified Buyer</footer>
+                    </div>
+                    <div class="review-card-carousel">
+                        <div class="text-accent mb-2">★★★★★</div>
+                        <p class="fst-italic text-muted">"The restoration oil reduced my early greys within weeks. So grateful to find something this pure!"</p>
+                        <footer class="blockquote-footer mt-2">Bharathi M., Verified Buyer</footer>
+                    </div>
+                    <div class="review-card-carousel">
+                        <div class="text-accent mb-2">★★★★☆</div>
+                        <p class="fst-italic text-muted">"The smell takes me back to my childhood. The texture is rich but washes off easily. Love it!"</p>
+                        <footer class="blockquote-footer mt-2">Neha K., Verified Buyer</footer>
+                    </div>
+                    <div class="review-card-carousel">
+                        <div class="text-accent mb-2">★★★★★</div>
+                        <p class="fst-italic text-muted">"Finally found a non-sticky oil that actually works. I use it twice a week and the results are amazing."</p>
+                        <footer class="blockquote-footer mt-2">Ajay R., Verified Buyer</footer>
+                    </div>
+
+                    <div class="review-card-carousel">
+                        <div class="text-accent mb-2">★★★★★</div>
+                        <p class="fst-italic text-muted">"My hair feels softer, stronger, and visibly healthier. It finally feels like I'm feeding my hair something real."</p>
+                        <footer class="blockquote-footer mt-2">Divya S., Verified Buyer</footer>
+                    </div>
+                    <div class="review-card-carousel">
+                        <div class="text-accent mb-2">★★★★★</div>
+                        <p class="fst-italic text-muted">"The restoration oil reduced my early greys within weeks. So grateful to find something this pure!"</p>
+                        <footer class="blockquote-footer mt-2">Bharathi M., Verified Buyer</footer>
+                    </div>
+                    <div class="review-card-carousel">
+                        <div class="text-accent mb-2">★★★★☆</div>
+                        <p class="fst-italic text-muted">"The smell takes me back to my childhood. The texture is rich but washes off easily. Love it!"</p>
+                        <footer class="blockquote-footer mt-2">Neha K., Verified Buyer</footer>
+                    </div>
+                    <div class="review-card-carousel">
+                        <div class="text-accent mb-2">★★★★★</div>
+                        <p class="fst-italic text-muted">"Finally found a non-sticky oil that actually works. I use it twice a week and the results are amazing."</p>
+                        <footer class="blockquote-footer mt-2">Ajay R., Verified Buyer</footer>
+                    </div>
+
+                </div>
+            </div>
+
             <div class="text-center mt-4">
                 <a href="tracker.html" class="btn btn-outline-primary btn-sm rounded-pill">
                     Track Order & Write Review
@@ -388,30 +442,8 @@
             });
         });
 
-        async function loadReviews() {
-            const container = document.getElementById('reviews-container');
-            const q = query(collection(db, "reviews"), where("status", "==", "approved"), limit(3));
-            const snapshot = await getDocs(q);
-
-            if (!snapshot.empty) {
-                let html = '';
-                snapshot.forEach(doc => {
-                    const r = doc.data();
-                    let stars = '';
-                    for(let i=0; i<r.rating; i++) stars += '★';
-                    html += `
-                        <div class="col-md-4">
-                            <div class="card border-0 bg-light p-4 h-100">
-                                <div class="text-accent mb-2">${stars}</div>
-                                <p class="fst-italic text-muted">"${r.text}"</p>
-                                <footer class="blockquote-footer mt-2">${r.name}</footer>
-                            </div>
-                        </div>`;
-                });
-                container.innerHTML = html;
-            }
-        }
-        loadReviews();
+        // REVIEWS ARE STATIC IN CAROUSEL NOW AS PER REQUEST
+        // DYNAMIC LOADING REMOVED FOR THIS SECTION TO KEEP CAROUSEL STABLE
 
         window.cart = [];
         let currentTotal = 0;
