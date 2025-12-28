@@ -186,6 +186,7 @@
                                     <th class="text-start">Customer</th>
                                     <th style="width: 20%;" class="text-start">Address</th>
                                     <th>Total & UTR</th>
+                                    <th>Tracking #</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
@@ -471,6 +472,9 @@
                             <strong>₹${order.total}</strong><br>
                             <small class="text-muted">UTR: ${order.txnId || 'N/A'}</small>
                         </td>
+                        <td class="text-center">
+                        <span class="fw-bold text-dark">${order.trackingNumber || '-'}</span>
+                        </td>
                         <td>
                             <select class="form-select form-select-sm status-select ${statusClass}" onchange="updateStatus('${doc.id}', this.value)">
                                 <option value="Pending Verification" ${order.status === 'Pending Verification' ? 'selected' : ''}>Pending</option>
@@ -490,10 +494,30 @@
             tableBody.innerHTML = html;
         }
 
-        window.updateStatus = async function(docId, newStatus) {
-            await updateDoc(doc(db, "orders", docId), { status: newStatus });
-            loadOrders(); 
+    window.updateStatus = async function(docId, newStatus) {
+    try {
+        const orderRef = doc(db, "orders", docId);
+        let updateData = { status: newStatus };
+
+        // 🟢 IF STATUS IS SHIPPED -> ASK FOR TRACKING NUMBER
+        if (newStatus === "Shipped") {
+            const trackingNum = prompt("Enter Courier Tracking Number (e.g., AWB12345):");
+            // If user clicks Cancel, we don't save tracking, but we still update status
+            // If user enters nothing and clicks OK, we save "NA"
+            if (trackingNum !== null) {
+                updateData.trackingNumber = trackingNum.trim() !== "" ? trackingNum : "NA";
+            }
         }
+
+        await updateDoc(orderRef, updateData);
+        
+        // Refresh table to show new status and tracking number
+        loadOrders(); 
+    } catch (e) {
+        console.error("Error updating status: ", e);
+        alert("Error updating status. Check console.");
+    }
+}
     </script>
 </body>
 </html>
