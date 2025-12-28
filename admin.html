@@ -301,7 +301,15 @@
         }
         window.approveReview = async function(id) { await updateDoc(doc(db, "reviews", id), { status: "approved" }); loadPendingReviews(); }
         window.deleteReview = async function(id) { if(confirm("Delete?")) { await deleteDoc(doc(db, "reviews", id)); loadPendingReviews(); } }
-
+       
+        // --- VIEW DETAILS LOGIC ---
+    window.viewDetails = function(itemsEncoded) {
+    // Decode the safe string back to normal text
+    const items = decodeURIComponent(itemsEncoded);
+    
+    document.getElementById('orderItemsContent').innerText = items;
+    new bootstrap.Modal(document.getElementById('detailsModal')).show();
+    };
         // --- ORDERS & TRACKING MODAL ---
         window.updateStatus = function(docId, newStatus) {
             if (newStatus === "Shipped") {
@@ -360,7 +368,7 @@
                     </td>
                     <td>
                         <div class="d-flex flex-column gap-1">
-                            <button class="btn btn-sm btn-outline-primary" onclick="alert('${order.items}'.replace(/\\n/g, '\\n'))">Details</button>
+                            <button class="btn btn-sm btn-outline-primary" onclick="viewDetails('${encodeURIComponent(order.items)}')">Details</button>
                             <button class="btn btn-sm btn-success" onclick="sendWhatsappUpdate('${order.phone}', '${order.name}', '${order.orderId}', '${order.status}')">Notify</button>
                         </div>
                     </td>
@@ -392,5 +400,23 @@
             document.getElementById('modalCloseBtn').classList.remove('d-none');
         }
     </script>
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title"><i class="bi bi-basket"></i> Order Contents</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted small">Items in this package:</p>
+                <div id="orderItemsContent" class="p-3 bg-light rounded border fw-bold" style="white-space: pre-line;">
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
