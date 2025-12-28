@@ -1,20 +1,32 @@
+/* =========================================
+   1. CORE THEME & BOOTSTRAP OVERRIDES
+   ========================================= */
 :root {
     --color-primary: #1B4D3E; /* Deep Green */
     --color-accent: #C17C28;  /* Gold/Copper */
-    --color-cream: #F9F7F3;
+    --color-cream: #F9F7F3;   /* Background */
+    --color-gold-dark: #a17b3a;
+    --color-red: #5D2A1F;
+    
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Lato', sans-serif;
+    --font-brand: 'Great Vibes', cursive;
 }
 
 body {
-    font-family: 'Lato', sans-serif;
+    font-family: var(--font-body);
     color: #333;
     background-color: var(--color-cream);
+    line-height: 1.7;
+    padding-top: 80px; /* Space for fixed navbar */
 }
 
-.font-heading {
-    font-family: 'Playfair Display', serif;
+h1, h2, h3, h4, h5 {
+    font-family: var(--font-heading);
+    font-weight: 700;
 }
 
-/* Overriding Bootstrap Colors */
+/* --- Bootstrap Color Overrides --- */
 .text-primary { color: var(--color-primary) !important; }
 .bg-primary { background-color: var(--color-primary) !important; }
 .btn-primary { 
@@ -34,7 +46,7 @@ body {
     color: white;
 }
 
-/* Pre-Order Button */
+/* --- Pre-Order Button --- */
 .btn-preorder {
     background-color: var(--color-accent);
     color: white;
@@ -46,28 +58,285 @@ body {
     color: white;
 }
 
+/* --- Utilities --- */
 .text-accent { color: var(--color-accent) !important; }
 .bg-accent { background-color: var(--color-accent) !important; }
 .bg-cream { background-color: var(--color-cream) !important; }
+.bg-light-gold { background-color: #fff9ee; }
+.ls-2 { letter-spacing: 2px; }
 
-/* Custom Styles */
+/* =========================================
+   2. CUSTOM LAYOUT STYLES
+   ========================================= */
+
+/* --- Navbar & Header --- */
+.main-header {
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+.header-logo {
+    height: 40px;
+    width: auto;
+    margin-right: 12px;
+}
+
+/* --- Hero Section --- */
 .rounded-arch {
     border-radius: 150px 150px 0 0;
 }
+
+/* --- Section Titles --- */
+.section-subtitle {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 3rem;
+    font-weight: 600;
+    font-family: var(--font-heading);
+    color: var(--color-primary);
+}
+.section-subtitle::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background-color: var(--color-accent);
+    margin: 0.75rem auto 0;
+}
+.section-intro {
+    text-align: center;
+    font-size: 1.15rem;
+    max-width: 700px;
+    margin: -2rem auto 3rem;
+    color: #555;
+}
+
+/* --- Product Cards --- */
 .product-card {
     transition: transform 0.3s;
+    background-color: white;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 2rem;
 }
 .product-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
-.bg-light-gold {
-    background-color: #fff9ee;
-}
-.ls-2 { letter-spacing: 2px; }
 
-/* Mobile Navbar Fix */
-.navbar-toggler:focus {
-    box-shadow: none;
+/* =========================================
+   3. FANCY COMPONENTS (The New Additions)
+   ========================================= */
+
+/* --- Modern Reviews / Testimonials --- */
+.reviews-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+.review-card {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    border: 1px solid #f0f0f0;
+    transition: transform 0.3s ease;
+}
+.review-card:hover {
+    transform: translateY(-5px);
+}
+.review-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.author-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: var(--color-accent);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 12px;
+}
+.author-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+.verified-badge {
+    font-size: 0.75rem;
+    color: green;
+    font-weight: 600;
+}
+.stars {
+    color: #ffc107;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+.review-text {
+    font-style: italic;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* --- Ingredient Cards --- */
+.ingredient-card {
+    background-color: var(--color-cream);
+    border: 1px solid #eee;
+    padding: 2.5rem;
+    border-radius: 10px;
+    border-top: 4px solid var(--color-accent);
+    margin-bottom: 2rem;
+}
+.ingredient-card h4 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-primary);
+    font-family: var(--font-heading);
+}
+.ingredient-card ul {
+    list-style: none;
+    padding: 0;
+}
+.ingredient-card li {
+    font-size: 1.05rem;
+    margin-bottom: 1.25rem;
+    line-height: 1.6;
+}
+
+/* --- FAQ Accordion --- */
+.faq-item {
+    border-bottom: 1px solid #ddd;
+    background: white;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+.faq-question {
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    cursor: pointer;
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+.faq-question:hover {
+    color: var(--color-accent);
+}
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    padding: 0 1.5rem;
+}
+/* This class is toggled by JS if you add accordion logic later, 
+   otherwise use standard Bootstrap accordion structure */
+.faq-item:hover .faq-answer { 
+    max-height: 200px; /* Simple CSS hover effect for now */
+    padding-bottom: 1.5rem;
+}
+
+/* --- Lightbox (Image Zoom) --- */
+.lightbox-modal {
+    display: none; 
+    position: fixed;
+    z-index: 2000; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
+    align-items: center;
+    justify-content: center;
+}
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+.lightbox-content img {
+    max-width: 90%;
+    max-height: 90vh;
+    border: 2px solid white;
+    border-radius: 5px;
+}
+
+/* --- Manual Payment Section (In Checkout) --- */
+.payment-manual-section {
+    border-top: 1px dashed #ccc;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+}
+.payment-options-manual {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #eee;
+}
+.qr-code-manual img {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #eee;
+}
+
+/* --- Order Number Display --- */
+.order-number-display {
+    background-color: #fff;
+    border: 2px dashed var(--color-accent);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+.order-number-display strong {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    display: block;
+    letter-spacing: 2px;
+}
+
+/* =========================================
+   4. ANIMATIONS & INTERACTIONS
+   ========================================= */
+
+/* Scroll To Top Button */
+#scrollTopBtn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 99;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+}
+
+/* Social Hover */
+.hover-gold:hover {
+    color: var(--color-accent) !important;
+    transition: color 0.3s;
 }
 
 /* Cart Jiggle Animation */
@@ -86,19 +355,15 @@ body {
     color: white !important;
 }
 
-/* Scroll To Top Button */
-#scrollTopBtn {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    z-index: 99;
-    width: 50px;
-    height: 50px;
-    font-size: 1.5rem;
-}
-
-/* Social Hover */
-.hover-gold:hover {
-    color: var(--color-accent) !important;
-    transition: color 0.3s;
+/* Responsive Fixes for 900+ CSS elements */
+@media (max-width: 768px) {
+    .payment-options-manual {
+        flex-direction: column;
+    }
+    .reviews-container {
+        grid-template-columns: 1fr;
+    }
+    .ingredients-grid {
+        grid-template-columns: 1fr;
+    }
 }
