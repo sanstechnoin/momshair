@@ -53,12 +53,20 @@
         <div class="container">
             <div class="row align-items-center flex-column-reverse flex-lg-row">
                 <div class="col-lg-6 text-center text-lg-start mt-4 mt-lg-0">
-                    <span class="text-accent text-uppercase fw-bold ls-2">Since 1995 • 100% Natural</span>
+                    <span class="text-accent text-uppercase fw-bold ls-2">Since 1995 • 100% Natural • Baby & Kid Friendly 👶</span>
+                    
                     <h1 class="display-3 font-heading fw-bold text-primary my-3">Sun-Dried Herbs,<br><em>Slow-Cooked Magic.</em></h1>
                     <p class="lead text-muted mb-4">We source raw herbs, sun-dry them for 3 days, and slow-cook them in small batches. No machines. Just patience.</p>
-                    <div class="d-flex gap-3 justify-content-center justify-content-lg-start">
+                    
+                    <div class="d-flex gap-3 justify-content-center justify-content-lg-start mb-4">
                         <a href="#shop" class="btn btn-primary btn-lg px-4 rounded-1">Shop The Batch</a>
                         <a href="#process" class="btn btn-outline-primary btn-lg px-4 rounded-1">See The Process</a>
+                    </div>
+
+                    <div class="d-flex justify-content-center justify-content-lg-start gap-3 text-muted small fw-bold">
+                        <span><i class="bi bi-check-circle-fill text-success"></i> No Chemicals</span>
+                        <span><i class="bi bi-check-circle-fill text-success"></i> Baby Safe</span>
+                        <span><i class="bi bi-check-circle-fill text-success"></i> Edible Grade</span>
                     </div>
                 </div>
                 <div class="col-lg-6 text-center position-relative">
@@ -145,6 +153,11 @@
                         <span class="badge bg-danger position-absolute top-0 end-0 m-3">36% OFF</span>
                         <img src="2.png" class="card-img-top p-4" alt="Nourish Oil" style="height: 250px; object-fit: contain;">
                         <div class="card-body d-flex flex-column text-center">
+                            <div class="mb-2">
+                                <span class="badge bg-success-subtle text-success border border-success rounded-pill px-3">
+                                    <i class="bi bi-emoji-smile"></i> Baby & Kid Safe
+                                </span>
+                            </div>
                             <h5 class="card-title font-heading fw-bold">Daily Nourish Blend</h5>
                             <p class="card-text text-muted small">Hibiscus & Amla. For softness & shine.</p>
                             <small id="stock-p1" class="text-accent fw-bold mb-2">Checking Stock...</small>
@@ -164,6 +177,11 @@
                         <span class="badge bg-danger position-absolute top-0 end-0 m-3">45% OFF</span>
                         <img src="3.png" class="card-img-top p-4" alt="Restoration Oil" style="height: 250px; object-fit: contain;">
                         <div class="card-body d-flex flex-column text-center">
+                            <div class="mb-2">
+                                <span class="badge bg-success-subtle text-success border border-success rounded-pill px-3">
+                                    <i class="bi bi-emoji-smile"></i> Baby & Kid Safe
+                                </span>
+                            </div>
                             <h5 class="card-title font-heading fw-bold">Root Restoration</h5>
                             <p class="card-text text-muted small">Bhringraj & Curry Leaf. For strength & pigment.</p>
                             <small id="stock-p2" class="text-accent fw-bold mb-2">Checking Stock...</small>
@@ -183,6 +201,11 @@
                         <span class="badge bg-accent position-absolute top-0 end-0 m-3">BEST VALUE</span>
                         <img src="4.png" class="card-img-top p-4" alt="Combo Pack" style="height: 250px; object-fit: contain;">
                         <div class="card-body d-flex flex-column text-center bg-light-gold">
+                            <div class="mb-2">
+                                <span class="badge bg-success-subtle text-success border border-success rounded-pill px-3">
+                                    <i class="bi bi-emoji-smile"></i> Baby & Kid Safe
+                                </span>
+                            </div>
                             <h5 class="card-title font-heading fw-bold">The Complete Care Duo</h5>
                             <p class="card-text text-muted small">1 Nourish + 1 Restoration. The full ritual.</p>
                             <small id="stock-p3" class="text-accent fw-bold mb-2">Checking Stock...</small>
@@ -230,6 +253,19 @@
                     <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body text-muted">
                             No, our oil is cold-infused and potent. You can apply it directly from the bottle to your scalp without heating.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item border-0 mb-2">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button fw-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqBaby">
+                            Is it safe for babies and kids?
+                        </button>
+                    </h2>
+                    <div id="faqBaby" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            Yes! Our formula is 100% natural, chemical-free, and gentle enough for delicate baby scalps and children of all ages.
                         </div>
                     </div>
                 </div>
@@ -363,7 +399,22 @@
 
     <div class="modal fade" id="upiInstructionModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-warning-subtle"><h5 class="modal-title fw-bold">⚠️ Before you pay...</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body text-center"><p class="fs-5">Please <strong>COPY the Reference Code (UTR)</strong> from your payment app after paying.</p><p class="text-muted">You will need to PASTE it in the "Payment Proof" field to confirm your order.</p><a id="btn-proceed-pay" href="#" class="btn btn-success w-100 btn-lg mt-3">I Understand, Proceed to Pay <i class="bi bi-box-arrow-up-right"></i></a></div></div></div></div>
     
-    <div class="modal fade" id="orderSuccessModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-5"><div class="mb-4 text-primary"><i class="bi bi-heart-fill" style="font-size: 3.5rem;"></i></div><h3 class="fw-bold mb-2 font-heading">Thank You for Trusting Us! 🌿</h3><h5 class="mb-4">Order #<span id="success-order-id" class="text-accent fw-bold"></span></h5><p class="mb-2 text-muted">We have received your order request. Since every bottle is packed with care, we personally verify every payment.</p><div class="alert alert-success border-0 bg-success-subtle mb-4"><h6 class="fw-bold mb-1"><i class="bi bi-clock-history"></i> Next Steps:</h6><p class="mb-0 small">Please save this Order ID for your reference. You will receive a notification via WhatsApp after payment confirmation.</p></div><p class="small text-muted mb-4">Shipment starts within 24 hours of confirmation.</p><button type="button" class="btn btn-primary w-100 btn-lg" onclick="window.location.href='tracker.html'">Track My Order</button></div></div></div>
+    <div class="modal fade" id="orderSuccessModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-5">
+                <div class="mb-4 text-primary"><i class="bi bi-heart-fill" style="font-size: 3.5rem;"></i></div>
+                <h3 class="fw-bold mb-2 font-heading">Thank You for Trusting Us! 🌿</h3>
+                <h5 class="mb-4">Order #<span id="success-order-id" class="text-accent fw-bold"></span></h5>
+                <p class="mb-2 text-muted">We have received your order request. Since every bottle is packed with care, we personally verify every payment.</p>
+                <div class="alert alert-success border-0 bg-success-subtle mb-4">
+                    <h6 class="fw-bold mb-1"><i class="bi bi-clock-history"></i> Next Steps:</h6>
+                    <p class="mb-0 small">Please save this Order ID for your reference. You will receive a notification via WhatsApp after payment confirmation.</p>
+                </div>
+                <p class="small text-muted mb-4">Shipment starts within 24 hours of confirmation.</p>
+                <button type="button" class="btn btn-primary w-100 btn-lg" onclick="window.location.href='tracker.html'">Track My Order</button>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module">
