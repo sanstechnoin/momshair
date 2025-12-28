@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Track & Review - Mom's Hair Oil</title>
+    
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
     <style>
         body { background-color: #F9F7F3; font-family: 'Lato', sans-serif; }
         .timeline { list-style: none; padding: 0; position: relative; }
@@ -141,6 +144,14 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // --- FETCH MASTER EMAIL ---
+        let masterEmail = "vabinanthana@gmail.com"; 
+        getDoc(doc(db, "settings", "config")).then(snap => { 
+            if(snap.exists() && snap.data().masterEmail) {
+                masterEmail = snap.data().masterEmail;
+            }
+        });
+
         // --- TRACKING LOGIC ---
         window.trackOrder = async function() {
             const inputId = document.getElementById('orderInput').value.trim();
@@ -166,10 +177,8 @@
                     statusText.innerText = "Current Status: " + status;
                     updateTimeline(status);
 
-                    // SHOW FEEDBACK FORM ONLY IF DELIVERED
                     if (status === "Delivered") {
                         feedbackSection.style.display = "block";
-                        // Pre-fill hidden fields for verification
                         document.getElementById('verifiedOrderId').value = inputId;
                         document.getElementById('verifiedName').value = data.name; 
                     } else {
@@ -205,7 +214,7 @@
             });
         }
 
-        // --- SUBMIT REVIEW LOGIC ---
+        // --- SUBMIT REVIEW LOGIC (AUTO EMAIL) ---
         document.getElementById('reviewForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = e.target.querySelector('button');
@@ -218,19 +227,32 @@
             const rating = document.querySelector('input[name="rating"]:checked')?.value || 5;
 
             try {
+                // 1. Save to Firebase
                 await addDoc(collection(db, "reviews"), {
                     name: name,
-                    orderId: orderId, // Links review to order
+                    orderId: orderId, 
                     text: text,
                     rating: parseInt(rating),
-                    status: "pending", // Wait for Admin
+                    status: "pending", 
                     timestamp: serverTimestamp()
+                });
+
+                // 2. Send Auto-Email to Admin
+                fetch(`https://formsubmit.co/ajax/${masterEmail}`, {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ 
+                        _subject: `New Review for Order ${orderId}`, 
+                        customer_name: name, 
+                        rating: `${rating} Stars`, 
+                        review_content: text 
+                    })
                 });
                 
                 const modal = new bootstrap.Modal(document.getElementById('thankYouModal'));
                 modal.show();
                 e.target.reset();
-                document.getElementById('feedbackSection').style.display = 'none'; // Hide after submit
+                document.getElementById('feedbackSection').style.display = 'none'; 
             } catch (error) {
                 console.error("Error", error);
                 alert("Error submitting review");
