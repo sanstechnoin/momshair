@@ -37,7 +37,7 @@
                 </ul>
             </div>
             
-            <button class="btn btn-outline-primary rounded-pill px-3 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#cartModal" onclick="updateCartDisplay()">
+            <button class="btn btn-outline-primary rounded-pill px-3 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#cartModal" onclick="prepareCheckout()">
                 <i class="bi bi-cart3"></i> <span id="cart-count" class="badge bg-primary rounded-circle">0</span>
             </button>
         </div>
@@ -111,12 +111,15 @@
                         <div class="card-body d-flex flex-column text-center">
                             <h5 class="card-title font-heading fw-bold">Daily Nourish Blend</h5>
                             <p class="card-text text-muted small">Hibiscus & Amla. For softness & shine.</p>
-                            <div class="my-3">
+                            
+                            <small id="stock-p1" class="text-accent fw-bold mb-2">Checking Stock...</small>
+                            
+                            <div class="my-2">
                                 <span class="text-decoration-line-through text-muted me-2">₹299</span>
                                 <span class="text-primary fw-bold fs-4">₹190</span>
                             </div>
                             <div class="mt-auto">
-                                <button class="btn btn-primary w-100" onclick="addToCart('Daily Nourish Blend', 190)">Add to Cart</button>
+                                <button id="btn-p1" class="btn btn-primary w-100" onclick="addToCart('Daily Nourish Blend', 190)">Add to Cart</button>
                             </div>
                         </div>
                     </div>
@@ -129,12 +132,15 @@
                         <div class="card-body d-flex flex-column text-center">
                             <h5 class="card-title font-heading fw-bold">Root Restoration</h5>
                             <p class="card-text text-muted small">Bhringraj & Curry Leaf. For strength & pigment.</p>
-                            <div class="my-3">
+                            
+                            <small id="stock-p2" class="text-accent fw-bold mb-2">Checking Stock...</small>
+
+                            <div class="my-2">
                                 <span class="text-decoration-line-through text-muted me-2">₹349</span>
                                 <span class="text-primary fw-bold fs-4">₹190</span>
                             </div>
                             <div class="mt-auto">
-                                <button class="btn btn-primary w-100" onclick="addToCart('Root Restoration Oil', 190)">Add to Cart</button>
+                                <button id="btn-p2" class="btn btn-primary w-100" onclick="addToCart('Root Restoration Oil', 190)">Add to Cart</button>
                             </div>
                         </div>
                     </div>
@@ -147,12 +153,15 @@
                         <div class="card-body d-flex flex-column text-center bg-light-gold">
                             <h5 class="card-title font-heading fw-bold">The Complete Care Duo</h5>
                             <p class="card-text text-muted small">1 Nourish + 1 Restoration. The full ritual.</p>
-                            <div class="my-3">
+                            
+                            <small id="stock-p3" class="text-accent fw-bold mb-2">Checking Stock...</small>
+
+                            <div class="my-2">
                                 <span class="text-decoration-line-through text-muted me-2">₹648</span>
                                 <span class="text-primary fw-bold fs-3">₹360</span>
                             </div>
                             <div class="mt-auto">
-                                <button class="btn btn-primary w-100 btn-lg" onclick="addToCart('Complete Care Duo', 360)">Add Combo</button>
+                                <button id="btn-p3" class="btn btn-primary w-100 btn-lg" onclick="addToCart('Complete Care Duo', 360)">Add Combo</button>
                             </div>
                         </div>
                     </div>
@@ -195,17 +204,9 @@
         <div class="container text-center">
             <h3 class="font-heading text-white mb-3">Mom's Hair Oils</h3>
             <p class="mb-4">Handcrafted in India.</p>
-            
-            <div class="d-flex justify-content-center gap-3 mb-4">
-                <a href="#" class="text-white text-decoration-none"><i class="bi bi-whatsapp"></i> WhatsApp</a>
-                <a href="#" class="text-white text-decoration-none"><i class="bi bi-instagram"></i> Instagram</a>
-            </div>
-
             <div class="small border-top border-secondary pt-4">
                 <p class="mb-1">© 2025 Mom's Hair Oils. All Rights Reserved.</p>
-                <p class="mb-1"><strong>Address:</strong> [Please Insert Your Real Address Here]</p>
-                <p class="mb-1"><strong>Contact:</strong> +91 9952532391 | support@momshairoil.com</p>
-                <p>Country of Origin: India</p>
+                <p class="mb-1"><strong>Contact:</strong> +91 9952532391</p>
             </div>
         </div>
     </footer>
@@ -220,26 +221,28 @@
                 </div>
                 <div class="modal-body">
                     
-                    <div id="cart-items" class="mb-4">
-                        <p class="text-center text-muted">Your cart is empty.</p>
-                    </div>
+                    <div id="cart-items" class="mb-4"></div>
                     
                     <div class="d-flex justify-content-between border-top pt-3 mb-4">
                         <span class="h5">Total</span>
                         <span class="h5 fw-bold text-primary" id="cart-total">₹0.00</span>
                     </div>
 
-                    <form id="checkoutForm" class="needs-validation">
-                        <h6 class="text-uppercase text-muted fw-bold mb-3 small">Step 1: Payment (Scan QR)</h6>
-                        <div class="bg-light p-3 rounded mb-4 d-flex align-items-center gap-3">
-                            <img src="qrcode.png" alt="UPI QR" style="width: 80px; height: 80px;" class="border">
-                            <div>
-                                <p class="mb-0 fw-bold">UPI ID: vabinanthana@okaxis</p>
-                                <small class="text-muted">Pay the total amount and attach screenshot below.</small>
+                    <form id="checkoutForm">
+                        <h6 class="text-uppercase text-muted fw-bold mb-3 small">Step 1: Payment</h6>
+                        
+                        <div class="bg-light p-4 rounded mb-4 text-center">
+                            <button type="button" class="btn btn-success btn-lg w-100 mb-3 d-md-none shadow" data-bs-toggle="modal" data-bs-target="#upiInstructionModal">
+                                <i class="bi bi-phone"></i> Tap to Pay (GPay / UPI)
+                            </button>
+                            <div class="d-none d-md-block mb-3">
+                                <img src="qrcode.png" alt="UPI QR" style="width: 120px;" class="border p-1 bg-white">
+                                <p class="small text-muted mt-2">Scan with any UPI App</p>
                             </div>
+                            <p class="mb-0 fw-bold">UPI ID: <span class="text-primary">vabinanthana@okaxis</span></p>
                         </div>
 
-                        <h6 class="text-uppercase text-muted fw-bold mb-3 small">Step 2: Shipping Details</h6>
+                        <h6 class="text-uppercase text-muted fw-bold mb-3 small">Step 2: Shipping & Confirmation</h6>
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="custName" placeholder="Full Name" required>
@@ -248,17 +251,21 @@
                                 <input type="tel" class="form-control" id="custPhone" placeholder="WhatsApp Number" required>
                             </div>
                             <div class="col-12">
-                                <textarea class="form-control" id="custAddress" rows="2" placeholder="Full Delivery Address with Pincode" required></textarea>
+                                <textarea class="form-control" id="custAddress" rows="2" placeholder="Full Address with Pincode" required></textarea>
                             </div>
                             <div class="col-12">
-                                <label class="form-label small">Upload Payment Screenshot *</label>
-                                <input type="file" class="form-control" accept="image/*" required>
+                                <label class="form-label small fw-bold">Payment Proof (Screenshot OR Transaction ID)</label>
+                                <div class="input-group mb-2">
+                                    <span class="input-group-text"><i class="bi bi-123"></i></span>
+                                    <input type="text" class="form-control" id="custTxnId" placeholder="Enter UPI Reference / UTR Number">
+                                </div>
+                                <input type="file" class="form-control" id="custScreenshot" accept="image/*">
                             </div>
                             <div class="col-12">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="termsCheck" required>
                                     <label class="form-check-label small text-muted" for="termsCheck">
-                                        I agree to the terms. Returns accepted only for damaged items within 24 hours.
+                                        I agree to the terms. No returns on opened bottles.
                                     </label>
                                 </div>
                             </div>
@@ -266,24 +273,62 @@
                     </form>
                 </div>
                 <div class="modal-footer flex-column">
-                    <button type="button" class="btn btn-success w-100 py-2 fs-5" onclick="sendOrder('whatsapp')">
-                        <i class="bi bi-whatsapp"></i> Place Order via WhatsApp
-                    </button>
-                    <button type="button" class="btn btn-outline-secondary w-100 py-2" onclick="sendOrder('email')">
-                        <i class="bi bi-envelope"></i> Place Order via Email
+                    <button type="button" class="btn btn-primary w-100 py-2 fs-5" onclick="placeOrder()">
+                        Place Order <i class="bi bi-arrow-right"></i>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="modal fade" id="upiInstructionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning-subtle">
+                    <h5 class="modal-title fw-bold">⚠️ Before you pay...</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="fs-5">Please <strong>COPY the Reference Code (UTR)</strong> from your payment app after paying.</p>
+                    <p class="text-muted">You will need to PASTE it in the "Payment Proof" field to confirm your order.</p>
+                    <a id="btn-proceed-pay" href="#" class="btn btn-success w-100 btn-lg mt-3">
+                        I Understand, Proceed to Pay <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="orderSuccessModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-5">
+                <div class="mb-4 text-primary">
+                    <i class="bi bi-heart-fill" style="font-size: 3.5rem;"></i>
+                </div>
+                <h3 class="fw-bold mb-3 font-heading">Thank You for Trusting Us! 🌿</h3>
+                <p class="mb-4 text-muted">We have received your order request. Since every bottle is packed with care, we personally verify every payment.</p>
+                
+                <div class="alert alert-success border-0 bg-success-subtle mb-4">
+                    <h6 class="fw-bold mb-1"><i class="bi bi-clock-history"></i> Next Steps:</h6>
+                    <p class="mb-0 small">Please allow <strong>4 - 8 Hours</strong> for payment confirmation. You will receive a WhatsApp update as soon as we verify it.</p>
+                </div>
+
+                <p class="small text-muted mb-4">Shipment usually starts within 24 hours of confirmation.</p>
+
+                <button type="button" class="btn btn-primary w-100 btn-lg" onclick="window.location.href='tracker.html'">
+                    Track My Order
+                </button>
+            </div>
+        </div>
+    </div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, setDoc, doc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // YOUR SPECIFIC CONFIGURATION
         const firebaseConfig = {
             apiKey: "AIzaSyA659yIOvlhVTm8-S6RtUDPXxVM8dZZ_kM",
             authDomain: "momshairoil-3010.firebaseapp.com",
@@ -296,22 +341,66 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- SHOPPING CART LOGIC ---
+        // --- REAL-TIME INVENTORY LISTENER ---
+        // This makes the Index page change instantly when Admin changes stock
+        const productsMap = {
+            'p1': { btnId: 'btn-p1', stockId: 'stock-p1', name: 'Daily Nourish' },
+            'p2': { btnId: 'btn-p2', stockId: 'stock-p2', name: 'Restoration' },
+            'p3': { btnId: 'btn-p3', stockId: 'stock-p3', name: 'Combo' }
+        };
+
+        // Listen to the 'products' collection
+        onSnapshot(collection(db, "products"), (snapshot) => {
+            snapshot.forEach((doc) => {
+                const prod = productsMap[doc.id];
+                if (prod) {
+                    const data = doc.data();
+                    const stock = data.stock || 0;
+                    
+                    const btn = document.getElementById(prod.btnId);
+                    const stockTxt = document.getElementById(prod.stockId);
+
+                    if (stock > 0) {
+                        // IN STOCK MODE
+                        btn.innerHTML = "Add to Cart";
+                        btn.classList.remove("btn-preorder");
+                        btn.classList.add("btn-primary");
+                        stockTxt.innerHTML = `<i class="bi bi-check-circle"></i> Only ${stock} bottles left!`;
+                        stockTxt.className = "text-success fw-bold mb-2 small";
+                    } else {
+                        // PRE-ORDER MODE
+                        btn.innerHTML = "Pre-Order Now";
+                        btn.classList.remove("btn-primary");
+                        btn.classList.add("btn-preorder"); // Orange color defined in CSS
+                        stockTxt.innerHTML = `<i class="bi bi-hourglass-split"></i> Batch Cooking... Ships in 5-7 Days`;
+                        stockTxt.className = "text-accent fw-bold mb-2 small";
+                    }
+                }
+            });
+        });
+
+        // --- GLOBAL VARS ---
         window.cart = [];
+        let currentTotal = 0;
 
         window.addToCart = function(name, price) {
             window.cart.push({ name, price });
             updateCartDisplay();
-            alert(name + " added to cart!");
+            const cartBtn = document.querySelector('.btn-outline-primary');
+            cartBtn.classList.add('cart-animate');
+            setTimeout(() => { cartBtn.classList.remove('cart-animate'); }, 500);
         }
 
         window.updateCartDisplay = function() {
             const countBadge = document.getElementById('cart-count');
+            countBadge.innerText = window.cart.length;
+        }
+
+        window.prepareCheckout = function() {
             const cartItemsContainer = document.getElementById('cart-items');
             const totalEl = document.getElementById('cart-total');
+            const proceedPayBtn = document.getElementById('btn-proceed-pay');
             
-            countBadge.innerText = window.cart.length;
-
             if (window.cart.length === 0) {
                 cartItemsContainer.innerHTML = '<p class="text-center text-muted">Your cart is empty.</p>';
                 totalEl.innerText = '₹0.00';
@@ -319,10 +408,10 @@
             }
 
             let html = '<ul class="list-group list-group-flush">';
-            let total = 0;
+            currentTotal = 0;
             
             window.cart.forEach((item, index) => {
-                total += item.price;
+                currentTotal += item.price;
                 html += `
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         ${item.name}
@@ -334,73 +423,69 @@
             html += '</ul>';
             
             cartItemsContainer.innerHTML = html;
-            totalEl.innerText = '₹' + total;
+            totalEl.innerText = '₹' + currentTotal;
+
+            const upiLink = `upi://pay?pa=vabinanthana@okaxis&pn=MomsHairOil&am=${currentTotal}.00&cu=INR`;
+            proceedPayBtn.href = upiLink;
         }
 
         window.removeFromCart = function(index) {
             window.cart.splice(index, 1);
-            updateCartDisplay();
+            window.updateCartDisplay();
+            window.prepareCheckout(); 
         }
 
-        // --- ORDER SUBMISSION LOGIC ---
-        window.sendOrder = async function(method) {
+        window.placeOrder = async function() {
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
             const address = document.getElementById('custAddress').value;
+            const txnId = document.getElementById('custTxnId').value;
+            const hasScreenshot = document.getElementById('custScreenshot').value !== "";
             const terms = document.getElementById('termsCheck').checked;
 
             if (window.cart.length === 0) return alert("Cart is empty!");
-            if (!name || !phone || !address) return alert("Please fill in all details.");
+            if (!name || !phone || !address) return alert("Please fill in shipping details.");
+            if (!txnId && !hasScreenshot) return alert("Please enter Transaction ID or upload a screenshot.");
             if (!terms) return alert("Please accept the terms.");
 
-            // Disable button
             const btn = event.target;
             const originalText = btn.innerHTML;
             btn.innerHTML = "Processing...";
             btn.disabled = true;
 
-            // Generate Order ID (M-RandomNumber)
             const orderId = "M-" + Math.floor(100000 + Math.random() * 900000);
             
-            let total = 0;
             let itemsString = "";
             window.cart.forEach(item => {
-                total += item.price;
                 itemsString += `${item.name} (₹${item.price})\n`;
             });
 
             try {
-                // 1. Save to Firebase
                 await setDoc(doc(db, "orders", orderId), {
                     orderId: orderId,
                     name: name,
                     phone: phone,
                     address: address,
                     items: itemsString,
-                    total: total,
-                    status: "Received",
+                    total: currentTotal,
+                    txnId: txnId || "Screenshot Uploaded",
+                    status: "Pending Verification", 
                     timestamp: serverTimestamp()
                 });
 
-                // 2. Prepare WhatsApp Message
-                const orderText = `*New Order: ${orderId}*%0A%0A*Name:* ${name}%0A*Phone:* ${phone}%0A*Address:* ${address}%0A%0A*Items:*%0A${itemsString.replace(/\n/g, '%0A')}*Total:* ₹${total}%0A%0A(I have attached the payment screenshot)`;
+                const orderText = `*New Order: ${orderId}*%0A%0A*Name:* ${name}%0A*Items:*%0A${itemsString.replace(/\n/g, '%0A')}*Total:* ₹${currentTotal}%0A*Txn Ref:* ${txnId}`;
+                
+                window.open(`https://wa.me/919952532391?text=${orderText}`, '_blank');
+                
+                const checkoutModal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
+                checkoutModal.hide();
 
-                // 3. Handle Redirect
-                if (method === 'whatsapp') {
-                    window.open(`https://wa.me/919952532391?text=${orderText}`, '_blank');
-                    // Give user time to see the open window before alert
-                    setTimeout(() => {
-                        alert("Order Placed Successfully! Your Order ID is " + orderId + ". Redirecting to tracker...");
-                        window.location.href = "tracker.html"; 
-                    }, 1000);
-                } else {
-                    window.location.href = `mailto:support@momshairoil.com?subject=Order ${orderId}&body=${orderText.replace(/%0A/g, '%0D%0A')}`;
-                    alert("Order Placed! ID: " + orderId);
-                }
+                const successModal = new bootstrap.Modal(document.getElementById('orderSuccessModal'));
+                successModal.show();
 
             } catch (error) {
-                console.error("Error adding document: ", error);
-                alert("Error placing order: " + error.message);
+                console.error("Error:", error);
+                alert("Error placing order. Please try again.");
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
