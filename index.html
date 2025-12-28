@@ -152,7 +152,7 @@
                                 <span class="text-primary fw-bold fs-4">₹190</span>
                             </div>
                             <div class="mt-auto">
-                                <button id="btn-p1" class="btn btn-primary w-100" onclick="addToCart('Daily Nourish Blend', 190)">Add to Cart</button>
+                                <button id="btn-p1" class="btn btn-primary w-100" onclick="addToCart('p1', 'Daily Nourish Blend', 190)">Add to Cart</button>
                             </div>
                         </div>
                     </div>
@@ -171,7 +171,7 @@
                                 <span class="text-primary fw-bold fs-4">₹190</span>
                             </div>
                             <div class="mt-auto">
-                                <button id="btn-p2" class="btn btn-primary w-100" onclick="addToCart('Root Restoration Oil', 190)">Add to Cart</button>
+                                <button id="btn-p2" class="btn btn-primary w-100" onclick="addToCart('p2', 'Root Restoration Oil', 190)">Add to Cart</button>
                             </div>
                         </div>
                     </div>
@@ -190,7 +190,7 @@
                                 <span class="text-primary fw-bold fs-3">₹360</span>
                             </div>
                             <div class="mt-auto">
-                                <button id="btn-p3" class="btn btn-primary w-100 btn-lg" onclick="addToCart('Complete Care Duo', 360)">Add Combo</button>
+                                <button id="btn-p3" class="btn btn-primary w-100 btn-lg" onclick="addToCart('p3', 'Complete Care Duo', 360)">Add Combo</button>
                             </div>
                         </div>
                     </div>
@@ -291,10 +291,7 @@
                         <h6 class="text-uppercase text-muted fw-bold mb-3 small">Step 1: Payment</h6>
                         <div class="bg-light p-4 rounded mb-4 text-center">
                             <button type="button" class="btn btn-success btn-lg w-100 mb-3 d-md-none shadow" data-bs-toggle="modal" data-bs-target="#upiInstructionModal"><i class="bi bi-phone"></i> Tap to Pay (GPay / UPI)</button>
-                            <div class="d-none d-md-block mb-3">
-                                <img src="qrcode.png" alt="UPI QR" style="width: 120px;" class="border p-1 bg-white">
-                                <p class="small text-muted mt-2">Scan with any UPI App</p>
-                            </div>
+                            <div class="d-none d-md-block mb-3"><img src="qrcode.png" alt="UPI QR" style="width: 120px;" class="border p-1 bg-white"></div>
                             <p class="mb-0 fw-bold">UPI ID: <span class="text-primary">vabinanthana@okaxis</span></p>
                         </div>
                         <h6 class="text-uppercase text-muted fw-bold mb-3 small">Step 2: Shipping & Confirmation</h6>
@@ -304,18 +301,10 @@
                             <div class="col-12"><textarea class="form-control" id="custAddress" rows="2" placeholder="Full Address with Pincode" required></textarea></div>
                             <div class="col-12">
                                 <label class="form-label small fw-bold">Payment Proof (Screenshot OR Transaction ID)</label>
-                                <div class="input-group mb-2">
-                                    <span class="input-group-text"><i class="bi bi-123"></i></span>
-                                    <input type="text" class="form-control" id="custTxnId" placeholder="Enter UPI Reference / UTR Number">
-                                </div>
+                                <div class="input-group mb-2"><span class="input-group-text"><i class="bi bi-123"></i></span><input type="text" class="form-control" id="custTxnId" placeholder="Enter UPI Reference / UTR Number"></div>
                                 <input type="file" class="form-control" id="custScreenshot" accept="image/*">
                             </div>
-                            <div class="col-12">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="termsCheck" required>
-                                    <label class="form-check-label small text-muted" for="termsCheck">I agree to the terms. No returns on opened bottles.</label>
-                                </div>
-                            </div>
+                            <div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox" id="termsCheck" required><label class="form-check-label small text-muted" for="termsCheck">I agree to the terms. No returns on opened bottles.</label></div></div>
                         </div>
                     </form>
                 </div>
@@ -328,7 +317,7 @@
 
     <div class="modal fade" id="upiInstructionModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-warning-subtle"><h5 class="modal-title fw-bold">⚠️ Before you pay...</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body text-center"><p class="fs-5">Please <strong>COPY the Reference Code (UTR)</strong> from your payment app after paying.</p><p class="text-muted">You will need to PASTE it in the "Payment Proof" field to confirm your order.</p><a id="btn-proceed-pay" href="#" class="btn btn-success w-100 btn-lg mt-3">I Understand, Proceed to Pay <i class="bi bi-box-arrow-up-right"></i></a></div></div></div></div>
     
-    <div class="modal fade" id="orderSuccessModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-5"><div class="mb-4 text-primary"><i class="bi bi-heart-fill" style="font-size: 3.5rem;"></i></div><h3 class="fw-bold mb-3 font-heading">Thank You for Trusting Us! 🌿</h3><p class="mb-4 text-muted">We have received your order request. Since every bottle is packed with care, we personally verify every payment.</p><div class="alert alert-success border-0 bg-success-subtle mb-4"><h6 class="fw-bold mb-1"><i class="bi bi-clock-history"></i> Next Steps:</h6><p class="mb-0 small">Please allow <strong>4 - 8 Hours</strong> for payment confirmation.</p></div><p class="small text-muted mb-4">Shipment starts within 24 hours of confirmation.</p><button type="button" class="btn btn-primary w-100 btn-lg" onclick="window.location.href='tracker.html'">Track My Order</button></div></div></div>
+    <div class="modal fade" id="orderSuccessModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-5"><div class="mb-4 text-primary"><i class="bi bi-heart-fill" style="font-size: 3.5rem;"></i></div><h3 class="fw-bold mb-3 font-heading">Thank You for Trusting Us! 🌿</h3><p class="mb-4 text-muted">We have received your order request. Since every bottle is packed with care, we personally verify every payment.</p><div class="alert alert-success border-0 bg-success-subtle mb-4"><h6 class="fw-bold mb-1"><i class="bi bi-clock-history"></i> Next Steps:</h6><p class="mb-0 small">Please allow <strong>4 - 8 Hours</strong> for payment confirmation. You will receive a WhatsApp update as soon as we verify it.</p></div><p class="small text-muted mb-4">Shipment starts within 24 hours of confirmation.</p><button type="button" class="btn btn-primary w-100 btn-lg" onclick="window.location.href='tracker.html'">Track My Order</button></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module">
@@ -342,9 +331,7 @@
         // --- FETCH MASTER EMAIL ---
         let masterEmail = "vabinanthana@gmail.com"; 
         getDoc(doc(db, "settings", "config")).then(snap => { 
-            if(snap.exists() && snap.data().masterEmail) {
-                masterEmail = snap.data().masterEmail;
-            }
+            if(snap.exists() && snap.data().masterEmail) masterEmail = snap.data().masterEmail;
         });
 
         // --- SCROLL TO TOP ---
@@ -365,13 +352,17 @@
             });
         });
 
-        // --- INVENTORY ---
+        // --- INVENTORY TRACKER ---
+        window.currentStock = { 'p1': 0, 'p2': 0, 'p3': 0 };
+
         const productsMap = { 'p1': { btnId: 'btn-p1', stockId: 'stock-p1' }, 'p2': { btnId: 'btn-p2', stockId: 'stock-p2' }, 'p3': { btnId: 'btn-p3', stockId: 'stock-p3' } };
         onSnapshot(collection(db, "products"), (snapshot) => {
             snapshot.forEach((doc) => {
                 const prod = productsMap[doc.id];
                 if (prod) {
                     const data = doc.data(); const stock = data.stock || 0;
+                    window.currentStock[doc.id] = stock;
+
                     const btn = document.getElementById(prod.btnId); const stockTxt = document.getElementById(prod.stockId);
                     if (stock > 0) {
                         btn.innerHTML = "Add to Cart"; btn.classList.remove("btn-preorder"); btn.classList.add("btn-primary");
@@ -386,8 +377,16 @@
 
         // --- CART ---
         window.cart = []; let currentTotal = 0;
-        window.addToCart = function(name, price) {
-            window.cart.push({ name, price }); updateCartDisplay();
+        window.addToCart = function(id, name, price) {
+            const availableStock = window.currentStock[id] || 0;
+            const alreadyInCart = window.cart.filter(item => item.id === id).length;
+
+            if (availableStock > 0 && (alreadyInCart + 1) > availableStock) {
+                alert(`Sorry! Only ${availableStock} bottle(s) of ${name} are left. Please checkout or wait for pre-orders.`);
+                return;
+            }
+
+            window.cart.push({ id, name, price }); updateCartDisplay();
             const cartBtn = document.querySelector('.btn-outline-primary'); cartBtn.classList.add('cart-animate');
             setTimeout(() => { cartBtn.classList.remove('cart-animate'); }, 500);
         }
@@ -449,8 +448,6 @@
                     })
                 });
 
-                // 3. WHATSAPP REMOVED (As requested)
-                
                 // 4. SHOW SUCCESS
                 const checkoutModal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
                 checkoutModal.hide();
