@@ -7,41 +7,68 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f4f6f9; }
-        .status-select { min-width: 140px; cursor: pointer; }
-        /* Status Colors */
-        .status-Received { background-color: #e2e3e5; color: #333; }
-        .status-Confirmed { background-color: #cfe2ff; color: #084298; }
-        .status-Cooking { background-color: #fff3cd; color: #856404; }
-        .status-Shipped { background-color: #d1e7dd; color: #0f5132; }
-        .status-Delivered { background-color: #198754; color: white; }
+        .status-select { min-width: 160px; cursor: pointer; font-weight: 500; }
+        .status-Pending { background-color: #ffeeba; color: #856404; }
+        .status-Payment { background-color: #d1e7dd; color: #0f5132; }
+        .status-Shipped { background-color: #cfe2ff; color: #084298; }
+        .status-Delivered { background-color: #212529; color: #fff; }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-dark bg-dark">
+    <nav class="navbar navbar-dark bg-dark sticky-top">
         <div class="container-fluid">
             <span class="navbar-brand mb-0 h1">Admin Panel 🛡️</span>
             <button class="btn btn-outline-light btn-sm" onclick="location.reload()">Refresh Data</button>
         </div>
     </nav>
 
-    <div class="container mt-4">
+    <div class="container-fluid mt-4">
+        
+        <div class="row mb-4">
+            <div class="col-md-6 mx-auto">
+                <div class="card shadow-sm border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">📦 Stock Management</h5>
+                    </div>
+                    <div class="card-body bg-white">
+                        <p class="small text-muted">Set Stock to <strong>0</strong> to enable "Pre-Order" mode automatically.</p>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label>Daily Nourish (p1):</label>
+                            <input type="number" id="qty-p1" class="form-control w-25" value="0">
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label>Restoration Oil (p2):</label>
+                            <input type="number" id="qty-p2" class="form-control w-25" value="0">
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <label>Combo Pack (p3):</label>
+                            <input type="number" id="qty-p3" class="form-control w-25" value="0">
+                        </div>
+                        
+                        <button class="btn btn-success w-100" onclick="saveInventory()">Update Website Stock</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="card shadow-sm">
             <div class="card-header bg-white py-3">
-                <h5 class="mb-0">Order Management</h5>
+                <h5 class="mb-0">All Orders</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle">
+                    <table class="table table-hover align-middle table-bordered">
                         <thead class="table-light">
                             <tr>
                                 <th>Date</th>
                                 <th>Order ID</th>
-                                <th>Customer</th>
-                                <th>Items</th>
-                                <th>Total</th>
+                                <th>Customer Info</th>
+                                <th style="width: 20%;">Shipping Address</th>
+                                <th>Items & Total</th>
+                                <th>Payment Ref (UTR)</th>
                                 <th>Status</th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
@@ -55,9 +82,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, updateDoc, orderBy, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, orderBy, query, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // YOUR SPECIFIC CONFIGURATION
         const firebaseConfig = {
             apiKey: "AIzaSyA659yIOvlhVTm8-S6RtUDPXxVM8dZZ_kM",
             authDomain: "momshairoil-3010.firebaseapp.com",
@@ -67,11 +93,45 @@
             appId: "1:884566098620:web:bca34f4f82d7b6712ec6b9"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Load Orders
+        // --- INVENTORY LOGIC ---
+        // 1. Load current stock when page opens
+        async function loadInventory() {
+            const pIds = ['p1', 'p2', 'p3'];
+            for (const pid of pIds) {
+                const docRef = doc(db, "products", pid);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    document.getElementById(`qty-${pid}`).value = docSnap.data().stock;
+                } else {
+                    // Create if doesn't exist (First run)
+                    await setDoc(docRef, { stock: 10 }); 
+                    document.getElementById(`qty-${pid}`).value = 10;
+                }
+            }
+        }
+
+        // 2. Save stock to Firebase
+        window.saveInventory = async function() {
+            try {
+                const p1 = parseInt(document.getElementById('qty-p1').value);
+                const p2 = parseInt(document.getElementById('qty-p2').value);
+                const p3 = parseInt(document.getElementById('qty-p3').value);
+
+                await updateDoc(doc(db, "products", "p1"), { stock: p1 });
+                await updateDoc(doc(db, "products", "p2"), { stock: p2 });
+                await updateDoc(doc(db, "products", "p3"), { stock: p3 });
+
+                alert("Stock Updated! Website will reflect changes immediately.");
+            } catch (error) {
+                console.error("Error saving stock:", error);
+                alert("Error updating stock.");
+            }
+        }
+
+        // --- ORDER LOGIC ---
         async function loadOrders() {
             const tableBody = document.getElementById('tableBody');
             
@@ -88,7 +148,11 @@
                 querySnapshot.forEach((doc) => {
                     const order = doc.data();
                     const date = order.timestamp ? new Date(order.timestamp.seconds * 1000).toLocaleDateString() : 'N/A';
-                    const statusClass = `status-${order.status || 'Received'}`;
+                    
+                    let statusClass = "status-Pending";
+                    if (order.status && order.status.includes("Payment")) statusClass = "status-Payment";
+                    if (order.status && order.status.includes("Shipped")) statusClass = "status-Shipped";
+                    if (order.status && order.status.includes("Delivered")) statusClass = "status-Delivered";
 
                     html += `
                         <tr>
@@ -98,22 +162,23 @@
                                 <strong>${order.name}</strong><br>
                                 <a href="https://wa.me/${order.phone}" target="_blank" class="text-decoration-none small">
                                     📞 ${order.phone}
-                                </a><br>
-                                <small class="text-muted">${order.address}</small>
+                                </a>
                             </td>
-                            <td><small>${order.items.replace(/\n/g, '<br>')}</small></td>
-                            <td><strong>₹${order.total}</strong></td>
+                            <td><small>${order.address}</small></td>
+                            <td>
+                                <small>${order.items.replace(/\n/g, '<br>')}</small><br>
+                                <strong>Total: ₹${order.total}</strong>
+                            </td>
+                            <td class="text-primary fw-bold">
+                                ${order.txnId || 'N/A'}
+                            </td>
                             <td>
                                 <select class="form-select form-select-sm status-select ${statusClass}" onchange="updateStatus('${doc.id}', this.value)">
-                                    <option value="Received" ${order.status === 'Received' ? 'selected' : ''}>Received</option>
-                                    <option value="Confirmed" ${order.status === 'Confirmed' ? 'selected' : ''}>Payment OK</option>
-                                    <option value="Cooking" ${order.status === 'Cooking' ? 'selected' : ''}>Cooking/Drying</option>
+                                    <option value="Pending Verification" ${order.status === 'Pending Verification' ? 'selected' : ''}>Pending Verif.</option>
+                                    <option value="Payment Received" ${order.status === 'Payment Received' ? 'selected' : ''}>Payment Received</option>
                                     <option value="Shipped" ${order.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
                                     <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
                                 </select>
-                            </td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-primary" onclick="alert('Please ask customer for screenshot on WhatsApp if missing.')">📷 Check</button>
                             </td>
                         </tr>
                     `;
@@ -125,13 +190,12 @@
             }
         }
 
-        // Make updateStatus global so HTML can use it
         window.updateStatus = async function(docId, newStatus) {
             try {
                 const orderRef = doc(db, "orders", docId);
                 await updateDoc(orderRef, { status: newStatus });
-                alert("Status updated to " + newStatus);
-                loadOrders(); // Refresh table to show new color
+                alert("Status updated to: " + newStatus);
+                loadOrders(); 
             } catch (e) {
                 console.error("Error updating status: ", e);
                 alert("Error updating status");
@@ -139,6 +203,7 @@
         }
 
         loadOrders();
+        loadInventory();
     </script>
 </body>
 </html>
