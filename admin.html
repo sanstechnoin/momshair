@@ -16,9 +16,7 @@
         .status-Payment { background-color: #d1e7dd; color: #0f5132; border-color: #badbcc; }
         .status-Shipped { background-color: #cfe2ff; color: #084298; border-color: #b6d4fe; }
         .status-Delivered { background-color: #212529; color: #fff; border-color: #212529; }
-        /* New style for Payment Notification */
         .status-Payment-Notification { background-color: #fd9c3d; color: #fff; border-color: #fd9c3d; }
-        /* Cancelled status style */
         .status-Cancelled { background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; }
 
         #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1B4D3E; z-index: 9999; display: flex; align-items: center; justify-content: center; }
@@ -29,6 +27,11 @@
         .text-preorder { color: #C17C28; }
         .sandclock-spin { animation: spin 2s infinite linear; font-size: 3.5rem; color: #1B4D3E; margin-bottom: 1rem; }
         @keyframes spin { 0% { transform: rotate(0deg); } 50% { transform: rotate(180deg); } 100% { transform: rotate(360deg); } }
+        
+        .review-tab-btn { border-radius: 20px; font-size: 0.85rem; padding: 5px 15px; border: 1px solid transparent; }
+        .review-tab-btn.active { background-color: #212529; color: white; }
+        .review-tab-btn:not(.active) { background-color: transparent; border-color: #212529; color: #212529; }
+
         @media (min-width: 992px) { .border-lg-end { border-right: 1px solid #dee2e6; } }
         @media (max-width: 991px) { .mobile-mb { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #dee2e6; } }
     </style>
@@ -70,16 +73,17 @@
                             <div class="row">
                                 <div class="col-12 col-lg-6 border-lg-end mobile-mb">
                                     <h6 class="text-muted text-uppercase small fw-bold mb-3">Current Website Status</h6>
-                                    <div class="d-flex justify-content-between align-items-center mb-3"><span>Daily Nourish:</span><span id="live-p1" class="stock-live">Loading...</span></div>
-                                    <div class="d-flex justify-content-between align-items-center mb-3"><span>Restoration:</span><span id="live-p2" class="stock-live">Loading...</span></div>
-                                    <div class="d-flex justify-content-between align-items-center"><span>Combo Pack:</span><span id="live-p3" class="stock-live">Loading...</span></div>
-                                    <div class="alert alert-info mt-3 py-2 small"><i class="bi bi-info-circle"></i> If Stock is <strong>0</strong>, site shows "Pre-Order".</div>
+                                    <div class="d-flex justify-content-between align-items-center mb-3"><span>Daily Shine (p1):</span><span id="live-p1" class="stock-live">Loading...</span></div>
+                                    <div class="d-flex justify-content-between align-items-center mb-3"><span>Natural Dark (p2):</span><span id="live-p2" class="stock-live">Loading...</span></div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2"><span>Grey Defense (p3):</span><span id="live-p3" class="stock-live">Loading...</span></div>
+                                    <div class="d-flex justify-content-between align-items-center"><span>Complete Care (p4):</span><span id="live-p4" class="stock-live">Loading...</span></div>
                                 </div>
                                 <div class="col-12 col-lg-6 ps-lg-4">
                                     <h6 class="text-muted text-uppercase small fw-bold mb-3">Update Stock Count</h6>
-                                    <div class="input-group input-group-sm mb-2"><span class="input-group-text">Nourish</span><input type="number" id="qty-p1" class="form-control text-center"></div>
-                                    <div class="input-group input-group-sm mb-2"><span class="input-group-text">Restore</span><input type="number" id="qty-p2" class="form-control text-center"></div>
-                                    <div class="input-group input-group-sm mb-3"><span class="input-group-text">Combo</span><input type="number" id="qty-p3" class="form-control text-center"></div>
+                                    <div class="input-group input-group-sm mb-2"><span class="input-group-text">p1</span><input type="number" id="qty-p1" class="form-control text-center"></div>
+                                    <div class="input-group input-group-sm mb-2"><span class="input-group-text">p2</span><input type="number" id="qty-p2" class="form-control text-center"></div>
+                                    <div class="input-group input-group-sm mb-2"><span class="input-group-text">p3</span><input type="number" id="qty-p3" class="form-control text-center"></div>
+                                    <div class="input-group input-group-sm mb-3"><span class="input-group-text">p4</span><input type="number" id="qty-p4" class="form-control text-center"></div>
                                     <button class="btn btn-sm btn-success w-100" onclick="saveInventory()"><i class="bi bi-check-circle"></i> Save Changes</button>
                                 </div>
                             </div>
@@ -89,14 +93,21 @@
 
                 <div class="col-12 col-lg-5">
                     <div class="card shadow-sm border-warning h-100">
-                        <div class="card-header bg-warning text-dark d-flex justify-content-between">
-                            <span><i class="bi bi-star-half"></i> Pending Reviews</span>
-                            <span class="badge bg-dark text-white" id="review-count">0</span>
+                        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                            <span class="fw-bold"><i class="bi bi-chat-heart"></i> Review Center</span>
+                            <div>
+                                <button class="review-tab-btn active me-1" id="tab-pending" onclick="loadReviews('pending')">
+                                    Pending <span id="badge-pending" class="badge bg-danger rounded-pill">0</span>
+                                </button>
+                                <button class="review-tab-btn" id="tab-approved" onclick="loadReviews('approved')">
+                                    Live <span id="badge-approved" class="badge bg-success rounded-pill">0</span>
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body p-0">
-                            <ul id="pending-reviews-list" class="list-group list-group-flush" style="max-height: 250px; overflow-y:auto;">
-                                <li class="list-group-item text-center text-muted py-4">Loading reviews...</li>
-                            </ul>
+                            <div id="reviews-list-container" class="list-group list-group-flush" style="max-height: 280px; overflow-y:auto;">
+                                <div class="text-center py-4"><div class="spinner-border text-warning spinner-border-sm" role="status"></div></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -175,21 +186,32 @@
 
         let pendingOrderId = null;
         let pendingStatus = null;
+        window.currentReviewTab = 'pending';
 
         window.checkLogin = function() {
             if (document.getElementById('admin-pass').value === "brindharani") {
                 document.getElementById('login-overlay').style.display = 'none'; document.getElementById('admin-content').style.display = 'block';
-                sessionStorage.setItem("adminLoggedIn", "true"); loadOrders(); loadInventory(); loadPendingReviews(); loadSettings(); 
+                sessionStorage.setItem("adminLoggedIn", "true"); 
+                initDashboard();
             } else { document.getElementById('login-error').style.display = 'block'; }
         };
         window.logout = function() { sessionStorage.removeItem("adminLoggedIn"); location.reload(); };
         if (sessionStorage.getItem("adminLoggedIn") === "true") {
             document.getElementById('login-overlay').style.display = 'none'; document.getElementById('admin-content').style.display = 'block';
-            loadOrders(); loadInventory(); loadPendingReviews(); loadSettings();
+            initDashboard();
         }
 
+        function initDashboard() {
+            loadOrders(); 
+            loadInventory(); 
+            loadReviews('pending'); 
+            loadReviewCounts();
+            loadSettings();
+        }
+
+        // --- INVENTORY ---
         async function loadInventory() {
-            const pIds = ['p1', 'p2', 'p3'];
+            const pIds = ['p1', 'p2', 'p3', 'p4'];
             for (const pid of pIds) {
                 const docSnap = await getDoc(doc(db, "products", pid));
                 let val = docSnap.exists() ? docSnap.data().stock : 10;
@@ -203,14 +225,84 @@
         window.saveInventory = async function() {
             startLoading();
             try {
-                await new Promise(r => setTimeout(r, 1500)); 
-                await updateDoc(doc(db, "products", "p1"), { stock: parseInt(document.getElementById('qty-p1').value) });
-                await updateDoc(doc(db, "products", "p2"), { stock: parseInt(document.getElementById('qty-p2').value) });
-                await updateDoc(doc(db, "products", "p3"), { stock: parseInt(document.getElementById('qty-p3').value) });
+                await new Promise(r => setTimeout(r, 1000)); 
+                const pIds = ['p1', 'p2', 'p3', 'p4'];
+                for(const pid of pIds) {
+                    await updateDoc(doc(db, "products", pid), { stock: parseInt(document.getElementById(`qty-${pid}`).value) });
+                }
                 loadInventory(); stopLoading();
             } catch (e) { alert("Error."); stopLoading(); }
         }
 
+        // --- REVIEWS ---
+        async function loadReviewCounts() {
+            // Simple logic: get all and count locally or use separate queries. 
+            // For small scale, separate queries are fine.
+            const qP = query(collection(db, "reviews"), where("status", "==", "pending"));
+            const sP = await getDocs(qP);
+            document.getElementById('badge-pending').innerText = sP.size;
+
+            const qA = query(collection(db, "reviews"), where("status", "==", "approved"));
+            const sA = await getDocs(qA);
+            document.getElementById('badge-approved').innerText = sA.size;
+        }
+
+        window.loadReviews = async function(status) {
+            window.currentReviewTab = status;
+            
+            // UI Toggle
+            document.querySelectorAll('.review-tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`tab-${status}`).classList.add('active');
+
+            const list = document.getElementById('reviews-list-container');
+            list.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>';
+
+            const snapshot = await getDocs(query(collection(db, "reviews"), where("status", "==", status)));
+            
+            if (snapshot.empty) {
+                list.innerHTML = `<div class="text-center text-muted py-4 small">No ${status} reviews found.</div>`;
+                return;
+            }
+
+            let html = '';
+            snapshot.forEach(docSnap => {
+                const r = docSnap.data();
+                const date = r.timestamp ? new Date(r.timestamp.seconds * 1000).toLocaleDateString() : 'N/A';
+                
+                let btns = '';
+                if(status === 'pending') {
+                    btns = `<button class="btn btn-sm btn-success" onclick="updateReviewStatus('${docSnap.id}', 'approved')" title="Approve">✔</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteReview('${docSnap.id}')" title="Delete">✖</button>`;
+                } else {
+                    btns = `<button class="btn btn-sm btn-outline-dark" onclick="updateReviewStatus('${docSnap.id}', 'pending')" title="Unpublish (Hide)"><i class="bi bi-eye-slash"></i></button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteReview('${docSnap.id}')" title="Delete Forever"><i class="bi bi-trash"></i></button>`;
+                }
+
+                html += `<div class="list-group-item d-flex justify-content-between align-items-start bg-transparent">
+                    <div class="me-2">
+                        <div class="fw-bold text-dark d-flex align-items-center gap-2">${r.name} <span class="text-warning small">${'★'.repeat(r.rating)}</span></div>
+                        <small class="text-muted fst-italic d-block mb-1">"${r.text}"</small>
+                        <span class="badge bg-light text-secondary border">Order: ${r.orderId || 'N/A'}</span> <small class="text-muted ms-1" style="font-size:0.75rem">${date}</small>
+                    </div>
+                    <div class="d-flex flex-column gap-1">${btns}</div>
+                </div>`;
+            });
+            list.innerHTML = html;
+            loadReviewCounts(); // Refresh counts
+        };
+
+        window.updateReviewStatus = async function(id, newStatus) {
+            await updateDoc(doc(db, "reviews", id), { status: newStatus });
+            loadReviews(window.currentReviewTab);
+        };
+        window.deleteReview = async function(id) {
+            if(confirm("Permanently delete this review?")) {
+                await deleteDoc(doc(db, "reviews", id));
+                loadReviews(window.currentReviewTab);
+            }
+        };
+
+        // --- SETTINGS ---
         async function loadSettings() {
             try { const s = await getDoc(doc(db, "settings", "config")); if(s.exists()) document.getElementById('master-email').value = s.data().masterEmail || "vabinanthana@gmail.com"; } catch(e){}
         }
@@ -219,22 +311,7 @@
             try { await new Promise(r => setTimeout(r, 1000)); await setDoc(doc(db, "settings", "config"), { masterEmail: document.getElementById('master-email').value }); stopLoading(); } catch(e){ alert("Error"); stopLoading(); }
         }
 
-        async function loadPendingReviews() {
-            const list = document.getElementById('pending-reviews-list');
-            // FIX: Added '==' operator
-            const snapshot = await getDocs(query(collection(db, "reviews"), where("status", "==", "pending")));
-            document.getElementById('review-count').innerText = snapshot.size;
-            if (snapshot.empty) { list.innerHTML = '<li class="list-group-item text-center text-muted">No pending reviews.</li>'; return; }
-            let html = '';
-            snapshot.forEach(docSnap => {
-                const r = docSnap.data();
-                html += `<li class="list-group-item d-flex justify-content-between align-items-center"><div style="max-width: 70%;"><strong>${r.name}</strong> <span class="text-warning">(${r.rating}★)</span><br><small class="text-muted">"${r.text}"</small></div><div class="d-flex gap-1"><button class="btn btn-sm btn-success" onclick="approveReview('${docSnap.id}')">✔</button><button class="btn btn-sm btn-danger" onclick="deleteReview('${docSnap.id}')">✖</button></div></li>`;
-            });
-            list.innerHTML = html;
-        }
-        window.approveReview = async function(id) { await updateDoc(doc(db, "reviews", id), { status: "approved" }); loadPendingReviews(); }
-        window.deleteReview = async function(id) { if(confirm("Delete?")) { await deleteDoc(doc(db, "reviews", id)); loadPendingReviews(); } }
-
+        // --- ORDERS ---
         window.updateStatus = function(docId, newStatus) {
             if (newStatus === "Shipped") {
                 pendingOrderId = docId; pendingStatus = newStatus;
@@ -256,7 +333,6 @@
                 let updateData = { status: newStatus };
                 if (trackingNum) updateData.trackingNumber = trackingNum;
 
-                // --- CANCELLED LOGIC: RESTORE STOCK ---
                 if (newStatus === "Cancelled") {
                     const orderSnap = await getDoc(orderRef);
                     if (orderSnap.exists()) {
@@ -273,7 +349,7 @@
                 }
 
                 await updateDoc(orderRef, updateData);
-                loadOrders(); loadInventory(); // Refresh Inventory UI
+                loadOrders(); loadInventory(); 
                 stopLoading();
             } catch (e) { console.error(e); alert("Error updating order."); stopLoading(); }
         }
@@ -328,7 +404,6 @@
         };
 
         window.sendWhatsappUpdate = function(phone, name, orderId, status) {
-            // Robust tracker link generation
             let path = window.location.pathname;
             let directory = path.substring(0, path.lastIndexOf('/'));
             const trackerLink = window.location.origin + directory + '/tracker.html';
