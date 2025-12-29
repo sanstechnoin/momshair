@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Mom's Hair Oil</title>
-    
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    
     <style>
         body { background-color: #f4f6f9; }
         .status-select { min-width: 130px; cursor: pointer; font-weight: 500; font-size: 0.85rem; }
@@ -18,31 +16,22 @@
         .status-Delivered { background-color: #212529; color: #fff; border-color: #212529; }
         .status-Payment-Notification { background-color: #fd9c3d; color: #fff; border-color: #fd9c3d; }
         .status-Cancelled { background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; }
-
         #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1B4D3E; z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .login-box { background: white; padding: 2.5rem; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; width: 90%; max-width: 400px; }
         #admin-content { display: none; }
         .stock-live { font-size: 0.9rem; font-weight: bold; }
         .text-preorder { color: #C17C28; }
-        .sandclock-spin { animation: spin 2s infinite linear; font-size: 3.5rem; color: #1B4D3E; margin-bottom: 1rem; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 50% { transform: rotate(180deg); } 100% { transform: rotate(360deg); } }
-        
         .review-tab-btn { border-radius: 20px; font-size: 0.85rem; padding: 5px 15px; border: 1px solid transparent; }
         .review-tab-btn.active { background-color: #212529; color: white; }
         .review-tab-btn:not(.active) { background-color: transparent; border-color: #212529; color: #212529; }
-
         .icon-btn { cursor: pointer; font-size: 1.1rem; padding: 0 5px; transition: color 0.2s; }
         .icon-btn:hover { opacity: 0.7; }
-        .icon-active { color: #198754; } /* Green */
-        .icon-inactive { color: #adb5bd; } /* Gray */
-        .icon-banner { color: #ffc107; } /* Gold/Yellow for Banner */
-
-        .table-checkbox { width: 40px; text-align: center; }
-        
-        /* New Style for Support Messages */
+        .icon-active { color: #198754; } 
+        .icon-inactive { color: #adb5bd; } 
+        .icon-banner { color: #ffc107; }
         .msg-card { border-left: 4px solid #1B4D3E; transition: 0.2s; }
         .msg-card:hover { background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-
+        .table-checkbox { width: 40px; text-align: center; }
         @media (min-width: 992px) { .border-lg-end { border-right: 1px solid #dee2e6; } }
         @media (max-width: 991px) { .mobile-mb { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #dee2e6; } }
     </style>
@@ -52,7 +41,6 @@
     <div id="login-overlay">
         <div class="login-box">
             <h3 class="fw-bold mb-3" style="color: #1B4D3E;">Admin Login 🔒</h3>
-            <p class="text-muted small mb-4">Restricted Access. Enter Password.</p>
             <input type="password" id="admin-pass" class="form-control mb-3 text-center" placeholder="Password">
             <button class="btn btn-success w-100" onclick="checkLogin()">Unlock Panel</button>
             <p id="login-error" class="text-danger small mt-2" style="display:none;">Incorrect Password</p>
@@ -64,8 +52,8 @@
             <div class="container-fluid">
                 <span class="navbar-brand mb-0 h1"><i class="bi bi-shield-lock"></i> Admin Panel</span>
                 <div>
-                    <button class="btn btn-outline-light btn-sm me-2" onclick="location.reload()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
-                    <button class="btn btn-danger btn-sm" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</button>
+                    <button class="btn btn-outline-light btn-sm me-2" onclick="location.reload()">Refresh</button>
+                    <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
                 </div>
             </div>
         </nav>
@@ -74,7 +62,7 @@
             
             <div class="row g-4 mb-4">
                 
-                <div class="col-12 col-lg-4">
+                <div class="col-lg-4">
                     <div class="card shadow-sm border-primary h-100">
                         <div class="card-header bg-primary text-white d-flex justify-content-between">
                             <span><i class="bi bi-box-seam"></i> Inventory</span>
@@ -98,13 +86,13 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-lg-4">
+                <div class="col-lg-4">
                     <div class="card shadow-sm border-warning h-100">
                         <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
                             <span class="fw-bold"><i class="bi bi-chat-heart"></i> Reviews</span>
                             <div>
-                                <button class="btn btn-sm btn-outline-dark py-0" style="font-size: 0.75rem;" onclick="loadReviews('pending')">Pending</button>
-                                <button class="btn btn-sm btn-outline-dark py-0" style="font-size: 0.75rem;" onclick="loadReviews('approved')">Live</button>
+                                <button class="review-tab-btn active me-1" id="tab-pending" onclick="loadReviews('pending')">Pending <span id="badge-pending" class="badge bg-danger rounded-pill">0</span></button>
+                                <button class="review-tab-btn" id="tab-approved" onclick="loadReviews('approved')">Live <span id="badge-approved" class="badge bg-success rounded-pill">0</span></button>
                             </div>
                         </div>
                         <div class="card-body p-0">
@@ -115,7 +103,7 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-lg-4">
+                <div class="col-lg-4">
                     <div class="card shadow-sm border-primary h-100">
                         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                             <span><i class="bi bi-headset"></i> Support</span>
@@ -127,7 +115,7 @@
                         <div class="card-body p-0">
                             <h6 class="small text-muted fw-bold p-2 border-bottom bg-light m-0">Inbox (Offline Forms)</h6>
                             <div id="enquiry-list" class="list-group list-group-flush" style="max-height: 215px; overflow-y:auto;">
-                                <div class="text-center text-muted py-3 small">Loading messages...</div>
+                                <div class="text-center text-muted py-3 small">Loading...</div>
                             </div>
                         </div>
                     </div>
@@ -141,19 +129,13 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <label class="form-label small fw-bold">Free Shipping Above (₹)</label>
-                                <input type="number" id="ship-free" class="form-control" placeholder="e.g. 599">
+                                <input type="number" id="ship-free" class="form-control" placeholder="599">
                             </div>
                             <div class="row g-2">
-                                <div class="col-6">
-                                    <label class="form-label small fw-bold">TN Rate (₹)</label>
-                                    <input type="number" id="ship-tn" class="form-control" placeholder="90">
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label small fw-bold">ROI Rate (₹)</label>
-                                    <input type="number" id="ship-roi" class="form-control" placeholder="120">
-                                </div>
+                                <div class="col-6"><label class="form-label small fw-bold">TN Rate</label><input type="number" id="ship-tn" class="form-control" placeholder="90"></div>
+                                <div class="col-6"><label class="form-label small fw-bold">ROI Rate</label><input type="number" id="ship-roi" class="form-control" placeholder="120"></div>
                             </div>
-                            <button class="btn btn-info text-white w-100 mt-3" onclick="saveShippingRules()">Update Shipping Rules</button>
+                            <button class="btn btn-info text-white w-100 mt-3" onclick="saveShippingRules()">Update Rules</button>
                         </div>
                     </div>
                 </div>
@@ -165,33 +147,16 @@
                             <span class="badge bg-white text-success small" id="coupon-count">0 Active</span>
                         </div>
                         <div class="card-body">
-                            <div class="row g-2 mb-2">
-                                <div class="col-6">
-                                    <input type="text" id="new-code" class="form-control text-uppercase form-control-sm" placeholder="Code (e.g. SAVE10)">
-                                </div>
-                                <div class="col-6">
-                                    <select id="new-type" class="form-select form-select-sm">
-                                        <option value="flat">Flat Amount (₹)</option>
-                                        <option value="percent">Percentage (%)</option>
-                                    </select>
-                                </div>
-                                <div class="col-6">
-                                    <input type="number" id="new-val" class="form-control form-control-sm" placeholder="Value (e.g. 50 or 10)">
-                                </div>
-                                <div class="col-6">
-                                    <input type="number" id="new-min" class="form-control form-control-sm" placeholder="Min Order ₹">
-                                </div>
-                                <div class="col-12">
-                                    <div class="input-group input-group-sm">
-                                        <span class="input-group-text">Expires</span>
-                                        <input type="date" id="new-expiry" class="form-control">
-                                        <button class="btn btn-success" onclick="addCoupon()">Add Coupon</button>
-                                    </div>
-                                </div>
+                            <div class="row g-2 mb-2 bg-light p-2 rounded border">
+                                <div class="col-4"><input type="text" id="new-code" class="form-control form-control-sm text-uppercase fw-bold" placeholder="CODE"></div>
+                                <div class="col-4"><select id="new-type" class="form-select form-select-sm"><option value="flat">₹ Flat</option><option value="percent">% Percent</option></select></div>
+                                <div class="col-4"><input type="number" id="new-val" class="form-control form-control-sm" placeholder="Value"></div>
+                                <div class="col-4"><input type="number" id="new-min" class="form-control form-control-sm" placeholder="Min Order"></div>
+                                <div class="col-4"><input type="date" id="new-expiry" class="form-control form-control-sm"></div>
+                                <div class="col-4"><button class="btn btn-success btn-sm w-100" onclick="addCoupon()">+ Add</button></div>
                             </div>
-                            
-                            <h6 class="small text-muted fw-bold mt-3 border-top pt-2">Active Coupons (Toggles: Visible | Banner)</h6>
-                            <ul id="coupon-list" class="list-group list-group-flush small" style="max-height: 150px; overflow-y:auto;">
+                            <h6 class="small text-muted fw-bold border-top pt-2">Active Coupons (Visible | Banner | Delete)</h6>
+                            <ul id="coupon-list" class="list-group list-group-flush small" style="max-height: 120px; overflow-y:auto;">
                                 <li class="list-group-item text-center text-muted">Loading...</li>
                             </ul>
                         </div>
@@ -212,14 +177,11 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="col-lg-4 col-md-5">
                     <div class="card shadow-sm border-danger h-100">
                         <div class="card-header bg-danger text-white"><span><i class="bi bi-exclamation-triangle-fill"></i> Danger Zone</span></div>
                         <div class="card-body text-center d-flex flex-column justify-content-center">
-                            <button class="btn btn-outline-danger w-100" onclick="deleteAllOrders()">
-                                <i class="bi bi-trash3-fill"></i> DELETE ALL ORDERS
-                            </button>
+                            <button class="btn btn-outline-danger w-100" onclick="deleteAllOrders()"><i class="bi bi-trash3-fill"></i> DELETE ALL ORDERS</button>
                         </div>
                     </div>
                 </div>
@@ -231,34 +193,18 @@
                         <h5 class="mb-0"><i class="bi bi-list-check"></i> Order Management</h5>
                         <div class="d-flex gap-2 align-items-center">
                             <div class="input-group input-group-sm">
-                                <span class="input-group-text">From</span>
-                                <input type="date" id="dateFrom" class="form-control" onchange="filterOrders()">
-                                <span class="input-group-text">To</span>
-                                <input type="date" id="dateTo" class="form-control" onchange="filterOrders()">
+                                <span class="input-group-text">From</span><input type="date" id="dateFrom" class="form-control" onchange="filterOrders()">
+                                <span class="input-group-text">To</span><input type="date" id="dateTo" class="form-control" onchange="filterOrders()">
                                 <button class="btn btn-outline-secondary" onclick="resetDateFilter()">Reset</button>
                             </div>
-                            <button class="btn btn-sm btn-outline-danger" onclick="deleteSelectedOrders()" id="bulkDeleteBtn" disabled>
-                                <i class="bi bi-trash"></i> Delete Selected
-                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteSelectedOrders()" id="bulkDeleteBtn" disabled><i class="bi bi-trash"></i> Delete Selected</button>
                         </div>
                     </div>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle table-bordered mb-0">
-                            <thead class="table-light">
-                                <tr class="text-center align-middle">
-                                    <th class="table-checkbox"><input class="form-check-input" type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
-                                    <th>Date</th>
-                                    <th>Order ID</th>
-                                    <th class="text-start">Customer</th>
-                                    <th style="width: 20%;" class="text-start">Address</th>
-                                    <th>Total & UTR</th>
-                                    <th>Tracking #</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
+                            <thead class="table-light"><tr class="text-center align-middle"><th class="table-checkbox"><input class="form-check-input" type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th><th>Date</th><th>Order ID</th><th class="text-start">Customer</th><th style="width: 20%;" class="text-start">Address</th><th>Total & UTR</th><th>Tracking #</th><th>Status</th><th>Actions</th></tr></thead>
                             <tbody id="tableBody"><tr><td colspan="9" class="text-center py-5">Loading orders...</td></tr></tbody>
                         </table>
                     </div>
@@ -267,12 +213,12 @@
         </div>
     </div>
 
-    <div class="modal fade" id="trackingInputModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-primary text-white"><h5 class="modal-title">🚚 Shipping Details</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><p>Enter the courier tracking number for this order.</p><input type="text" id="newTrackingNumber" class="form-control form-control-lg" placeholder="e.g. AWB123456789"></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-success" onclick="submitTracking()">Save & Update Status</button></div></div></div></div>
-    <div class="modal fade" id="updateModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-4"><div class="modal-header border-0 pb-0"><button type="button" class="btn-close d-none" id="modalCloseBtn" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body" id="modalBodyContent"><div id="loadingState"><div class="mb-3"><i class="bi bi-hourglass-split sandclock-spin"></i></div><h5 class="fw-bold">Updating System...</h5><p class="text-muted small">Syncing with the live database.</p><div class="progress mt-3" style="height: 8px;"><div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 100%"></div></div></div><div id="successState" style="display: none;"><i class="bi bi-check-circle-fill text-success" style="font-size: 3.5rem;"></i><h5 class="mt-3 fw-bold">Update Successful!</h5><p class="text-muted small">Changes are now live.</p><button class="btn btn-outline-success w-100 mt-2" data-bs-dismiss="modal">Close</button></div></div></div></div></div>
-    <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-info text-white"><h5 class="modal-title"><i class="bi bi-basket"></i> Order Contents</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><p class="text-muted small">Items in this package:</p><div id="orderItemsContent" class="p-3 bg-light rounded border fw-bold" style="white-space: pre-line;"></div></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div></div></div></div>
-    <div class="modal fade" id="alertModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-danger text-white" id="alertHeader"><h5 class="modal-title" id="alertTitle">Alert</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body" id="alertBody">Message</div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div></div></div></div>
-    <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="confirmTitle">Confirm Action</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body" id="confirmBody">Are you sure?</div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary" id="confirmBtnAction">Yes, Proceed</button></div></div></div></div>
-    <div class="modal fade" id="securityModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-dark text-white"><h5 class="modal-title"><i class="bi bi-shield-lock"></i> Security Check</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><p class="mb-2 text-muted">This action requires Master Authorization.</p><input type="password" id="secPassInput" class="form-control text-center" placeholder="Enter Master Password"><div id="secError" class="text-danger small mt-2 fw-bold" style="display:none;">❌ Incorrect Password</div></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-danger" onclick="verifySecurity()">Verify & Proceed</button></div></div></div></div>
+    <div class="modal fade" id="trackingInputModal" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-primary text-white"><h5 class="modal-title">Shipping</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="text" id="newTrackingNumber" class="form-control" placeholder="Tracking Number"></div><div class="modal-footer"><button type="button" class="btn btn-success" onclick="submitTracking()">Update</button></div></div></div></div>
+    <div class="modal fade" id="updateModal" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-4"><div class="spinner-border text-primary mb-2"></div><h5>Processing...</h5></div></div></div>
+    <div class="modal fade" id="detailsModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-info text-white"><h5 class="modal-title">Contents</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div id="orderItemsContent" class="p-3 bg-light fw-bold" style="white-space: pre-line;"></div></div></div></div></div>
+    <div class="modal fade" id="alertModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-danger text-white" id="alertHeader"><h5 class="modal-title" id="alertTitle">Alert</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body" id="alertBody"></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div></div></div></div>
+    <div class="modal fade" id="confirmModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="confirmTitle">Confirm</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="confirmBody"></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary" id="confirmBtnAction">Proceed</button></div></div></div></div>
+    <div class="modal fade" id="securityModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-dark text-white"><h5>Security Check</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="password" id="secPassInput" class="form-control text-center" placeholder="Master Password"><div id="secError" class="text-danger small mt-2 fw-bold" style="display:none;">Incorrect</div></div><div class="modal-footer"><button type="button" class="btn btn-danger" onclick="verifySecurity()">Verify</button></div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -306,34 +252,70 @@
 
         function initDashboard() {
             loadOrders(); loadInventory(); loadReviews('pending'); loadReviewCounts(); loadSettings();
-            loadShippingRules(); loadCoupons();
-            // Added Support
-            loadSupportSettings(); loadEnquiries();
+            loadShippingRules(); loadCoupons(); loadSupportSettings(); loadEnquiries();
         }
 
-        // --- CUSTOM MODAL HELPERS ---
+        // --- HELPER MODALS ---
         window.showAlert = function(t, m, type='danger') { document.getElementById('alertTitle').innerText=t; document.getElementById('alertBody').innerText=m; document.getElementById('alertHeader').className=`modal-header text-white bg-${type}`; new bootstrap.Modal(document.getElementById('alertModal')).show(); }
         window.showConfirm = function(t, m, cb) { document.getElementById('confirmTitle').innerText=t; document.getElementById('confirmBody').innerText=m; pendingConfirmCallback=cb; const modal=new bootstrap.Modal(document.getElementById('confirmModal')); document.getElementById('confirmBtnAction').onclick=function(){ modal.hide(); if(pendingConfirmCallback) pendingConfirmCallback(); }; modal.show(); }
         window.askSecurity = function(cb) { document.getElementById('secPassInput').value=''; document.getElementById('secError').style.display='none'; pendingSecurityCallback=cb; new bootstrap.Modal(document.getElementById('securityModal')).show(); }
         window.verifySecurity = function() { if(document.getElementById('secPassInput').value==='superadmin') { bootstrap.Modal.getInstance(document.getElementById('securityModal')).hide(); if(pendingSecurityCallback) pendingSecurityCallback(); } else { document.getElementById('secError').style.display='block'; } }
 
-        // --- SUPPORT DESK (NEW) ---
+        // --- INVENTORY ---
+        async function loadInventory() {
+            const pIds = ['p1', 'p2', 'p3'];
+            for (const pid of pIds) {
+                const docSnap = await getDoc(doc(db, "products", pid));
+                if(docSnap.exists()) {
+                    document.getElementById(`qty-${pid}`).value = docSnap.data().stock;
+                    document.getElementById(`live-${pid}`).innerText = docSnap.data().stock + " In Stock";
+                }
+            }
+        }
+        window.saveInventory = async function() {
+            startLoading();
+            try { await new Promise(r => setTimeout(r, 500)); const pIds = ['p1', 'p2', 'p3']; for(const pid of pIds) { await updateDoc(doc(db, "products", pid), { stock: parseInt(document.getElementById(`qty-${pid}`).value) }); } loadInventory(); stopLoading(); } catch (e) { showAlert("Error", "Failed to save."); stopLoading(); }
+        }
+
+        // --- REVIEWS (FIXED) ---
+        async function loadReviewCounts() {
+            const qP = query(collection(db, "reviews"), where("status", "==", "pending")); const sP = await getDocs(qP); document.getElementById('badge-pending').innerText = sP.size;
+            const qA = query(collection(db, "reviews"), where("status", "==", "approved")); const sA = await getDocs(qA); document.getElementById('badge-approved').innerText = sA.size;
+        }
+        window.loadReviews = async function(status) {
+            window.currentReviewTab = status;
+            document.querySelectorAll('.review-tab-btn').forEach(b => b.classList.remove('active')); document.getElementById(`tab-${status}`).classList.add('active');
+            const list = document.getElementById('reviews-list-container'); list.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>';
+            
+            try {
+                const q = query(collection(db, "reviews"), where("status", "==", status));
+                const snapshot = await getDocs(q);
+                if (snapshot.empty) { list.innerHTML = `<div class="text-center text-muted py-4 small">No ${status} reviews.</div>`; return; }
+                let html = '';
+                snapshot.forEach(docSnap => {
+                    const r = docSnap.data();
+                    let btns = status === 'pending' ? `<button class="btn btn-sm btn-success py-0" onclick="updateReviewStatus('${docSnap.id}', 'approved')">✔</button><button class="btn btn-sm btn-danger py-0" onclick="deleteReview('${docSnap.id}')">✖</button>` : `<button class="btn btn-sm btn-outline-dark py-0" onclick="updateReviewStatus('${docSnap.id}', 'pending')">Hide</button><button class="btn btn-sm btn-danger py-0" onclick="deleteReview('${docSnap.id}')"><i class="bi bi-trash"></i></button>`;
+                    html += `<div class="list-group-item d-flex justify-content-between align-items-center bg-transparent"><div class="me-2"><span class="fw-bold text-dark small">${r.name}</span> <span class="text-warning small">${'★'.repeat(r.rating)}</span><br><small class="text-muted fst-italic">"${r.text}"</small></div><div class="d-flex gap-1">${btns}</div></div>`;
+                });
+                list.innerHTML = html; loadReviewCounts();
+            } catch (error) { list.innerHTML = `<div class="text-center text-danger py-3 small">Error loading. Check console.</div>`; console.error(error); }
+        };
+        window.updateReviewStatus = async function(id, newStatus) { await updateDoc(doc(db, "reviews", id), { status: newStatus }); loadReviews(window.currentReviewTab); };
+        window.deleteReview = async function(id) { showConfirm("Delete Review", "Sure?", async () => { await deleteDoc(doc(db, "reviews", id)); loadReviews(window.currentReviewTab); }); };
+
+        // --- SUPPORT DESK ---
         function loadSupportSettings() {
             onSnapshot(doc(db, "settings", "support"), (doc) => {
                 const isOnline = doc.exists() ? doc.data().isOnline : false;
                 const toggle = document.getElementById('supportToggle');
-                const label = document.getElementById('supportLabel');
-                if(toggle && label) {
-                    toggle.checked = isOnline;
-                    label.innerText = isOnline ? "Online (WhatsApp)" : "Offline (Form)";
-                    label.className = isOnline ? "form-check-label text-white small fw-bold" : "form-check-label text-white-50 small";
-                }
+                toggle.checked = isOnline;
+                const lbl = document.getElementById('supportLabel');
+                lbl.innerText = isOnline ? "Online (WA)" : "Offline (Form)";
+                lbl.className = isOnline ? "form-check-label text-white small fw-bold" : "form-check-label text-white-50 small";
             });
         }
-        window.toggleSupportStatus = async function() {
-            const isOnline = document.getElementById('supportToggle').checked;
-            await setDoc(doc(db, "settings", "support"), { isOnline: isOnline });
-        }
+        window.toggleSupportStatus = async function() { await setDoc(doc(db, "settings", "support"), { isOnline: document.getElementById('supportToggle').checked }); }
+        
         function loadEnquiries() {
             const q = query(collection(db, "enquiries"), orderBy("timestamp", "desc"));
             onSnapshot(q, (snapshot) => {
@@ -343,71 +325,17 @@
                 snapshot.forEach(doc => {
                     const m = doc.data();
                     const time = m.timestamp ? new Date(m.timestamp.seconds*1000).toLocaleDateString() : 'N/A';
-                    html += `
-                    <div class="list-group-item msg-card border-0 mb-2 rounded bg-light">
-                        <div class="d-flex justify-content-between">
-                            <strong class="text-dark small">${m.name}</strong>
-                            <small class="text-muted" style="font-size:0.7rem">${time}</small>
-                        </div>
-                        <p class="small text-muted mb-2 text-truncate">${m.message}</p>
-                        <div class="d-flex gap-2">
-                            <a href="https://wa.me/91${m.phone}" target="_blank" class="btn btn-sm btn-success px-2 py-0" style="font-size: 0.7rem;"><i class="bi bi-whatsapp"></i> Reply</a>
-                            <button class="btn btn-sm btn-outline-danger px-2 py-0" style="font-size: 0.7rem;" onclick="deleteEnquiry('${doc.id}')">&times;</button>
-                        </div>
-                    </div>`;
+                    html += `<div class="list-group-item msg-card border-0 mb-2 rounded bg-light small"><div class="d-flex justify-content-between"><strong class="text-dark">${m.name}</strong><small class="text-muted" style="font-size:0.7rem">${time}</small></div><p class="text-muted mb-1 text-truncate">${m.message}</p><div class="d-flex gap-2"><a href="https://wa.me/91${m.phone}" target="_blank" class="text-success text-decoration-none fw-bold"><i class="bi bi-whatsapp"></i> Reply</a><span class="text-danger fw-bold" style="cursor:pointer;" onclick="deleteEnquiry('${doc.id}')">&times; Del</span></div></div>`;
                 });
                 list.innerHTML = html;
             });
         }
         window.deleteEnquiry = async function(id) { if(confirm("Delete message?")) await deleteDoc(doc(db, "enquiries", id)); }
 
-        // --- INVENTORY ---
-        async function loadInventory() {
-            const pIds = ['p1', 'p2', 'p3'];
-            for (const pid of pIds) {
-                const docSnap = await getDoc(doc(db, "products", pid));
-                let val = docSnap.exists() ? docSnap.data().stock : 10;
-                if (!docSnap.exists()) await setDoc(doc(db, "products", pid), { stock: 10 });
-                document.getElementById(`qty-${pid}`).value = val;
-                const liveEl = document.getElementById(`live-${pid}`);
-                if (val > 0) { liveEl.innerHTML = `${val} <span class="badge bg-success">In Stock</span>`; liveEl.classList.remove('text-preorder'); }
-                else { liveEl.innerHTML = `0 <span class="badge bg-warning text-dark">Pre-Order</span>`; liveEl.classList.add('text-preorder'); }
-            }
-        }
-        window.saveInventory = async function() {
-            startLoading();
-            try { await new Promise(r => setTimeout(r, 1000)); const pIds = ['p1', 'p2', 'p3']; for(const pid of pIds) { await updateDoc(doc(db, "products", pid), { stock: parseInt(document.getElementById(`qty-${pid}`).value) }); } loadInventory(); stopLoading(); } catch (e) { showAlert("Error", "Failed to save inventory."); stopLoading(); }
-        }
-
-        // --- REVIEWS ---
-        async function loadReviewCounts() {
-            const qP = query(collection(db, "reviews"), where("status", "==", "pending")); const sP = await getDocs(qP); document.getElementById('badge-pending').innerText = sP.size;
-            const qA = query(collection(db, "reviews"), where("status", "==", "approved")); const sA = await getDocs(qA); document.getElementById('badge-approved').innerText = sA.size;
-        }
-        window.loadReviews = async function(status) {
-            window.currentReviewTab = status;
-            document.querySelectorAll('.review-tab-btn').forEach(b => b.classList.remove('active')); document.getElementById(`tab-${status}`).classList.add('active');
-            const list = document.getElementById('reviews-list-container'); list.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>';
-            try {
-                const q = query(collection(db, "reviews"), where("status", "==", status));
-                const snapshot = await getDocs(q);
-                if (snapshot.empty) { list.innerHTML = `<div class="text-center text-muted py-4 small">No ${status} reviews found.</div>`; return; }
-                let html = '';
-                snapshot.forEach(docSnap => {
-                    const r = docSnap.data();
-                    let btns = status === 'pending' ? `<button class="btn btn-sm btn-success py-0" onclick="updateReviewStatus('${docSnap.id}', 'approved')">✔</button><button class="btn btn-sm btn-danger py-0" onclick="deleteReview('${docSnap.id}')">✖</button>` : `<button class="btn btn-sm btn-outline-dark py-0" onclick="updateReviewStatus('${docSnap.id}', 'pending')">Hide</button><button class="btn btn-sm btn-danger py-0" onclick="deleteReview('${docSnap.id}')"><i class="bi bi-trash"></i></button>`;
-                    html += `<div class="list-group-item d-flex justify-content-between align-items-center bg-transparent"><div class="me-2"><span class="fw-bold text-dark small">${r.name}</span> <span class="text-warning small">${'★'.repeat(r.rating)}</span><br><small class="text-muted fst-italic">"${r.text}"</small></div><div class="d-flex gap-1">${btns}</div></div>`;
-                });
-                list.innerHTML = html; loadReviewCounts();
-            } catch (error) { list.innerHTML = `<div class="text-center text-danger py-3 small">Error loading reviews.</div>`; }
-        };
-        window.updateReviewStatus = async function(id, newStatus) { await updateDoc(doc(db, "reviews", id), { status: newStatus }); loadReviews(window.currentReviewTab); };
-        window.deleteReview = async function(id) { showConfirm("Delete Review", "Are you sure?", async () => { await deleteDoc(doc(db, "reviews", id)); loadReviews(window.currentReviewTab); }); };
-
-        // --- SHIPPING RULES ---
+        // --- SHIPPING ---
         async function loadShippingRules() {
             const docSnap = await getDoc(doc(db, "settings", "shipping"));
-            if(docSnap.exists()) { const d = docSnap.data(); document.getElementById('ship-free').value = d.freeLimit; document.getElementById('ship-tn').value = d.tnRate; document.getElementById('ship-roi').value = d.roiRate; }
+            if(docSnap.exists()) { const d = docSnap.data(); document.getElementById('ship-free').value=d.freeLimit; document.getElementById('ship-tn').value=d.tnRate; document.getElementById('ship-roi').value=d.roiRate; }
             else await setDoc(doc(db, "settings", "shipping"), { freeLimit: 599, tnRate: 90, roiRate: 120 });
         }
         window.saveShippingRules = async function() {
@@ -432,18 +360,10 @@
                     snapshot.forEach(docSnap => {
                         const c = docSnap.data();
                         const typeLabel = c.type === 'percent' ? '%' : '₹';
-                        const expiry = c.expiry ? `(Exp: ${c.expiry})` : '';
                         const eyeClass = c.isVisible ? 'bi-eye-fill icon-active' : 'bi-eye-slash-fill icon-inactive';
                         const starClass = c.isBanner ? 'bi-megaphone-fill icon-banner' : 'bi-megaphone icon-inactive';
 
-                        list.innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center px-2 py-1">
-                            <div><span class="fw-bold text-dark small">${c.code}</span> <span class="text-muted" style="font-size:0.7rem">${c.value}${typeLabel} OFF</span></div>
-                            <div class="d-flex align-items-center gap-1">
-                                <i class="bi ${eyeClass} icon-btn" style="font-size:0.9rem" onclick="toggleCouponField('${docSnap.id}', 'isVisible', ${!c.isVisible})" title="Show in Cart"></i>
-                                <i class="bi ${starClass} icon-btn" style="font-size:0.9rem" onclick="toggleCouponField('${docSnap.id}', 'isBanner', ${!c.isBanner})" title="Banner"></i>
-                                <button class="btn btn-sm btn-outline-danger ms-2 px-2 py-0" onclick="deleteCoupon('${docSnap.id}')">&times;</button>
-                            </div>
-                        </li>`;
+                        list.innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center px-2 py-1"><div><span class="fw-bold text-dark small">${c.code}</span> <span class="text-muted" style="font-size:0.7rem">${c.value}${typeLabel} OFF</span></div><div class="d-flex align-items-center gap-1"><i class="bi ${eyeClass} icon-btn" style="font-size:0.9rem" onclick="toggleCouponField('${docSnap.id}', 'isVisible', ${!c.isVisible})"></i><i class="bi ${starClass} icon-btn" style="font-size:0.9rem" onclick="toggleCouponField('${docSnap.id}', 'isBanner', ${!c.isBanner})"></i><i class="bi bi-trash text-danger icon-btn" style="font-size:0.9rem" onclick="deleteCoupon('${docSnap.id}')"></i></div></li>`;
                     });
                 });
             } catch (e) { console.error(e); }
@@ -471,12 +391,6 @@
         window.saveSettings = async function() { startLoading(); try { await setDoc(doc(db, "settings", "config"), { masterEmail: document.getElementById('master-email').value }); stopLoading(); } catch(e){ showAlert("Error", "Failed."); stopLoading(); } }
 
         // --- ORDERS ---
-        window.deleteOrder = function(docId) { showConfirm("Delete Order", "Delete this specific order?", () => { askSecurity(async () => { startLoading(); try { await deleteDoc(doc(db, "orders", docId)); loadOrders(); stopLoading(); } catch(e) { showAlert("Error", "Failed."); stopLoading(); } }); }); };
-        window.deleteAllOrders = function() { showConfirm("⚠️ DANGER", "Delete ALL orders?", () => { askSecurity(async () => { startLoading(); try { const s = await getDocs(query(collection(db, "orders"))); s.forEach(d => deleteDoc(d.ref)); showAlert("Success", "All orders cleared.", "success"); loadOrders(); stopLoading(); } catch(e) { showAlert("Error", "Failed."); stopLoading(); } }); }); };
-        window.toggleSelectAll = function() { const c = document.getElementById('selectAll').checked; document.querySelectorAll('.order-checkbox').forEach(cb => cb.checked = c); updateBulkBtn(); };
-        window.updateBulkBtn = function() { const c = document.querySelectorAll('.order-checkbox:checked').length; const b = document.getElementById('bulkDeleteBtn'); b.disabled = c === 0; b.innerHTML = c > 0 ? `<i class="bi bi-trash"></i> Delete (${c})` : `<i class="bi bi-trash"></i> Delete Selected`; };
-        window.deleteSelectedOrders = function() { const s = Array.from(document.querySelectorAll('.order-checkbox:checked')).map(cb => cb.value); if(s.length === 0) return; showConfirm("Bulk Delete", `Delete ${s.length} orders?`, () => { askSecurity(async () => { startLoading(); try { await Promise.all(s.map(id => deleteDoc(doc(db, "orders", id)))); loadOrders(); stopLoading(); } catch(e) { showAlert("Error", "Failed."); stopLoading(); } }); }); };
-
         async function loadOrders() {
             try {
                 const s = await getDocs(query(collection(db, "orders"), orderBy("timestamp", "desc")));
@@ -490,7 +404,6 @@
             renderOrders(f);
         }
         window.resetDateFilter = function() { document.getElementById('dateFrom').value = ''; document.getElementById('dateTo').value = ''; renderOrders(allOrdersCache); }
-
         function renderOrders(orders) {
             const tb = document.getElementById('tableBody');
             if(orders.length === 0) { tb.innerHTML = `<tr><td colspan="9" class="text-center py-5">No orders found.</td></tr>`; return; }
@@ -501,48 +414,27 @@
                 if (o.status && o.status.includes("Payment")) sc = "status-Payment";
                 else if (o.status && o.status.includes("Shipped")) sc = "status-Shipped";
                 else if (o.status && o.status.includes("Delivered")) sc = "status-Delivered";
-                else if (o.status && o.status.includes("Cancelled")) sc = "status-Cancelled";
-
                 html += `<tr class="text-center"><td class="table-checkbox"><input class="form-check-input order-checkbox" type="checkbox" value="${o.id}" onclick="updateBulkBtn()"></td><td><small>${d}</small></td><td><span class="badge bg-secondary">${o.orderId || o.id}</span></td><td class="text-start"><strong>${o.name}</strong><br><a href="https://wa.me/91${o.phone}" target="_blank" class="text-success small text-decoration-none"><i class="bi bi-whatsapp"></i> ${o.phone}</a></td><td class="text-start"><small>${o.address}</small></td><td><strong>₹${o.total}</strong><br><small class="text-muted">UTR: ${o.txnId || 'N/A'}</small></td><td>${o.trackingNumber || '-'}</td><td><select class="form-select form-select-sm status-select ${sc}" onchange="updateStatus('${o.id}', this.value)"><option value="Pending Verification" ${o.status==='Pending Verification'?'selected':''}>Pending</option><option value="Payment Notification" ${o.status==='Payment Notification'?'selected':''}>Payment Notif.</option><option value="Payment Received" ${o.status==='Payment Received'?'selected':''}>Paid</option><option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option><option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option><option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option></select></td><td><div class="d-flex flex-column gap-1"><button class="btn btn-sm btn-outline-primary" onclick="viewDetails('${encodeURIComponent(o.items)}')">Details</button><button class="btn btn-sm btn-success" onclick="sendWhatsappUpdate('${o.phone}', '${o.name}', '${o.orderId}', '${o.status}')">Notify</button><button class="btn btn-sm btn-outline-danger" onclick="deleteOrder('${o.id}')"><i class="bi bi-trash"></i></button></div></td></tr>`;
             });
             tb.innerHTML = html; document.getElementById('selectAll').checked = false; updateBulkBtn();
         }
-
-        window.updateStatus = function(docId, newStatus) {
-            if (newStatus === "Shipped") { pendingOrderId = docId; pendingStatus = newStatus; document.getElementById('newTrackingNumber').value = ""; new bootstrap.Modal(document.getElementById('trackingInputModal')).show(); } 
-            else { performUpdate(docId, newStatus); }
-        };
-        window.submitTracking = function() {
-            const t = document.getElementById('newTrackingNumber').value.trim() || "NA";
-            bootstrap.Modal.getInstance(document.getElementById('trackingInputModal')).hide();
-            performUpdate(pendingOrderId, pendingStatus, t);
-        };
+        window.updateStatus = function(docId, newStatus) { if (newStatus === "Shipped") { pendingOrderId = docId; pendingStatus = newStatus; document.getElementById('newTrackingNumber').value = ""; new bootstrap.Modal(document.getElementById('trackingInputModal')).show(); } else { performUpdate(docId, newStatus); } };
+        window.submitTracking = function() { const t = document.getElementById('newTrackingNumber').value.trim() || "NA"; bootstrap.Modal.getInstance(document.getElementById('trackingInputModal')).hide(); performUpdate(pendingOrderId, pendingStatus, t); };
         async function performUpdate(docId, newStatus, trackingNum = null) {
             startLoading();
             try {
-                const orderRef = doc(db, "orders", docId);
-                let updateData = { status: newStatus };
-                if (trackingNum) updateData.trackingNumber = trackingNum;
-                if (newStatus === "Cancelled") {
-                    const s = await getDoc(orderRef);
-                    if (s.exists() && s.data().cartDetails) {
-                        const promises = s.data().cartDetails.map(i => updateDoc(doc(db, "products", i.id), { stock: increment(1) }));
-                        await Promise.all(promises);
-                    }
-                }
+                const orderRef = doc(db, "orders", docId); let updateData = { status: newStatus }; if (trackingNum) updateData.trackingNumber = trackingNum;
+                if (newStatus === "Cancelled") { const s = await getDoc(orderRef); if (s.exists() && s.data().cartDetails) { const promises = s.data().cartDetails.map(i => updateDoc(doc(db, "products", i.id), { stock: increment(1) })); await Promise.all(promises); } }
                 await updateDoc(orderRef, updateData); loadOrders(); loadInventory(); stopLoading();
             } catch (e) { showAlert("Error", "Failed update."); stopLoading(); }
         }
-
         window.viewDetails = function(enc) { document.getElementById('orderItemsContent').innerText = decodeURIComponent(enc); new bootstrap.Modal(document.getElementById('detailsModal')).show(); };
-        window.sendWhatsappUpdate = function(ph, nm, oid, st) {
-            let msg = "";
-            if(st === "Payment Received") msg = `Hello ${nm}, payment received for Order ${oid}. Preparing your batch! 🌿`;
-            else if (st === "Shipped") msg = `Great news ${nm}! Order ${oid} has been SHIPPED! 🚚 Track here: ${window.location.origin}/tracker.html`;
-            else msg = `Hello ${nm}, update on Order ${oid}: ${st}.`;
-            window.open(`https://wa.me/91${ph}?text=${encodeURIComponent(msg)}`, '_blank');
-        };
-
+        window.sendWhatsappUpdate = function(ph, nm, oid, st) { let msg = ""; if(st === "Payment Received") msg = `Hello ${nm}, payment received for Order ${oid}. Preparing your batch! 🌿`; else if (st === "Shipped") msg = `Great news ${nm}! Order ${oid} has been SHIPPED! 🚚 Track here: ${window.location.origin}/tracker.html`; else msg = `Hello ${nm}, update on Order ${oid}: ${st}.`; window.open(`https://wa.me/91${ph}?text=${encodeURIComponent(msg)}`, '_blank'); };
+        window.deleteOrder = function(docId) { showConfirm("Delete Order", "Delete this specific order?", () => { askSecurity(async () => { startLoading(); try { await deleteDoc(doc(db, "orders", docId)); loadOrders(); stopLoading(); } catch(e) { showAlert("Error", "Failed."); stopLoading(); } }); }); };
+        window.deleteAllOrders = function() { showConfirm("⚠️ DANGER", "Delete ALL orders?", () => { askSecurity(async () => { startLoading(); try { const s = await getDocs(query(collection(db, "orders"))); s.forEach(d => deleteDoc(d.ref)); showAlert("Success", "All orders cleared.", "success"); loadOrders(); stopLoading(); } catch(e) { showAlert("Error", "Failed."); stopLoading(); } }); }); };
+        window.toggleSelectAll = function() { const c = document.getElementById('selectAll').checked; document.querySelectorAll('.order-checkbox').forEach(cb => cb.checked = c); updateBulkBtn(); };
+        window.updateBulkBtn = function() { const c = document.querySelectorAll('.order-checkbox:checked').length; const b = document.getElementById('bulkDeleteBtn'); b.disabled = c === 0; b.innerHTML = c > 0 ? `<i class="bi bi-trash"></i> Delete (${c})` : `<i class="bi bi-trash"></i> Delete Selected`; };
+        window.deleteSelectedOrders = function() { const s = Array.from(document.querySelectorAll('.order-checkbox:checked')).map(cb => cb.value); if(s.length === 0) return; showConfirm("Bulk Delete", `Delete ${s.length} orders?`, () => { askSecurity(async () => { startLoading(); try { await Promise.all(s.map(id => deleteDoc(doc(db, "orders", id)))); loadOrders(); stopLoading(); } catch(e) { showAlert("Error", "Failed."); stopLoading(); } }); }); };
         function startLoading() { const m = new bootstrap.Modal(document.getElementById('updateModal')); document.getElementById('loadingState').style.display = 'block'; document.getElementById('successState').style.display = 'none'; document.getElementById('modalCloseBtn').classList.add('d-none'); m.show(); }
         function stopLoading() { document.getElementById('loadingState').style.display = 'none'; document.getElementById('successState').style.display = 'block'; document.getElementById('modalCloseBtn').classList.remove('d-none'); }
     </script>
