@@ -356,7 +356,7 @@
                         <div class="d-flex gap-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="locRadio" id="locTN" value="TN" checked onchange="recalcTotal()">
-                                <label class="form-check-label" for="locTN">TN, KL, KA, AP, TS, PY</label>
+                                <label class="form-check-label" for="locTN">Tamil Nadu</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="locRadio" id="locROI" value="ROI" onchange="recalcTotal()">
@@ -365,11 +365,14 @@
                         </div>
                     </div>
 
-                    <div class="input-group mb-4">
-                        <input type="text" id="couponCode" class="form-control text-uppercase" placeholder="Have a coupon?">
-                        <button class="btn btn-outline-dark" type="button" onclick="applyCoupon()">Apply</button>
+                    <div class="mb-4 position-relative">
+                        <div class="input-group">
+                            <input type="text" id="couponCode" list="couponSuggestions" class="form-control text-uppercase" placeholder="Have a coupon? Type code...">
+                            <button class="btn btn-outline-dark" type="button" onclick="applyCoupon()">Apply</button>
+                        </div>
+                        <datalist id="couponSuggestions"></datalist>
+                        <div id="couponMsg" class="small fw-bold mt-1" style="display:none;"></div>
                     </div>
-                    <div id="couponMsg" class="small fw-bold mb-2" style="display:none;"></div>
 
                     <div class="border-top pt-3 mb-4">
                         <div class="d-flex justify-content-between text-muted small mb-1"><span>Subtotal:</span><span id="display-subtotal">₹0</span></div>
@@ -421,6 +424,22 @@
                     <h5 class="fw-bold mb-2">Attention</h5>
                     <p class="text-muted" id="notificationMsg">Message goes here.</p>
                     <button type="button" class="btn btn-dark w-100 rounded-pill mt-2" data-bs-dismiss="modal">Okay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="promoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center border-0 shadow-lg" style="background: linear-gradient(135deg, #1B4D3E 0%, #198754 100%); color: white;">
+                <div class="modal-header border-0 pb-0 justify-content-end">
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-5">
+                    <i class="bi bi-stars display-4 text-warning mb-3 d-block"></i>
+                    <h2 class="fw-bold mb-2">Special Offer!</h2>
+                    <p class="lead mb-4" id="promoText">Use code <strong>WELCOME</strong> for discounts.</p>
+                    <button class="btn btn-light text-success fw-bold px-4 rounded-pill" data-bs-dismiss="modal">Shop Now</button>
                 </div>
             </div>
         </div>
@@ -478,6 +497,21 @@
         getDoc(doc(db, "settings", "shipping")).then(snap => {
             if(snap.exists()) window.shippingRules = snap.data();
         });
+
+        // --- CHECK BANNER PROMO (ON LOAD) ---
+        // Only show once per session to avoid annoyance
+        if (!sessionStorage.getItem('promoShown')) {
+            const q = query(collection(db, "coupons"), where("isBanner", "==", true));
+            getDocs(q).then(snap => {
+                if(!snap.empty) {
+                    const c = snap.docs[0].data();
+                    const desc = c.type === 'percent' ? `${c.value}% OFF` : `₹${c.value} OFF`;
+                    document.getElementById('promoText').innerHTML = `Use code <strong class="text-warning">${c.code}</strong> for ${desc}.<br><small>Min Order: ₹${c.minOrder}</small>`;
+                    new bootstrap.Modal(document.getElementById('promoModal')).show();
+                    sessionStorage.setItem('promoShown', 'true');
+                }
+            });
+        }
 
         // --- REVIEWS ---
         async function loadReviews() {
@@ -614,6 +648,7 @@
             html += '</ul>'; 
             cartItemsContainer.innerHTML = html;
             recalcTotal();
+            loadCouponSuggestions(); // Refresh suggestions based on new total
         }
 
         window.recalcTotal = function() {
@@ -629,23 +664,24 @@
             // Coupon Logic
             let discount = 0;
             if (window.appliedCoupon) {
-                if (window.appliedCoupon.type === 'percent') {
-                    discount = Math.round((subtotal * window.appliedCoupon.value) / 100);
-                } else {
-                    discount = window.appliedCoupon.value;
-                }
-                
-                // Validate Min Order again
+                // Re-validate logic in case quantity changed
                 if(subtotal < window.appliedCoupon.minOrder) {
-                    discount = 0;
-                    document.getElementById('couponMsg').innerText = `Add ₹${window.appliedCoupon.minOrder - subtotal} more to use this coupon.`;
-                    document.getElementById('couponMsg').className = "small text-warning fw-bold mb-2";
+                    document.getElementById('couponMsg').innerText = `Add ₹${window.appliedCoupon.minOrder - subtotal} more to use ${window.appliedCoupon.code}`;
+                    document.getElementById('couponMsg').className = "small text-warning fw-bold mt-1";
+                    document.getElementById('couponMsg').style.display = 'block';
                 } else {
+                    if (window.appliedCoupon.type === 'percent') {
+                        discount = Math.round((subtotal * window.appliedCoupon.value) / 100);
+                    } else {
+                        discount = window.appliedCoupon.value;
+                    }
                     document.getElementById('row-discount').style.display = 'flex';
                     document.getElementById('display-discount').innerText = `-₹${discount}`;
+                    document.getElementById('couponMsg').style.display = 'none';
                 }
             } else {
                 document.getElementById('row-discount').style.display = 'none';
+                document.getElementById('couponMsg').style.display = 'none';
             }
 
             let total = subtotal + shipping - discount;
@@ -656,6 +692,28 @@
             document.getElementById('display-total').innerText = `₹${total}`;
             
             return { subtotal, shipping, discount, total };
+        }
+
+        // --- COUPON SUGGESTIONS & APPLY ---
+        window.loadCouponSuggestions = async function() {
+            const subtotal = window.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const datalist = document.getElementById('couponSuggestions');
+            datalist.innerHTML = ''; // Clear old
+
+            const q = query(collection(db, "coupons"), where("isVisible", "==", true));
+            const snap = await getDocs(q);
+            
+            snap.forEach(doc => {
+                const c = doc.data();
+                // Only suggest if Min Order is met
+                if (subtotal >= (c.minOrder || 0)) {
+                    const desc = c.type === 'percent' ? `${c.value}% OFF` : `₹${c.value} OFF`;
+                    const opt = document.createElement('option');
+                    opt.value = c.code;
+                    opt.label = `${desc} (Min ₹${c.minOrder})`;
+                    datalist.appendChild(opt);
+                }
+            });
         }
 
         window.applyCoupon = async function() {
@@ -673,28 +731,26 @@
             if(!snap.empty) {
                 const data = snap.docs[0].data();
                 
-                // Check Expiry
                 if(data.expiry && new Date(data.expiry) < new Date()) {
                     window.appliedCoupon = null;
                     msgEl.innerText = "Coupon Expired";
-                    msgEl.className = "small text-danger fw-bold mb-2";
+                    msgEl.className = "small text-danger fw-bold mt-1";
                 }
-                // Check Min Order
                 else if(data.minOrder && subtotal < data.minOrder) {
                     window.appliedCoupon = null;
                     msgEl.innerText = `Minimum order ₹${data.minOrder} required`;
-                    msgEl.className = "small text-danger fw-bold mb-2";
+                    msgEl.className = "small text-danger fw-bold mt-1";
                 } 
                 else {
                     window.appliedCoupon = data;
                     const desc = data.type === 'percent' ? `${data.value}% OFF` : `₹${data.value} OFF`;
                     msgEl.innerText = `Coupon Applied: ${desc}`;
-                    msgEl.className = "small text-success fw-bold mb-2";
+                    msgEl.className = "small text-success fw-bold mt-1";
                 }
             } else {
                 window.appliedCoupon = null;
                 msgEl.innerText = "Invalid Coupon Code";
-                msgEl.className = "small text-danger fw-bold mb-2";
+                msgEl.className = "small text-danger fw-bold mt-1";
             }
             msgEl.style.display = 'block';
             btn.innerHTML = "Apply";
@@ -754,7 +810,7 @@
                     total: finals.total,
                     coupon: window.appliedCoupon ? window.appliedCoupon.code : "NONE",
                     
-                    cartDetails: flatCartForAdmin, // Saves as flat list for backward compatibility with admin cancellation
+                    cartDetails: flatCartForAdmin, 
                     txnId: txnId || "Screenshot Uploaded",
                     status: "Pending Verification", timestamp: serverTimestamp()
                 });
