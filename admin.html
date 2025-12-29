@@ -221,7 +221,8 @@
 
         async function loadPendingReviews() {
             const list = document.getElementById('pending-reviews-list');
-            const snapshot = await getDocs(query(collection(db, "reviews"), where("status", "pending")));
+            // FIX: Added '==' operator
+            const snapshot = await getDocs(query(collection(db, "reviews"), where("status", "==", "pending")));
             document.getElementById('review-count').innerText = snapshot.size;
             if (snapshot.empty) { list.innerHTML = '<li class="list-group-item text-center text-muted">No pending reviews.</li>'; return; }
             let html = '';
