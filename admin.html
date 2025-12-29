@@ -24,6 +24,8 @@
         #admin-content { display: none; }
         .stock-live { font-size: 0.9rem; font-weight: bold; }
         .text-preorder { color: #C17C28; }
+        .sandclock-spin { animation: spin 2s infinite linear; font-size: 3.5rem; color: #1B4D3E; margin-bottom: 1rem; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 50% { transform: rotate(180deg); } 100% { transform: rotate(360deg); } }
         
         .review-tab-btn { border-radius: 20px; font-size: 0.85rem; padding: 5px 15px; border: 1px solid transparent; }
         .review-tab-btn.active { background-color: #212529; color: white; }
@@ -111,6 +113,51 @@
             </div>
 
             <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="card shadow-sm border-info h-100">
+                        <div class="card-header bg-info text-white"><span><i class="bi bi-truck"></i> Shipping Rules</span></div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Free Shipping Above (₹)</label>
+                                <input type="number" id="ship-free" class="form-control" placeholder="e.g. 599">
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label class="form-label small fw-bold">TN Rate (₹)</label>
+                                    <input type="number" id="ship-tn" class="form-control" placeholder="90">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small fw-bold">ROI Rate (₹)</label>
+                                    <input type="number" id="ship-roi" class="form-control" placeholder="120">
+                                </div>
+                            </div>
+                            <button class="btn btn-info text-white w-100 mt-3" onclick="saveShippingRules()">Update Shipping Rules</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card shadow-sm border-success h-100">
+                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-ticket-perforated"></i> Coupons</span>
+                            <span class="badge bg-white text-success small" id="coupon-count">0 Active</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="input-group mb-3">
+                                <input type="text" id="new-code" class="form-control text-uppercase" placeholder="CODE (e.g. SAVE10)">
+                                <input type="number" id="new-val" class="form-control" placeholder="Value ₹">
+                                <button class="btn btn-success" onclick="addCoupon()">Add</button>
+                            </div>
+                            <h6 class="small text-muted fw-bold">Active Coupons</h6>
+                            <ul id="coupon-list" class="list-group list-group-flush small" style="max-height: 150px; overflow-y:auto;">
+                                <li class="list-group-item text-center text-muted">Loading...</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
                 <div class="col-lg-8 col-md-7">
                     <div class="card shadow-sm border-secondary h-100">
                         <div class="card-header bg-secondary text-white"><span><i class="bi bi-gear-fill"></i> Admin Settings</span></div>
@@ -140,7 +187,6 @@
                 <div class="card-header bg-white py-3 border-bottom">
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                         <h5 class="mb-0"><i class="bi bi-list-check"></i> Order Management</h5>
-                        
                         <div class="d-flex gap-2 align-items-center">
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text">From</span>
@@ -264,7 +310,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, updateDoc, orderBy, query, setDoc, getDoc, where, deleteDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, orderBy, query, setDoc, getDoc, where, deleteDoc, increment, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyA659yIOvlhVTm8-S6RtUDPXxVM8dZZ_kM", authDomain: "momshairoil-3010.firebaseapp.com", projectId: "momshairoil-3010", storageBucket: "momshairoil-3010.firebasestorage.app", messagingSenderId: "884566098620", appId: "1:884566098620:web:bca34f4f82d7b6712ec6b9" };
         const app = initializeApp(firebaseConfig);
@@ -297,6 +343,8 @@
             loadReviews('pending'); 
             loadReviewCounts();
             loadSettings();
+            loadShippingRules();
+            loadCoupons();
         }
 
         // --- CUSTOM MODAL HELPERS ---
@@ -329,7 +377,6 @@
 
         window.verifySecurity = function() {
             const pass = document.getElementById('secPassInput').value;
-            // MASTER PASSWORD SET HERE
             if(pass === 'superadmin') {
                 bootstrap.Modal.getInstance(document.getElementById('securityModal')).hide();
                 if(pendingSecurityCallback) pendingSecurityCallback();
@@ -361,6 +408,81 @@
                 }
                 loadInventory(); stopLoading();
             } catch (e) { showAlert("Error", "Failed to save inventory."); stopLoading(); }
+        }
+
+        // --- SHIPPING RULES ---
+        async function loadShippingRules() {
+            const docSnap = await getDoc(doc(db, "settings", "shipping"));
+            if(docSnap.exists()) {
+                const data = docSnap.data();
+                document.getElementById('ship-free').value = data.freeLimit || 599;
+                document.getElementById('ship-tn').value = data.tnRate || 90;
+                document.getElementById('ship-roi').value = data.roiRate || 120;
+            } else {
+                await setDoc(doc(db, "settings", "shipping"), { freeLimit: 599, tnRate: 90, roiRate: 120 });
+            }
+        }
+        window.saveShippingRules = async function() {
+            startLoading();
+            try {
+                await setDoc(doc(db, "settings", "shipping"), {
+                    freeLimit: parseInt(document.getElementById('ship-free').value),
+                    tnRate: parseInt(document.getElementById('ship-tn').value),
+                    roiRate: parseInt(document.getElementById('ship-roi').value)
+                });
+                stopLoading(); 
+                showAlert("Success", "Shipping rules updated!", "success");
+            } catch(e) { showAlert("Error", "Failed to update rules."); stopLoading(); }
+        }
+
+        // --- COUPONS ---
+        async function loadCoupons() {
+            const list = document.getElementById('coupon-list');
+            list.innerHTML = '';
+            try {
+                const q = query(collection(db, "coupons"));
+                const snapshot = await getDocs(q);
+                document.getElementById('coupon-count').innerText = snapshot.size + " Active";
+                
+                if (snapshot.empty) {
+                    list.innerHTML = `<li class="list-group-item text-center text-muted">No active coupons.</li>`;
+                    return;
+                }
+
+                snapshot.forEach(docSnap => {
+                    const c = docSnap.data();
+                    list.innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><strong>${c.code}</strong> (₹${c.value} OFF)</span>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteCoupon('${docSnap.id}')">&times;</button>
+                    </li>`;
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        window.addCoupon = async function() {
+            const code = document.getElementById('new-code').value.toUpperCase().trim();
+            const val = parseInt(document.getElementById('new-val').value);
+            if(!code || !val) { showAlert("Warning", "Please enter a Code and Value.", "warning"); return; }
+            
+            startLoading();
+            // Check for duplicate
+            const q = query(collection(db, "coupons"), where("code", "==", code));
+            const snap = await getDocs(q);
+            if(!snap.empty) { stopLoading(); showAlert("Error", "Coupon code already exists!"); return; }
+
+            await addDoc(collection(db, "coupons"), { code: code, value: val });
+            document.getElementById('new-code').value = '';
+            document.getElementById('new-val').value = '';
+            loadCoupons(); stopLoading();
+        }
+
+        window.deleteCoupon = async function(id) {
+            showConfirm("Delete Coupon", "Are you sure?", async () => {
+                startLoading();
+                await deleteDoc(doc(db, "coupons", id));
+                loadCoupons();
+                stopLoading();
+            });
         }
 
         // --- REVIEWS ---
