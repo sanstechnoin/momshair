@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Mom's Hair Oil</title>
+    
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
     <style>
         body { background-color: #f4f6f9; }
         .status-select { min-width: 130px; cursor: pointer; font-weight: 500; font-size: 0.85rem; }
@@ -16,22 +18,31 @@
         .status-Delivered { background-color: #212529; color: #fff; border-color: #212529; }
         .status-Payment-Notification { background-color: #fd9c3d; color: #fff; border-color: #fd9c3d; }
         .status-Cancelled { background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; }
+
         #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1B4D3E; z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .login-box { background: white; padding: 2.5rem; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; width: 90%; max-width: 400px; }
         #admin-content { display: none; }
         .stock-live { font-size: 0.9rem; font-weight: bold; }
         .text-preorder { color: #C17C28; }
+        .sandclock-spin { animation: spin 2s infinite linear; font-size: 3.5rem; color: #1B4D3E; margin-bottom: 1rem; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 50% { transform: rotate(180deg); } 100% { transform: rotate(360deg); } }
+        
         .review-tab-btn { border-radius: 20px; font-size: 0.85rem; padding: 5px 15px; border: 1px solid transparent; }
         .review-tab-btn.active { background-color: #212529; color: white; }
         .review-tab-btn:not(.active) { background-color: transparent; border-color: #212529; color: #212529; }
+
         .icon-btn { cursor: pointer; font-size: 1.1rem; padding: 0 5px; transition: color 0.2s; }
         .icon-btn:hover { opacity: 0.7; }
         .icon-active { color: #198754; } 
         .icon-inactive { color: #adb5bd; } 
         .icon-banner { color: #ffc107; }
+        
+        /* Support Msg Style */
         .msg-card { border-left: 4px solid #1B4D3E; transition: 0.2s; }
         .msg-card:hover { background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
         .table-checkbox { width: 40px; text-align: center; }
+        
         @media (min-width: 992px) { .border-lg-end { border-right: 1px solid #dee2e6; } }
         @media (max-width: 991px) { .mobile-mb { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #dee2e6; } }
     </style>
@@ -41,6 +52,7 @@
     <div id="login-overlay">
         <div class="login-box">
             <h3 class="fw-bold mb-3" style="color: #1B4D3E;">Admin Login 🔒</h3>
+            <p class="text-muted small mb-4">Restricted Access. Enter Password.</p>
             <input type="password" id="admin-pass" class="form-control mb-3 text-center" placeholder="Password">
             <button class="btn btn-success w-100" onclick="checkLogin()">Unlock Panel</button>
             <p id="login-error" class="text-danger small mt-2" style="display:none;">Incorrect Password</p>
@@ -52,8 +64,8 @@
             <div class="container-fluid">
                 <span class="navbar-brand mb-0 h1"><i class="bi bi-shield-lock"></i> Admin Panel</span>
                 <div>
-                    <button class="btn btn-outline-light btn-sm me-2" onclick="location.reload()">Refresh</button>
-                    <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+                    <button class="btn btn-outline-light btn-sm me-2" onclick="location.reload()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+                    <button class="btn btn-danger btn-sm" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</button>
                 </div>
             </div>
         </nav>
@@ -91,8 +103,8 @@
                         <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
                             <span class="fw-bold"><i class="bi bi-chat-heart"></i> Reviews</span>
                             <div>
-                                <button class="review-tab-btn active me-1" id="tab-pending" onclick="loadReviews('pending')">Pending <span id="badge-pending" class="badge bg-danger rounded-pill">0</span></button>
-                                <button class="review-tab-btn" id="tab-approved" onclick="loadReviews('approved')">Live <span id="badge-approved" class="badge bg-success rounded-pill">0</span></button>
+                                <button class="btn btn-sm btn-outline-dark py-0" style="font-size: 0.75rem;" onclick="loadReviews('pending')">Pending</button>
+                                <button class="btn btn-sm btn-outline-dark py-0" style="font-size: 0.75rem;" onclick="loadReviews('approved')">Live</button>
                             </div>
                         </div>
                         <div class="card-body p-0">
@@ -115,7 +127,7 @@
                         <div class="card-body p-0">
                             <h6 class="small text-muted fw-bold p-2 border-bottom bg-light m-0">Inbox (Offline Forms)</h6>
                             <div id="enquiry-list" class="list-group list-group-flush" style="max-height: 215px; overflow-y:auto;">
-                                <div class="text-center text-muted py-3 small">Loading...</div>
+                                <div class="text-center text-muted py-3 small">Loading messages...</div>
                             </div>
                         </div>
                     </div>
@@ -147,15 +159,12 @@
                             <span class="badge bg-white text-success small" id="coupon-count">0 Active</span>
                         </div>
                         <div class="card-body">
-                            <div class="row g-2 mb-2 bg-light p-2 rounded border">
-                                <div class="col-4"><input type="text" id="new-code" class="form-control form-control-sm text-uppercase fw-bold" placeholder="CODE"></div>
-                                <div class="col-4"><select id="new-type" class="form-select form-select-sm"><option value="flat">₹ Flat</option><option value="percent">% Percent</option></select></div>
-                                <div class="col-4"><input type="number" id="new-val" class="form-control form-control-sm" placeholder="Value"></div>
-                                <div class="col-4"><input type="number" id="new-min" class="form-control form-control-sm" placeholder="Min Order"></div>
-                                <div class="col-4"><input type="date" id="new-expiry" class="form-control form-control-sm"></div>
-                                <div class="col-4"><button class="btn btn-success btn-sm w-100" onclick="addCoupon()">+ Add</button></div>
+                            <div class="input-group mb-3">
+                                <input type="text" id="new-code" class="form-control text-uppercase" placeholder="CODE">
+                                <input type="number" id="new-val" class="form-control" placeholder="Value ₹">
+                                <button class="btn btn-success" onclick="addCoupon()">Add</button>
                             </div>
-                            <h6 class="small text-muted fw-bold border-top pt-2">Active Coupons (Visible | Banner | Delete)</h6>
+                            <h6 class="small text-muted fw-bold">Active Coupons (Visible | Banner | Delete)</h6>
                             <ul id="coupon-list" class="list-group list-group-flush small" style="max-height: 120px; overflow-y:auto;">
                                 <li class="list-group-item text-center text-muted">Loading...</li>
                             </ul>
@@ -204,7 +213,12 @@
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle table-bordered mb-0">
-                            <thead class="table-light"><tr class="text-center align-middle"><th class="table-checkbox"><input class="form-check-input" type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th><th>Date</th><th>Order ID</th><th class="text-start">Customer</th><th style="width: 20%;" class="text-start">Address</th><th>Total & UTR</th><th>Tracking #</th><th>Status</th><th>Actions</th></tr></thead>
+                            <thead class="table-light">
+                                <tr class="text-center align-middle">
+                                    <th class="table-checkbox"><input class="form-check-input" type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+                                    <th>Date</th><th>Order ID</th><th class="text-start">Customer</th><th style="width: 20%;" class="text-start">Address</th><th>Total & UTR</th><th>Tracking #</th><th>Status</th><th>Actions</th>
+                                </tr>
+                            </thead>
                             <tbody id="tableBody"><tr><td colspan="9" class="text-center py-5">Loading orders...</td></tr></tbody>
                         </table>
                     </div>
@@ -277,7 +291,7 @@
             try { await new Promise(r => setTimeout(r, 500)); const pIds = ['p1', 'p2', 'p3']; for(const pid of pIds) { await updateDoc(doc(db, "products", pid), { stock: parseInt(document.getElementById(`qty-${pid}`).value) }); } loadInventory(); stopLoading(); } catch (e) { showAlert("Error", "Failed to save."); stopLoading(); }
         }
 
-        // --- REVIEWS (FIXED) ---
+        // --- REVIEWS ---
         async function loadReviewCounts() {
             const qP = query(collection(db, "reviews"), where("status", "==", "pending")); const sP = await getDocs(qP); document.getElementById('badge-pending').innerText = sP.size;
             const qA = query(collection(db, "reviews"), where("status", "==", "approved")); const sA = await getDocs(qA); document.getElementById('badge-approved').innerText = sA.size;
@@ -298,7 +312,7 @@
                     html += `<div class="list-group-item d-flex justify-content-between align-items-center bg-transparent"><div class="me-2"><span class="fw-bold text-dark small">${r.name}</span> <span class="text-warning small">${'★'.repeat(r.rating)}</span><br><small class="text-muted fst-italic">"${r.text}"</small></div><div class="d-flex gap-1">${btns}</div></div>`;
                 });
                 list.innerHTML = html; loadReviewCounts();
-            } catch (error) { list.innerHTML = `<div class="text-center text-danger py-3 small">Error loading. Check console.</div>`; console.error(error); }
+            } catch (error) { list.innerHTML = `<div class="text-center text-danger py-3 small">Error loading reviews. Check Console</div>`; console.error(error); }
         };
         window.updateReviewStatus = async function(id, newStatus) { await updateDoc(doc(db, "reviews", id), { status: newStatus }); loadReviews(window.currentReviewTab); };
         window.deleteReview = async function(id) { showConfirm("Delete Review", "Sure?", async () => { await deleteDoc(doc(db, "reviews", id)); loadReviews(window.currentReviewTab); }); };
@@ -308,10 +322,12 @@
             onSnapshot(doc(db, "settings", "support"), (doc) => {
                 const isOnline = doc.exists() ? doc.data().isOnline : false;
                 const toggle = document.getElementById('supportToggle');
-                toggle.checked = isOnline;
-                const lbl = document.getElementById('supportLabel');
-                lbl.innerText = isOnline ? "Online (WA)" : "Offline (Form)";
-                lbl.className = isOnline ? "form-check-label text-white small fw-bold" : "form-check-label text-white-50 small";
+                const label = document.getElementById('supportLabel');
+                if(toggle && label) {
+                    toggle.checked = isOnline;
+                    label.innerText = isOnline ? "Online (WhatsApp)" : "Offline (Form)";
+                    label.className = isOnline ? "form-check-label text-white small fw-bold" : "form-check-label text-white-50 small";
+                }
             });
         }
         window.toggleSupportStatus = async function() { await setDoc(doc(db, "settings", "support"), { isOnline: document.getElementById('supportToggle').checked }); }
@@ -320,22 +336,25 @@
             const q = query(collection(db, "enquiries"), orderBy("timestamp", "desc"));
             onSnapshot(q, (snapshot) => {
                 const list = document.getElementById('enquiry-list');
-                if(snapshot.empty) { list.innerHTML = '<div class="text-center text-muted py-3 small">No offline messages.</div>'; return; }
+                if(snapshot.empty) { list.innerHTML = '<div class="text-center text-muted py-3 small">No messages.</div>'; return; }
                 let html = '';
                 snapshot.forEach(doc => {
                     const m = doc.data();
-                    const time = m.timestamp ? new Date(m.timestamp.seconds*1000).toLocaleDateString() : 'N/A';
-                    html += `<div class="list-group-item msg-card border-0 mb-2 rounded bg-light small"><div class="d-flex justify-content-between"><strong class="text-dark">${m.name}</strong><small class="text-muted" style="font-size:0.7rem">${time}</small></div><p class="text-muted mb-1 text-truncate">${m.message}</p><div class="d-flex gap-2"><a href="https://wa.me/91${m.phone}" target="_blank" class="text-success text-decoration-none fw-bold"><i class="bi bi-whatsapp"></i> Reply</a><span class="text-danger fw-bold" style="cursor:pointer;" onclick="deleteEnquiry('${doc.id}')">&times; Del</span></div></div>`;
+                    const time = m.timestamp ? new Date(m.timestamp.seconds*1000).toLocaleDateString() : '';
+                    html += `<div class="list-group-item msg-card border-0 mb-2 rounded bg-light small"><div class="d-flex justify-content-between"><strong class="text-dark">${m.name}</strong><small class="text-muted" style="font-size:0.65rem">${time}</small></div><p class="text-muted mb-1 text-truncate">${m.message}</p><div class="d-flex gap-2"><a href="https://wa.me/91${m.phone}" target="_blank" class="text-success text-decoration-none fw-bold"><i class="bi bi-whatsapp"></i> Reply</a><span class="text-danger fw-bold" style="cursor:pointer;" onclick="deleteEnquiry('${doc.id}')">&times; Del</span></div></div>`;
                 });
                 list.innerHTML = html;
+            }, (error) => {
+                 // Ignore missing index error for support initially
+                 console.log("Support index warning");
             });
         }
         window.deleteEnquiry = async function(id) { if(confirm("Delete message?")) await deleteDoc(doc(db, "enquiries", id)); }
 
-        // --- SHIPPING ---
+        // --- SHIPPING RULES ---
         async function loadShippingRules() {
             const docSnap = await getDoc(doc(db, "settings", "shipping"));
-            if(docSnap.exists()) { const d = docSnap.data(); document.getElementById('ship-free').value=d.freeLimit; document.getElementById('ship-tn').value=d.tnRate; document.getElementById('ship-roi').value=d.roiRate; }
+            if(docSnap.exists()) { const d = docSnap.data(); document.getElementById('ship-free').value = d.freeLimit; document.getElementById('ship-tn').value = d.tnRate; document.getElementById('ship-roi').value = d.roiRate; }
             else await setDoc(doc(db, "settings", "shipping"), { freeLimit: 599, tnRate: 90, roiRate: 120 });
         }
         window.saveShippingRules = async function() {
@@ -359,11 +378,16 @@
                     list.innerHTML = '';
                     snapshot.forEach(docSnap => {
                         const c = docSnap.data();
-                        const typeLabel = c.type === 'percent' ? '%' : '₹';
                         const eyeClass = c.isVisible ? 'bi-eye-fill icon-active' : 'bi-eye-slash-fill icon-inactive';
                         const starClass = c.isBanner ? 'bi-megaphone-fill icon-banner' : 'bi-megaphone icon-inactive';
-
-                        list.innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center px-2 py-1"><div><span class="fw-bold text-dark small">${c.code}</span> <span class="text-muted" style="font-size:0.7rem">${c.value}${typeLabel} OFF</span></div><div class="d-flex align-items-center gap-1"><i class="bi ${eyeClass} icon-btn" style="font-size:0.9rem" onclick="toggleCouponField('${docSnap.id}', 'isVisible', ${!c.isVisible})"></i><i class="bi ${starClass} icon-btn" style="font-size:0.9rem" onclick="toggleCouponField('${docSnap.id}', 'isBanner', ${!c.isBanner})"></i><i class="bi bi-trash text-danger icon-btn" style="font-size:0.9rem" onclick="deleteCoupon('${docSnap.id}')"></i></div></li>`;
+                        list.innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center px-2 py-1">
+                            <div><span class="fw-bold text-dark small">${c.code}</span> <span class="text-muted" style="font-size:0.7rem">₹${c.value} OFF</span></div>
+                            <div class="d-flex align-items-center gap-1">
+                                <i class="bi ${eyeClass} icon-btn" style="font-size:0.9rem" onclick="toggleCouponField('${docSnap.id}', 'isVisible', ${!c.isVisible})" title="Show in Cart"></i>
+                                <i class="bi ${starClass} icon-btn" style="font-size:0.9rem" onclick="toggleCouponField('${docSnap.id}', 'isBanner', ${!c.isBanner})" title="Banner"></i>
+                                <button class="btn btn-sm btn-outline-danger ms-2 px-2 py-0" onclick="deleteCoupon('${docSnap.id}')">&times;</button>
+                            </div>
+                        </li>`;
                     });
                 });
             } catch (e) { console.error(e); }
@@ -371,16 +395,16 @@
         window.toggleCouponField = async function(id, f, v) { await updateDoc(doc(db, "coupons", id), { [f]: v }); }
         window.addCoupon = async function() {
             const code = document.getElementById('new-code').value.toUpperCase().trim();
-            const type = document.getElementById('new-type').value;
             const val = parseInt(document.getElementById('new-val').value);
-            const min = parseInt(document.getElementById('new-min').value) || 0;
-            const expiry = document.getElementById('new-expiry').value;
             if(!code || !val) { showAlert("Warning", "Enter Code & Value", "warning"); return; }
             startLoading();
             const q = query(collection(db, "coupons"), where("code", "==", code));
             const snap = await getDocs(q);
             if(!snap.empty) { stopLoading(); showAlert("Error", "Code exists!"); return; }
-            await addDoc(collection(db, "coupons"), { code, type, value: val, minOrder: min, expiry, isVisible: true, isBanner: false });
+            // Saving as simple flat coupon by default to match simple UI
+            await addDoc(collection(db, "coupons"), { 
+                code, type: 'flat', value: val, minOrder: 0, isVisible: true, isBanner: false 
+            });
             document.getElementById('new-code').value = '';
             stopLoading();
         }
@@ -393,10 +417,22 @@
         // --- ORDERS ---
         async function loadOrders() {
             try {
+                // IMPORTANT: If this fails with "Precondition", check console for index link
                 const s = await getDocs(query(collection(db, "orders"), orderBy("timestamp", "desc")));
                 allOrdersCache = []; s.forEach(doc => allOrdersCache.push({ id: doc.id, ...doc.data() })); renderOrders(allOrdersCache);
-            } catch(e) { document.getElementById('tableBody').innerHTML = `<tr><td colspan="9" class="text-center text-danger py-4">Error loading orders.</td></tr>`; }
+            } catch(e) { 
+                console.error("Order Load Error", e);
+                // Fallback if index missing
+                const s = await getDocs(collection(db, "orders"));
+                allOrdersCache = []; s.forEach(doc => allOrdersCache.push({ id: doc.id, ...doc.data() })); renderOrders(allOrdersCache);
+            }
         }
+        
+        window.deleteOrder = function(docId) { showConfirm("Delete Order", "Delete this specific order?", () => { askSecurity(async () => { startLoading(); try { await deleteDoc(doc(db, "orders", docId)); loadOrders(); stopLoading(); } catch(e) { showAlert("Error", "Failed."); stopLoading(); } }); }); };
+        window.deleteAllOrders = function() { showConfirm("⚠️ DANGER", "Delete ALL orders?", () => { askSecurity(async () => { startLoading(); try { const s = await getDocs(query(collection(db, "orders"))); s.forEach(d => deleteDoc(d.ref)); showAlert("Success", "All orders cleared.", "success"); loadOrders(); stopLoading(); } catch(e) { showAlert("Error", "Failed."); stopLoading(); } }); }); };
+        window.toggleSelectAll = function() { const c = document.getElementById('selectAll').checked; document.querySelectorAll('.order-checkbox').forEach(cb => cb.checked = c); updateBulkBtn(); };
+        window.updateBulkBtn = function() { const c = document.querySelectorAll('.order-checkbox:checked').length; const b = document.getElementById('bulkDeleteBtn'); b.disabled = c === 0; b.innerHTML = c > 0 ? `<i class="bi bi-trash"></i> Delete (${c})` : `<i class="bi bi-trash"></i> Delete Selected`; };
+        window.deleteSelectedOrders = function() { const s = Array.from(document.querySelectorAll('.order-checkbox:checked')).map(cb => cb.value); if(s.length === 0) return; showConfirm("Bulk Delete", `Delete ${s.length} orders?`, () => { askSecurity(async () => { startLoading(); try { await Promise.all(s.map(id => deleteDoc(doc(db, "orders", id)))); loadOrders(); stopLoading(); } catch(e) { showAlert("Error", "Failed."); stopLoading(); } }); }); };
         window.filterOrders = function() {
             const start = document.getElementById('dateFrom').value ? new Date(document.getElementById('dateFrom').value) : null;
             const end = document.getElementById('dateTo').value ? new Date(document.getElementById('dateTo').value) : null; if(end) end.setHours(23, 59, 59);
@@ -430,11 +466,6 @@
         }
         window.viewDetails = function(enc) { document.getElementById('orderItemsContent').innerText = decodeURIComponent(enc); new bootstrap.Modal(document.getElementById('detailsModal')).show(); };
         window.sendWhatsappUpdate = function(ph, nm, oid, st) { let msg = ""; if(st === "Payment Received") msg = `Hello ${nm}, payment received for Order ${oid}. Preparing your batch! 🌿`; else if (st === "Shipped") msg = `Great news ${nm}! Order ${oid} has been SHIPPED! 🚚 Track here: ${window.location.origin}/tracker.html`; else msg = `Hello ${nm}, update on Order ${oid}: ${st}.`; window.open(`https://wa.me/91${ph}?text=${encodeURIComponent(msg)}`, '_blank'); };
-        window.deleteOrder = function(docId) { showConfirm("Delete Order", "Delete this specific order?", () => { askSecurity(async () => { startLoading(); try { await deleteDoc(doc(db, "orders", docId)); loadOrders(); stopLoading(); } catch(e) { showAlert("Error", "Failed."); stopLoading(); } }); }); };
-        window.deleteAllOrders = function() { showConfirm("⚠️ DANGER", "Delete ALL orders?", () => { askSecurity(async () => { startLoading(); try { const s = await getDocs(query(collection(db, "orders"))); s.forEach(d => deleteDoc(d.ref)); showAlert("Success", "All orders cleared.", "success"); loadOrders(); stopLoading(); } catch(e) { showAlert("Error", "Failed."); stopLoading(); } }); }); };
-        window.toggleSelectAll = function() { const c = document.getElementById('selectAll').checked; document.querySelectorAll('.order-checkbox').forEach(cb => cb.checked = c); updateBulkBtn(); };
-        window.updateBulkBtn = function() { const c = document.querySelectorAll('.order-checkbox:checked').length; const b = document.getElementById('bulkDeleteBtn'); b.disabled = c === 0; b.innerHTML = c > 0 ? `<i class="bi bi-trash"></i> Delete (${c})` : `<i class="bi bi-trash"></i> Delete Selected`; };
-        window.deleteSelectedOrders = function() { const s = Array.from(document.querySelectorAll('.order-checkbox:checked')).map(cb => cb.value); if(s.length === 0) return; showConfirm("Bulk Delete", `Delete ${s.length} orders?`, () => { askSecurity(async () => { startLoading(); try { await Promise.all(s.map(id => deleteDoc(doc(db, "orders", id)))); loadOrders(); stopLoading(); } catch(e) { showAlert("Error", "Failed."); stopLoading(); } }); }); };
         function startLoading() { const m = new bootstrap.Modal(document.getElementById('updateModal')); document.getElementById('loadingState').style.display = 'block'; document.getElementById('successState').style.display = 'none'; document.getElementById('modalCloseBtn').classList.add('d-none'); m.show(); }
         function stopLoading() { document.getElementById('loadingState').style.display = 'none'; document.getElementById('successState').style.display = 'block'; document.getElementById('modalCloseBtn').classList.remove('d-none'); }
     </script>
