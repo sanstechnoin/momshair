@@ -24,8 +24,6 @@
         #admin-content { display: none; }
         .stock-live { font-size: 0.9rem; font-weight: bold; }
         .text-preorder { color: #C17C28; }
-        .sandclock-spin { animation: spin 2s infinite linear; font-size: 3.5rem; color: #1B4D3E; margin-bottom: 1rem; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 50% { transform: rotate(180deg); } 100% { transform: rotate(360deg); } }
         
         .review-tab-btn { border-radius: 20px; font-size: 0.85rem; padding: 5px 15px; border: 1px solid transparent; }
         .review-tab-btn.active { background-color: #212529; color: white; }
@@ -118,10 +116,10 @@
                         <div class="card-header bg-secondary text-white"><span><i class="bi bi-gear-fill"></i> Admin Settings</span></div>
                         <div class="card-body d-flex flex-wrap align-items-end gap-3">
                             <div class="flex-grow-1">
-                                <label class="form-label fw-bold small">Master Email ID (For Notifications)</label>
+                                <label class="form-label fw-bold small">Master Email ID</label>
                                 <div class="input-group"><span class="input-group-text"><i class="bi bi-envelope"></i></span><input type="email" id="master-email" class="form-control" placeholder="vabinanthana@gmail.com"></div>
                             </div>
-                            <button class="btn btn-dark" onclick="saveSettings()">Update Email</button>
+                            <button class="btn btn-dark" onclick="saveSettings()">Update</button>
                         </div>
                     </div>
                 </div>
@@ -139,11 +137,23 @@
             </div>
 
             <div class="card shadow-sm">
-                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-list-check"></i> Order Management</h5>
-                    <button class="btn btn-sm btn-outline-danger" onclick="deleteSelectedOrders()" id="bulkDeleteBtn" disabled>
-                        <i class="bi bi-trash"></i> Delete Selected
-                    </button>
+                <div class="card-header bg-white py-3 border-bottom">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                        <h5 class="mb-0"><i class="bi bi-list-check"></i> Order Management</h5>
+                        
+                        <div class="d-flex gap-2 align-items-center">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">From</span>
+                                <input type="date" id="dateFrom" class="form-control" onchange="filterOrders()">
+                                <span class="input-group-text">To</span>
+                                <input type="date" id="dateTo" class="form-control" onchange="filterOrders()">
+                                <button class="btn btn-outline-secondary" onclick="resetDateFilter()">Reset</button>
+                            </div>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteSelectedOrders()" id="bulkDeleteBtn" disabled>
+                                <i class="bi bi-trash"></i> Delete Selected
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -211,6 +221,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        let allOrdersCache = []; // Store orders for date filtering
         let pendingOrderId = null;
         let pendingStatus = null;
         window.currentReviewTab = 'pending';
@@ -262,7 +273,7 @@
             } catch (e) { alert("Error."); stopLoading(); }
         }
 
-        // --- REVIEWS ---
+        // --- REVIEWS (Fixed Syntax & Error Handling) ---
         async function loadReviewCounts() {
             try {
                 const qP = query(collection(db, "reviews"), where("status", "==", "pending"));
@@ -277,7 +288,6 @@
 
         window.loadReviews = async function(status) {
             window.currentReviewTab = status;
-            
             document.querySelectorAll('.review-tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(`tab-${status}`).classList.add('active');
 
@@ -285,7 +295,12 @@
             list.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>';
 
             try {
-                const snapshot = await getDocs(query(collection(db, "reviews"), where("status", "==", status)));
+                // Using timeout race to prevent infinite spinning if DB is unresponsive
+                const q = query(collection(db, "reviews"), where("status", "==", status));
+                const snapshot = await Promise.race([
+                    getDocs(q),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000))
+                ]);
                 
                 if (snapshot.empty) {
                     list.innerHTML = `<div class="text-center text-muted py-4 small">No ${status} reviews found.</div>`;
@@ -296,21 +311,17 @@
                 snapshot.forEach(docSnap => {
                     const r = docSnap.data();
                     const date = r.timestamp ? new Date(r.timestamp.seconds * 1000).toLocaleDateString() : 'N/A';
-                    
-                    let btns = '';
-                    if(status === 'pending') {
-                        btns = `<button class="btn btn-sm btn-success" onclick="updateReviewStatus('${docSnap.id}', 'approved')" title="Approve">✔</button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteReview('${docSnap.id}')" title="Delete">✖</button>`;
-                    } else {
-                        btns = `<button class="btn btn-sm btn-outline-dark" onclick="updateReviewStatus('${docSnap.id}', 'pending')" title="Unpublish (Hide)"><i class="bi bi-eye-slash"></i></button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteReview('${docSnap.id}')" title="Delete Forever"><i class="bi bi-trash"></i></button>`;
-                    }
+                    let btns = status === 'pending' ? 
+                        `<button class="btn btn-sm btn-success" onclick="updateReviewStatus('${docSnap.id}', 'approved')">✔</button>
+                         <button class="btn btn-sm btn-danger" onclick="deleteReview('${docSnap.id}')">✖</button>` : 
+                        `<button class="btn btn-sm btn-outline-dark" onclick="updateReviewStatus('${docSnap.id}', 'pending')"><i class="bi bi-eye-slash"></i></button>
+                         <button class="btn btn-sm btn-danger" onclick="deleteReview('${docSnap.id}')"><i class="bi bi-trash"></i></button>`;
 
                     html += `<div class="list-group-item d-flex justify-content-between align-items-start bg-transparent">
                         <div class="me-2">
                             <div class="fw-bold text-dark d-flex align-items-center gap-2">${r.name} <span class="text-warning small">${'★'.repeat(r.rating)}</span></div>
                             <small class="text-muted fst-italic d-block mb-1">"${r.text}"</small>
-                            <span class="badge bg-light text-secondary border">Order: ${r.orderId || 'N/A'}</span> <small class="text-muted ms-1" style="font-size:0.75rem">${date}</small>
+                            <span class="badge bg-light text-secondary border">Order: ${r.orderId || 'N/A'}</span> <small class="text-muted ms-1">${date}</small>
                         </div>
                         <div class="d-flex flex-column gap-1">${btns}</div>
                     </div>`;
@@ -319,7 +330,7 @@
                 loadReviewCounts(); 
             } catch (error) {
                 console.error("Review Load Error:", error);
-                list.innerHTML = `<div class="text-center text-danger py-3 small">Error loading reviews. Check console.</div>`;
+                list.innerHTML = `<div class="text-center text-danger py-3 small">Error loading reviews. Try refreshing.</div>`;
             }
         };
 
@@ -343,7 +354,88 @@
             try { await new Promise(r => setTimeout(r, 1000)); await setDoc(doc(db, "settings", "config"), { masterEmail: document.getElementById('master-email').value }); stopLoading(); } catch(e){ alert("Error"); stopLoading(); }
         }
 
-        // --- DELETE LOGIC ---
+        // --- ORDERS & FILTERING ---
+        async function loadOrders() {
+            try {
+                const snapshot = await getDocs(query(collection(db, "orders"), orderBy("timestamp", "desc")));
+                allOrdersCache = [];
+                snapshot.forEach(doc => allOrdersCache.push({ id: doc.id, ...doc.data() }));
+                renderOrders(allOrdersCache);
+            } catch(e) {
+                document.getElementById('tableBody').innerHTML = `<tr><td colspan="9" class="text-center text-danger py-4">Error loading orders. Ensure Indexes are built in Firebase Console.</td></tr>`;
+                console.error(e);
+            }
+        }
+
+        window.filterOrders = function() {
+            const start = document.getElementById('dateFrom').value ? new Date(document.getElementById('dateFrom').value) : null;
+            const end = document.getElementById('dateTo').value ? new Date(document.getElementById('dateTo').value) : null;
+            if(end) end.setHours(23, 59, 59); // End of day
+
+            const filtered = allOrdersCache.filter(order => {
+                if(!order.timestamp) return false;
+                const orderDate = new Date(order.timestamp.seconds * 1000);
+                if (start && orderDate < start) return false;
+                if (end && orderDate > end) return false;
+                return true;
+            });
+            renderOrders(filtered);
+        }
+
+        window.resetDateFilter = function() {
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            renderOrders(allOrdersCache);
+        }
+
+        function renderOrders(orders) {
+            const tableBody = document.getElementById('tableBody');
+            if(orders.length === 0) { tableBody.innerHTML = `<tr><td colspan="9" class="text-center py-5">No orders found.</td></tr>`; return; }
+            
+            let html = '';
+            orders.forEach(order => {
+                const date = order.timestamp ? new Date(order.timestamp.seconds * 1000).toLocaleDateString() : 'N/A';
+                let statusClass = "status-Pending";
+                if (order.status && order.status.includes("Payment")) statusClass = "status-Payment";
+                else if (order.status && order.status.includes("Notification")) statusClass = "status-Payment-Notification";
+                else if (order.status && order.status.includes("Shipped")) statusClass = "status-Shipped";
+                else if (order.status && order.status.includes("Delivered")) statusClass = "status-Delivered";
+                else if (order.status && order.status.includes("Cancelled")) statusClass = "status-Cancelled";
+
+                html += `<tr class="text-center">
+                    <td class="table-checkbox"><input class="form-check-input order-checkbox" type="checkbox" value="${order.id}" onclick="updateBulkBtn()"></td>
+                    <td><small>${date}</small></td>
+                    <td><span class="badge bg-secondary">${order.orderId || order.id}</span></td>
+                    <td class="text-start"><strong>${order.name}</strong><br><a href="https://wa.me/91${order.phone}" target="_blank" class="text-success small text-decoration-none"><i class="bi bi-whatsapp"></i> ${order.phone}</a></td>
+                    <td class="text-start"><small>${order.address}</small></td>
+                    <td><strong>₹${order.total}</strong><br><small class="text-muted">UTR: ${order.txnId || 'N/A'}</small></td>
+                    <td class="text-center"><span class="fw-bold text-dark">${order.trackingNumber || '-'}</span></td>
+                    <td>
+                        <select class="form-select form-select-sm status-select ${statusClass}" onchange="updateStatus('${order.id}', this.value)">
+                            <option value="Pending Verification" ${order.status === 'Pending Verification' ? 'selected' : ''}>Pending</option>
+                            <option value="Payment Notification" ${order.status === 'Payment Notification' ? 'selected' : ''}>Payment Notif.</option>
+                            <option value="Payment Received" ${order.status === 'Payment Received' ? 'selected' : ''}>Paid</option>
+                            <option value="Shipped" ${order.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                            <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                            <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                        </select>
+                    </td>
+                    <td>
+                        <div class="d-flex flex-column gap-1">
+                            <button class="btn btn-sm btn-outline-primary" onclick="viewDetails('${encodeURIComponent(order.items)}')">Details</button>
+                            <button class="btn btn-sm btn-success" onclick="sendWhatsappUpdate('${order.phone}', '${order.name}', '${order.orderId}', '${order.status}')">Notify</button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteOrder('${order.id}')"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>`;
+            });
+            tableBody.innerHTML = html;
+            // Reset "Select All"
+            document.getElementById('selectAll').checked = false;
+            updateBulkBtn();
+        }
+
+        // --- DELETE FUNCTIONS (Restored!) ---
         window.deleteOrder = async function(docId) {
             if(!confirm("Are you sure you want to delete this order?")) return;
             startLoading();
@@ -363,7 +455,6 @@
             try {
                 const q = query(collection(db, "orders"));
                 const snapshot = await getDocs(q);
-                if(snapshot.empty) { alert("No orders."); stopLoading(); return; }
                 const promises = [];
                 snapshot.forEach(doc => promises.push(deleteDoc(doc.ref)));
                 await Promise.all(promises);
@@ -380,13 +471,15 @@
 
         window.updateBulkBtn = function() {
             const count = document.querySelectorAll('.order-checkbox:checked').length;
-            document.getElementById('bulkDeleteBtn').disabled = count === 0;
+            const btn = document.getElementById('bulkDeleteBtn');
+            btn.disabled = count === 0;
+            btn.innerHTML = count > 0 ? `<i class="bi bi-trash"></i> Delete (${count})` : `<i class="bi bi-trash"></i> Delete Selected`;
         };
 
         window.deleteSelectedOrders = async function() {
             const selected = Array.from(document.querySelectorAll('.order-checkbox:checked')).map(cb => cb.value);
             if(selected.length === 0) return;
-            if(!confirm(`Delete ${selected.length} orders?`)) return;
+            if(!confirm(`Delete ${selected.length} orders permanently?`)) return;
 
             startLoading();
             try {
@@ -397,7 +490,7 @@
             } catch(e) { console.error(e); alert("Error."); stopLoading(); }
         };
 
-        // --- ORDERS ---
+        // --- UPDATES ---
         window.updateStatus = function(docId, newStatus) {
             if (newStatus === "Shipped") {
                 pendingOrderId = docId; pendingStatus = newStatus;
@@ -438,50 +531,6 @@
                 loadOrders(); loadInventory(); 
                 stopLoading();
             } catch (e) { console.error(e); alert("Error updating order."); stopLoading(); }
-        }
-
-        async function loadOrders() {
-            const tableBody = document.getElementById('tableBody');
-            const snapshot = await getDocs(query(collection(db, "orders"), orderBy("timestamp", "desc")));
-            let html = '';
-            snapshot.forEach((doc) => {
-                const order = doc.data(); const date = order.timestamp ? new Date(order.timestamp.seconds * 1000).toLocaleDateString() : 'N/A';
-                
-                let statusClass = "status-Pending";
-                if (order.status && order.status.includes("Payment")) statusClass = "status-Payment";
-                else if (order.status && order.status.includes("Notification")) statusClass = "status-Payment-Notification";
-                else if (order.status && order.status.includes("Shipped")) statusClass = "status-Shipped";
-                else if (order.status && order.status.includes("Delivered")) statusClass = "status-Delivered";
-                else if (order.status && order.status.includes("Cancelled")) statusClass = "status-Cancelled";
-
-                html += `<tr class="text-center">
-                    <td class="table-checkbox"><input class="form-check-input order-checkbox" type="checkbox" value="${doc.id}" onclick="updateBulkBtn()"></td>
-                    <td><small>${date}</small></td>
-                    <td><span class="badge bg-secondary">${order.orderId || doc.id}</span></td>
-                    <td class="text-start"><strong>${order.name}</strong><br><a href="https://wa.me/91${order.phone}" target="_blank" class="text-success small text-decoration-none"><i class="bi bi-whatsapp"></i> ${order.phone}</a></td>
-                    <td class="text-start"><small>${order.address}</small></td>
-                    <td><strong>₹${order.total}</strong><br><small class="text-muted">UTR: ${order.txnId || 'N/A'}</small></td>
-                    <td class="text-center"><span class="fw-bold text-dark">${order.trackingNumber || '-'}</span></td>
-                    <td>
-                        <select class="form-select form-select-sm status-select ${statusClass}" onchange="updateStatus('${doc.id}', this.value)">
-                            <option value="Pending Verification" ${order.status === 'Pending Verification' ? 'selected' : ''}>Pending</option>
-                            <option value="Payment Notification" ${order.status === 'Payment Notification' ? 'selected' : ''}>Payment Notif.</option>
-                            <option value="Payment Received" ${order.status === 'Payment Received' ? 'selected' : ''}>Paid</option>
-                            <option value="Shipped" ${order.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
-                            <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
-                            <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
-                        </select>
-                    </td>
-                    <td>
-                        <div class="d-flex flex-column gap-1">
-                            <button class="btn btn-sm btn-outline-primary" onclick="viewDetails('${encodeURIComponent(order.items)}')">Details</button>
-                            <button class="btn btn-sm btn-success" onclick="sendWhatsappUpdate('${order.phone}', '${order.name}', '${order.orderId}', '${order.status}')">Notify</button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="deleteOrder('${doc.id}')"><i class="bi bi-trash"></i></button>
-                        </div>
-                    </td>
-                </tr>`;
-            });
-            tableBody.innerHTML = html;
         }
 
         window.viewDetails = function(itemsEncoded) {
