@@ -54,9 +54,8 @@
             <div class="row align-items-center flex-column-reverse flex-lg-row">
                 <div class="col-lg-6 text-center text-lg-start mt-4 mt-lg-0">
                     <span class="text-accent text-uppercase fw-bold ls-2">Since 1995 • 100% Natural • Baby & Kid Friendly 👶</span>
-                    
                     <h1 class="display-3 font-heading fw-bold text-primary my-3">Sun-Dried Herbs,<br><em>Slow-Cooked Magic.</em></h1>
-                    <p class="lead text-muted mb-4">We source raw herbs, sun-dry them for 3 days, and slow-cook them in small batches. No machines. Just patience.</p>
+                    <p class="lead text-muted mb-4">We source raw herbs, sun-dry them for days, and slow-cook them in small batches. No machines. Just patience.</p>
                     
                     <div class="d-flex gap-3 justify-content-center justify-content-lg-start mb-4">
                         <a href="#shop" class="btn btn-primary btn-lg px-4 rounded-1">Shop The Batch</a>
@@ -95,14 +94,14 @@
                     <div class="p-4 h-100 bg-light rounded-3">
                         <div class="display-4 mb-3">☀️</div>
                         <h4 class="font-heading fw-bold">2. Sun Cured</h4>
-                        <p class="text-muted">Herbs are washed and dried under the sun for days to lock in potency and remove moisture.</p>
+                        <p class="text-muted">Herbs are washed and dried under the sun for 3 days to lock in potency and remove moisture.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="p-4 h-100">
                         <div class="display-4 mb-3">🔥</div>
                         <h4 class="font-heading fw-bold">3. Slow Infusion</h4>
-                        <p class="text-muted">Simmered in cold-pressed oil for hours. This ancient method preserves 100% of the nutrients.</p>
+                        <p class="text-muted">Simmered in cold-pressed oil for 72 hours. This ancient method preserves 100% of the nutrients.</p>
                     </div>
                 </div>
             </div>
@@ -111,29 +110,29 @@
 
     <section id="ritual" class="py-5 bg-primary">
         <div class="container text-center">
-            <h2 class="font-heading text-white mb-4">The Sunday Ritual</h2>
-            <p class="lead text-white-50 mb-5">Hair care is not a chore; it's a moment to breathe. <br>Reconnect with yourself with our 3-step method.</p>
+            <h2 class="font-heading text-white mb-4">Daily Habit. Sunday Ritual.</h2>
+            <p class="lead text-white-50 mb-5">Light enough for daily grooming in the Indian way, yet rich enough for a deep weekend massage.<br>Here is our recommended routine:</p>
             
             <div class="row g-4 justify-content-center">
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow bg-white p-4">
-                        <div class="mb-3 text-accent"><i class="bi bi-droplet-half fs-1"></i></div>
-                        <h5 class="fw-bold text-primary">1. Apply Directly</h5>
-                        <p class="text-muted small mb-0">No heating required. Our cold-pressed blend is ready to nourish your scalp instantly.</p>
+                        <div class="mb-3 text-accent"><i class="bi bi-brightness-high fs-1"></i></div>
+                        <h5 class="fw-bold text-primary">Daily: Light Touch</h5>
+                        <p class="text-muted small mb-0">Apply a few drops daily to damp hair for shine and protection. Non-sticky and perfect for work or school.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow bg-white p-4">
-                        <div class="mb-3 text-accent"><i class="bi bi-magic fs-1"></i></div>
-                        <h5 class="fw-bold text-primary">2. Massage Gently</h5>
-                        <p class="text-muted small mb-0">Apply to scalp and massage for 10 minutes. This boosts blood circulation to the roots.</p>
+                        <div class="mb-3 text-accent"><i class="bi bi-calendar-week fs-1"></i></div>
+                        <h5 class="fw-bold text-primary">Sunday: The Champis</h5>
+                        <p class="text-muted small mb-0">Generously massage warm or cool oil into the scalp for 10-15 minutes. Boosts circulation and relaxation.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow bg-white p-4">
                         <div class="mb-3 text-accent"><i class="bi bi-hourglass-split fs-1"></i></div>
-                        <h5 class="fw-bold text-primary">3. Let It Rest</h5>
-                        <p class="text-muted small mb-0">Leave for at least 1 hour (or overnight) to let the nutrients soak in before washing.</p>
+                        <h5 class="fw-bold text-primary">Let It Soak</h5>
+                        <p class="text-muted small mb-0">For deep repair, leave it on for at least 1 hour (or overnight) before washing off with a mild cleanser.</p>
                     </div>
                 </div>
             </div>
@@ -554,28 +553,36 @@
             
             // PREPARE DATA & DEDUCT STOCK
             const deductionPromises = [];
+            
+            // Count items to deduct efficiently
             const itemCounts = {};
             window.cart.forEach(item => { 
                 itemsString += `${item.name} (₹${item.price})\n`; 
                 itemCounts[item.id] = (itemCounts[item.id] || 0) + 1;
             });
 
+            // Trigger Deductions
             for (const [pid, count] of Object.entries(itemCounts)) {
+                // Only deduct if not pre-order (stock > 0) OR if we decide all orders deduct
+                // To keep it simple: We deduct. If stock goes negative, it's a pre-order backlog.
                 const productRef = doc(db, "products", pid);
                 deductionPromises.push(updateDoc(productRef, { stock: increment(-count) }));
             }
 
             try {
+                // 1. Wait for stock deduction
                 await Promise.all(deductionPromises);
 
+                // 2. SAVE ORDER with structured cart details for "Cancelled" logic
                 await setDoc(doc(db, "orders", orderId), {
                     orderId: orderId, name: name, phone: phone, address: address,
                     items: itemsString, total: currentTotal,
-                    cartDetails: window.cart, 
+                    cartDetails: window.cart, // Saving full array for restoration
                     txnId: txnId || "Screenshot Uploaded",
                     status: "Pending Verification", timestamp: serverTimestamp()
                 });
 
+                // 3. SEND AUTO-EMAIL TO ADMIN
                 fetch(`https://formsubmit.co/ajax/${masterEmail}`, {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
@@ -590,8 +597,10 @@
                     })
                 });
                 
-                // Show Success Modal with ID
+                // 4. SHOW SUCCESS
+                // Update Modal Content with Order ID
                 document.getElementById('success-order-id').innerText = orderId;
+                
                 const checkoutModal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
                 checkoutModal.hide();
                 const successModal = new bootstrap.Modal(document.getElementById('orderSuccessModal'));
@@ -606,5 +615,4 @@
         }
     </script>
 </body>
-</html>
-
+    </html>
