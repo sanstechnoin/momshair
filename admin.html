@@ -11,7 +11,7 @@
     
     <style>
         body { background-color: #f4f6f9; }
-        .status-select { min-width: 150px; cursor: pointer; font-weight: 500; font-size: 0.9rem; }
+        .status-select { min-width: 130px; cursor: pointer; font-weight: 500; font-size: 0.85rem; }
         .status-Pending { background-color: #fff3cd; color: #856404; border-color: #ffeeba; }
         .status-Payment { background-color: #d1e7dd; color: #0f5132; border-color: #badbcc; }
         .status-Shipped { background-color: #cfe2ff; color: #084298; border-color: #b6d4fe; }
@@ -22,7 +22,6 @@
         #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1B4D3E; z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .login-box { background: white; padding: 2.5rem; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; width: 90%; max-width: 400px; }
         #admin-content { display: none; }
-        .card-header { font-weight: 600; }
         .stock-live { font-size: 0.9rem; font-weight: bold; }
         .text-preorder { color: #C17C28; }
         .sandclock-spin { animation: spin 2s infinite linear; font-size: 3.5rem; color: #1B4D3E; margin-bottom: 1rem; }
@@ -32,6 +31,8 @@
         .review-tab-btn.active { background-color: #212529; color: white; }
         .review-tab-btn:not(.active) { background-color: transparent; border-color: #212529; color: #212529; }
 
+        .table-checkbox { width: 40px; text-align: center; }
+        
         @media (min-width: 992px) { .border-lg-end { border-right: 1px solid #dee2e6; } }
         @media (max-width: 991px) { .mobile-mb { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #dee2e6; } }
     </style>
@@ -75,15 +76,13 @@
                                     <h6 class="text-muted text-uppercase small fw-bold mb-3">Current Website Status</h6>
                                     <div class="d-flex justify-content-between align-items-center mb-3"><span>Daily Shine (p1):</span><span id="live-p1" class="stock-live">Loading...</span></div>
                                     <div class="d-flex justify-content-between align-items-center mb-3"><span>Natural Dark (p2):</span><span id="live-p2" class="stock-live">Loading...</span></div>
-                                    <div class="d-flex justify-content-between align-items-center mb-2"><span>Grey Defense (p3):</span><span id="live-p3" class="stock-live">Loading...</span></div>
-                                    <div class="d-flex justify-content-between align-items-center"><span>Complete Care (p4):</span><span id="live-p4" class="stock-live">Loading...</span></div>
+                                    <div class="d-flex justify-content-between align-items-center"><span>Complete Duo (p3):</span><span id="live-p3" class="stock-live">Loading...</span></div>
                                 </div>
                                 <div class="col-12 col-lg-6 ps-lg-4">
                                     <h6 class="text-muted text-uppercase small fw-bold mb-3">Update Stock Count</h6>
                                     <div class="input-group input-group-sm mb-2"><span class="input-group-text">p1</span><input type="number" id="qty-p1" class="form-control text-center"></div>
                                     <div class="input-group input-group-sm mb-2"><span class="input-group-text">p2</span><input type="number" id="qty-p2" class="form-control text-center"></div>
-                                    <div class="input-group input-group-sm mb-2"><span class="input-group-text">p3</span><input type="number" id="qty-p3" class="form-control text-center"></div>
-                                    <div class="input-group input-group-sm mb-3"><span class="input-group-text">p4</span><input type="number" id="qty-p4" class="form-control text-center"></div>
+                                    <div class="input-group input-group-sm mb-3"><span class="input-group-text">p3</span><input type="number" id="qty-p3" class="form-control text-center"></div>
                                     <button class="btn btn-sm btn-success w-100" onclick="saveInventory()"><i class="bi bi-check-circle"></i> Save Changes</button>
                                 </div>
                             </div>
@@ -131,7 +130,6 @@
                     <div class="card shadow-sm border-danger h-100">
                         <div class="card-header bg-danger text-white"><span><i class="bi bi-exclamation-triangle-fill"></i> Danger Zone</span></div>
                         <div class="card-body text-center d-flex flex-column justify-content-center">
-                            <p class="small text-muted mb-2">Delete ALL test orders to clear database.</p>
                             <button class="btn btn-outline-danger w-100" onclick="deleteAllOrders()">
                                 <i class="bi bi-trash3-fill"></i> DELETE ALL ORDERS
                             </button>
@@ -141,12 +139,29 @@
             </div>
 
             <div class="card shadow-sm">
-                <div class="card-header bg-white py-3 border-bottom"><h5 class="mb-0"><i class="bi bi-list-check"></i> Order Management</h5></div>
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-list-check"></i> Order Management</h5>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteSelectedOrders()" id="bulkDeleteBtn" disabled>
+                        <i class="bi bi-trash"></i> Delete Selected
+                    </button>
+                </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle table-bordered mb-0">
-                            <thead class="table-light"><tr class="text-center align-middle"><th>Date</th><th>Order ID</th><th class="text-start">Customer</th><th style="width: 20%;" class="text-start">Address</th><th>Total & UTR</th><th>Tracking #</th><th>Status</th><th>Actions</th></tr></thead>
-                            <tbody id="tableBody"><tr><td colspan="8" class="text-center py-5">Loading orders...</td></tr></tbody>
+                            <thead class="table-light">
+                                <tr class="text-center align-middle">
+                                    <th class="table-checkbox"><input class="form-check-input" type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+                                    <th>Date</th>
+                                    <th>Order ID</th>
+                                    <th class="text-start">Customer</th>
+                                    <th style="width: 20%;" class="text-start">Address</th>
+                                    <th>Total & UTR</th>
+                                    <th>Tracking #</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody"><tr><td colspan="9" class="text-center py-5">Loading orders...</td></tr></tbody>
                         </table>
                     </div>
                 </div>
@@ -224,7 +239,7 @@
 
         // --- INVENTORY ---
         async function loadInventory() {
-            const pIds = ['p1', 'p2', 'p3', 'p4'];
+            const pIds = ['p1', 'p2', 'p3'];
             for (const pid of pIds) {
                 const docSnap = await getDoc(doc(db, "products", pid));
                 let val = docSnap.exists() ? docSnap.data().stock : 10;
@@ -239,7 +254,7 @@
             startLoading();
             try {
                 await new Promise(r => setTimeout(r, 1000)); 
-                const pIds = ['p1', 'p2', 'p3', 'p4'];
+                const pIds = ['p1', 'p2', 'p3'];
                 for(const pid of pIds) {
                     await updateDoc(doc(db, "products", pid), { stock: parseInt(document.getElementById(`qty-${pid}`).value) });
                 }
@@ -249,57 +264,63 @@
 
         // --- REVIEWS ---
         async function loadReviewCounts() {
-            const qP = query(collection(db, "reviews"), where("status", "==", "pending"));
-            const sP = await getDocs(qP);
-            document.getElementById('badge-pending').innerText = sP.size;
+            try {
+                const qP = query(collection(db, "reviews"), where("status", "==", "pending"));
+                const sP = await getDocs(qP);
+                document.getElementById('badge-pending').innerText = sP.size;
 
-            const qA = query(collection(db, "reviews"), where("status", "==", "approved"));
-            const sA = await getDocs(qA);
-            document.getElementById('badge-approved').innerText = sA.size;
+                const qA = query(collection(db, "reviews"), where("status", "==", "approved"));
+                const sA = await getDocs(qA);
+                document.getElementById('badge-approved').innerText = sA.size;
+            } catch(e) { console.error("Review count error", e); }
         }
 
         window.loadReviews = async function(status) {
             window.currentReviewTab = status;
             
-            // UI Toggle
             document.querySelectorAll('.review-tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(`tab-${status}`).classList.add('active');
 
             const list = document.getElementById('reviews-list-container');
             list.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>';
 
-            const snapshot = await getDocs(query(collection(db, "reviews"), where("status", "==", status)));
-            
-            if (snapshot.empty) {
-                list.innerHTML = `<div class="text-center text-muted py-4 small">No ${status} reviews found.</div>`;
-                return;
-            }
-
-            let html = '';
-            snapshot.forEach(docSnap => {
-                const r = docSnap.data();
-                const date = r.timestamp ? new Date(r.timestamp.seconds * 1000).toLocaleDateString() : 'N/A';
+            try {
+                const snapshot = await getDocs(query(collection(db, "reviews"), where("status", "==", status)));
                 
-                let btns = '';
-                if(status === 'pending') {
-                    btns = `<button class="btn btn-sm btn-success" onclick="updateReviewStatus('${docSnap.id}', 'approved')" title="Approve">✔</button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteReview('${docSnap.id}')" title="Delete">✖</button>`;
-                } else {
-                    btns = `<button class="btn btn-sm btn-outline-dark" onclick="updateReviewStatus('${docSnap.id}', 'pending')" title="Unpublish (Hide)"><i class="bi bi-eye-slash"></i></button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteReview('${docSnap.id}')" title="Delete Forever"><i class="bi bi-trash"></i></button>`;
+                if (snapshot.empty) {
+                    list.innerHTML = `<div class="text-center text-muted py-4 small">No ${status} reviews found.</div>`;
+                    return;
                 }
 
-                html += `<div class="list-group-item d-flex justify-content-between align-items-start bg-transparent">
-                    <div class="me-2">
-                        <div class="fw-bold text-dark d-flex align-items-center gap-2">${r.name} <span class="text-warning small">${'★'.repeat(r.rating)}</span></div>
-                        <small class="text-muted fst-italic d-block mb-1">"${r.text}"</small>
-                        <span class="badge bg-light text-secondary border">Order: ${r.orderId || 'N/A'}</span> <small class="text-muted ms-1" style="font-size:0.75rem">${date}</small>
-                    </div>
-                    <div class="d-flex flex-column gap-1">${btns}</div>
-                </div>`;
-            });
-            list.innerHTML = html;
-            loadReviewCounts(); 
+                let html = '';
+                snapshot.forEach(docSnap => {
+                    const r = docSnap.data();
+                    const date = r.timestamp ? new Date(r.timestamp.seconds * 1000).toLocaleDateString() : 'N/A';
+                    
+                    let btns = '';
+                    if(status === 'pending') {
+                        btns = `<button class="btn btn-sm btn-success" onclick="updateReviewStatus('${docSnap.id}', 'approved')" title="Approve">✔</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteReview('${docSnap.id}')" title="Delete">✖</button>`;
+                    } else {
+                        btns = `<button class="btn btn-sm btn-outline-dark" onclick="updateReviewStatus('${docSnap.id}', 'pending')" title="Unpublish (Hide)"><i class="bi bi-eye-slash"></i></button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteReview('${docSnap.id}')" title="Delete Forever"><i class="bi bi-trash"></i></button>`;
+                    }
+
+                    html += `<div class="list-group-item d-flex justify-content-between align-items-start bg-transparent">
+                        <div class="me-2">
+                            <div class="fw-bold text-dark d-flex align-items-center gap-2">${r.name} <span class="text-warning small">${'★'.repeat(r.rating)}</span></div>
+                            <small class="text-muted fst-italic d-block mb-1">"${r.text}"</small>
+                            <span class="badge bg-light text-secondary border">Order: ${r.orderId || 'N/A'}</span> <small class="text-muted ms-1" style="font-size:0.75rem">${date}</small>
+                        </div>
+                        <div class="d-flex flex-column gap-1">${btns}</div>
+                    </div>`;
+                });
+                list.innerHTML = html;
+                loadReviewCounts(); 
+            } catch (error) {
+                console.error("Review Load Error:", error);
+                list.innerHTML = `<div class="text-center text-danger py-3 small">Error loading reviews. Check console.</div>`;
+            }
         };
 
         window.updateReviewStatus = async function(id, newStatus) {
@@ -322,49 +343,59 @@
             try { await new Promise(r => setTimeout(r, 1000)); await setDoc(doc(db, "settings", "config"), { masterEmail: document.getElementById('master-email').value }); stopLoading(); } catch(e){ alert("Error"); stopLoading(); }
         }
 
-        // --- DANGER ZONE (DELETE ALL ORDERS) ---
+        // --- DELETE LOGIC ---
+        window.deleteOrder = async function(docId) {
+            if(!confirm("Are you sure you want to delete this order?")) return;
+            startLoading();
+            try {
+                await deleteDoc(doc(db, "orders", docId));
+                loadOrders();
+                stopLoading();
+            } catch(e) { console.error(e); alert("Error deleting order"); stopLoading(); }
+        };
+
         window.deleteAllOrders = async function() {
-            // 1. First Warning
-            const pass = prompt("⚠️ DANGER ZONE ⚠️\n\nThis will DELETE ALL ORDERS permanently.\nTo confirm, enter the Deletion Master Password:");
-            
-            // 2. Password Check (Code: superadmin)
-            if(pass !== "superadmin") { 
-                alert("❌ Wrong Password. Action Cancelled.");
-                return;
-            }
-            
-            // 3. Second Warning
-            if(!confirm("‼️ FINAL WARNING ‼️\n\nAre you absolutely sure you want to delete every single order from the database? This cannot be undone.")) {
-                return;
-            }
+            const pass = prompt("⚠️ DANGER ZONE ⚠️\nThis deletes ALL orders.\nEnter Deletion Password:");
+            if(pass !== "superadmin") { alert("❌ Wrong Password."); return; }
+            if(!confirm("‼️ FINAL WARNING ‼️\nAre you absolutely sure?")) return;
 
             startLoading();
             try {
                 const q = query(collection(db, "orders"));
                 const snapshot = await getDocs(q);
-                
-                if(snapshot.empty) {
-                    alert("No orders to delete.");
-                    stopLoading();
-                    return;
-                }
+                if(snapshot.empty) { alert("No orders."); stopLoading(); return; }
+                const promises = [];
+                snapshot.forEach(doc => promises.push(deleteDoc(doc.ref)));
+                await Promise.all(promises);
+                alert("✅ Database Cleared.");
+                loadOrders(); stopLoading();
+            } catch(e) { console.error(e); alert("Error."); stopLoading(); }
+        };
 
-                const deletePromises = [];
-                snapshot.forEach((doc) => {
-                    deletePromises.push(deleteDoc(doc.ref));
-                });
-                
-                await Promise.all(deletePromises);
-                
-                alert("✅ Database Cleared. All orders have been deleted.");
-                loadOrders(); 
+        window.toggleSelectAll = function() {
+            const checked = document.getElementById('selectAll').checked;
+            document.querySelectorAll('.order-checkbox').forEach(cb => cb.checked = checked);
+            updateBulkBtn();
+        };
+
+        window.updateBulkBtn = function() {
+            const count = document.querySelectorAll('.order-checkbox:checked').length;
+            document.getElementById('bulkDeleteBtn').disabled = count === 0;
+        };
+
+        window.deleteSelectedOrders = async function() {
+            const selected = Array.from(document.querySelectorAll('.order-checkbox:checked')).map(cb => cb.value);
+            if(selected.length === 0) return;
+            if(!confirm(`Delete ${selected.length} orders?`)) return;
+
+            startLoading();
+            try {
+                const promises = selected.map(id => deleteDoc(doc(db, "orders", id)));
+                await Promise.all(promises);
+                loadOrders();
                 stopLoading();
-            } catch(e) {
-                console.error(e);
-                alert("Error deleting orders. Check console.");
-                stopLoading();
-            }
-        }
+            } catch(e) { console.error(e); alert("Error."); stopLoading(); }
+        };
 
         // --- ORDERS ---
         window.updateStatus = function(docId, newStatus) {
@@ -417,17 +448,17 @@
                 const order = doc.data(); const date = order.timestamp ? new Date(order.timestamp.seconds * 1000).toLocaleDateString() : 'N/A';
                 
                 let statusClass = "status-Pending";
-                if (order.status === "Payment Received") statusClass = "status-Payment";
-                else if (order.status === "Payment Notification") statusClass = "status-Payment-Notification";
-                else if (order.status === "Shipped") statusClass = "status-Shipped";
-                else if (order.status === "Delivered") statusClass = "status-Delivered";
-                else if (order.status === "Cancelled") statusClass = "status-Cancelled";
-                else if (order.status && order.status.includes("Pending")) statusClass = "status-Pending";
+                if (order.status && order.status.includes("Payment")) statusClass = "status-Payment";
+                else if (order.status && order.status.includes("Notification")) statusClass = "status-Payment-Notification";
+                else if (order.status && order.status.includes("Shipped")) statusClass = "status-Shipped";
+                else if (order.status && order.status.includes("Delivered")) statusClass = "status-Delivered";
+                else if (order.status && order.status.includes("Cancelled")) statusClass = "status-Cancelled";
 
                 html += `<tr class="text-center">
+                    <td class="table-checkbox"><input class="form-check-input order-checkbox" type="checkbox" value="${doc.id}" onclick="updateBulkBtn()"></td>
                     <td><small>${date}</small></td>
                     <td><span class="badge bg-secondary">${order.orderId || doc.id}</span></td>
-                    <td class="text-start"><strong>${order.name}</strong><br><a href="https://wa.me/${order.phone}" target="_blank" class="text-success small text-decoration-none"><i class="bi bi-whatsapp"></i> ${order.phone}</a></td>
+                    <td class="text-start"><strong>${order.name}</strong><br><a href="https://wa.me/91${order.phone}" target="_blank" class="text-success small text-decoration-none"><i class="bi bi-whatsapp"></i> ${order.phone}</a></td>
                     <td class="text-start"><small>${order.address}</small></td>
                     <td><strong>₹${order.total}</strong><br><small class="text-muted">UTR: ${order.txnId || 'N/A'}</small></td>
                     <td class="text-center"><span class="fw-bold text-dark">${order.trackingNumber || '-'}</span></td>
@@ -445,6 +476,7 @@
                         <div class="d-flex flex-column gap-1">
                             <button class="btn btn-sm btn-outline-primary" onclick="viewDetails('${encodeURIComponent(order.items)}')">Details</button>
                             <button class="btn btn-sm btn-success" onclick="sendWhatsappUpdate('${order.phone}', '${order.name}', '${order.orderId}', '${order.status}')">Notify</button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteOrder('${doc.id}')"><i class="bi bi-trash"></i></button>
                         </div>
                     </td>
                 </tr>`;
