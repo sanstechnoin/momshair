@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -54,7 +54,6 @@
             <div class="row align-items-center flex-column-reverse flex-lg-row">
                 <div class="col-lg-6 text-center text-lg-start mt-4 mt-lg-0">
                     <span class="text-accent text-uppercase fw-bold ls-2">Since 1995 • 100% Natural • Baby & Kid Friendly 👶</span>
-                    
                     <h1 class="display-3 font-heading fw-bold text-primary my-3">Sun-Dried Herbs,<br><em>Slow-Cooked Magic.</em></h1>
                     <p class="lead text-muted mb-4">We source raw herbs, sun-dry them for days, and slow-cook them in small batches. No machines. Just patience.</p>
                     
@@ -109,11 +108,11 @@
         </div>
     </section>
 
-   <section id="ritual" class="py-5 bg-primary">
+    <section id="ritual" class="py-5 bg-primary">
         <div class="container text-center">
             <h2 class="font-heading text-white mb-4">Daily Habit. Sunday Ritual.</h2>
-            <p class="lead text-white-50 mb-5">Light enough for daily grooming in the Indian way, yet rich enough for a deep weekend massage.<br>Here is our recommended routine:</p>          
-
+            <p class="lead text-white-50 mb-5">Light enough for daily grooming in the Indian way, yet rich enough for a deep weekend massage.<br>Here is our recommended routine:</p>
+            
             <div class="row g-4 justify-content-center">
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow bg-white p-4">
@@ -122,7 +121,6 @@
                         <p class="text-muted small mb-0">Apply a few drops daily to damp hair for shine and protection. Non-sticky and perfect for work or school.</p>
                     </div>
                 </div>
-
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow bg-white p-4">
                         <div class="mb-3 text-accent"><i class="bi bi-calendar-week fs-1"></i></div>
@@ -130,7 +128,6 @@
                         <p class="text-muted small mb-0">Generously massage warm or cool oil into the scalp for 10-15 minutes. Boosts circulation and relaxation.</p>
                     </div>
                 </div>
-
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow bg-white p-4">
                         <div class="mb-3 text-accent"><i class="bi bi-hourglass-split fs-1"></i></div>
@@ -199,10 +196,10 @@
                     </div>
                 </div>
 
-               <div class="col-md-4">
+                <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm product-card">
                         <span class="badge bg-accent position-absolute top-0 end-0 m-3" style="z-index: 10;">BEST VALUE</span>
-                      
+                        
                         <div class="p-4" style="height: 250px;">
                             <div class="position-relative w-100 h-100 d-flex justify-content-center align-items-end" style="border-radius: 5px; overflow: hidden;">
                                 <img src="bg.png" alt="" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.8; z-index: 0;">
@@ -225,11 +222,12 @@
                                 <span class="text-primary fw-bold fs-3">₹370</span>
                             </div>
                             <div class="mt-auto">
-                                <button id="btn-p3" class="btn btn-primary w-100 btn-lg" onclick="addToCart('p3', 'Complete Care Duo', 370)">Add Combo</button>
+                                <button id="btn-p3" class="btn btn-primary w-100 btn-lg" onclick="addToCart('p3', 'The Complete Care Duo', 370)">Add Combo</button>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -338,7 +336,7 @@
             </div>
         </div>
     </footer>
-    
+
     <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -442,7 +440,7 @@
             if(snap.exists() && snap.data().masterEmail) masterEmail = snap.data().masterEmail;
         });
 
-        // --- FETCH DYNAMIC REVIEWS ---
+        // --- FETCH DYNAMIC REVIEWS (SMART SCROLL FIX) ---
         async function loadReviews() {
             const track = document.getElementById('dynamicReviewsTrack');
             // Fetch approved reviews
@@ -466,8 +464,18 @@
                 `;
             });
 
-            // Duplicate HTML for infinite loop animation
-            track.innerHTML = html + html; 
+            // LOGIC: Only duplicate for infinite scroll if there are enough reviews (e.g., > 3)
+            const wrapper = document.querySelector('.reviews-wrapper');
+            
+            if (snapshot.size > 3) {
+                track.innerHTML = html + html; 
+            } else {
+                track.innerHTML = html; 
+                track.style.animation = 'none'; 
+                track.style.width = '100%'; 
+                track.style.justifyContent = 'center'; 
+                wrapper.style.overflowX = 'auto'; 
+            }
         }
         loadReviews();
 
@@ -519,7 +527,6 @@
             const alreadyInCart = window.cart.filter(item => item.id === id).length;
 
             if (availableStock > 0 && (alreadyInCart + 1) > availableStock) {
-                // Show Bootstrap Modal instead of alert
                 document.getElementById('stockLimitMsg').innerText = `Sorry! Only ${availableStock} bottle(s) of ${name} are left in this batch. Please checkout or wait for pre-orders.`;
                 new bootstrap.Modal(document.getElementById('stockLimitModal')).show();
                 return;
@@ -563,7 +570,6 @@
             const orderId = "M-" + Math.floor(100000 + Math.random() * 900000);
             let itemsString = ""; 
             
-            // PREPARE DATA & DEDUCT STOCK
             const deductionPromises = [];
             const itemCounts = {};
             window.cart.forEach(item => { 
@@ -601,7 +607,6 @@
                     })
                 });
                 
-                // Show Success Modal with ID
                 document.getElementById('success-order-id').innerText = orderId;
                 const checkoutModal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
                 checkoutModal.hide();
