@@ -349,39 +349,58 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div id="cart-items" class="mb-4"></div>
-                    <div class="d-flex justify-content-between border-top pt-3 mb-4">
-                        <span class="h5">Total</span>
-                        <span class="h5 fw-bold text-primary" id="cart-total">₹0.00</span>
+                    <div id="cart-items" class="mb-3"></div>
+                    
+                    <div class="bg-light p-3 rounded mb-3 border">
+                        <label class="form-label fw-bold small text-uppercase">Shipping Location</label>
+                        <div class="d-flex gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="locRadio" id="locTN" value="TN" checked onchange="recalcTotal()">
+                                <label class="form-check-label" for="locTN">Tamil Nadu</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="locRadio" id="locROI" value="ROI" onchange="recalcTotal()">
+                                <label class="form-check-label" for="locROI">Rest of India</label>
+                            </div>
+                        </div>
                     </div>
+
+                    <div class="input-group mb-4">
+                        <input type="text" id="couponCode" class="form-control text-uppercase" placeholder="Have a coupon?">
+                        <button class="btn btn-outline-dark" type="button" onclick="applyCoupon()">Apply</button>
+                    </div>
+                    <div id="couponMsg" class="small fw-bold mb-2" style="display:none;"></div>
+
+                    <div class="border-top pt-3 mb-4">
+                        <div class="d-flex justify-content-between text-muted small"><span>Subtotal:</span><span id="display-subtotal">₹0</span></div>
+                        <div class="d-flex justify-content-between text-muted small"><span>Shipping:</span><span id="display-shipping">₹0</span></div>
+                        <div class="d-flex justify-content-between text-success small" id="row-discount" style="display:none;"><span>Discount:</span><span id="display-discount">-₹0</span></div>
+                        <div class="d-flex justify-content-between fs-4 fw-bold mt-2"><span>Total:</span><span id="display-total" class="text-primary">₹0</span></div>
+                    </div>
+
                     <form id="checkoutForm">
-                        <h6 class="text-uppercase text-muted fw-bold mb-3 small">Step 1: Payment</h6>
-                        <div class="bg-light p-4 rounded mb-4 text-center">
-                            <button type="button" class="btn btn-success btn-lg w-100 mb-3 d-md-none shadow" data-bs-toggle="modal" data-bs-target="#upiInstructionModal"><i class="bi bi-phone"></i> Tap to Pay (GPay / UPI)</button>
-                            <div class="d-none d-md-block mb-3">
-                                <img src="qrcode.png" alt="UPI QR" style="width: 120px;" class="border p-1 bg-white">
-                                <p class="small text-muted mt-2">Scan with any UPI App</p>
+                        <h6 class="text-uppercase text-muted fw-bold mb-3 small">Details & Payment</h6>
+                        <div class="bg-light p-3 rounded mb-3 text-center">
+                            <div class="d-none d-md-block mb-2">
+                                <img src="qrcode.png" alt="UPI QR" style="width: 100px;" class="border p-1 bg-white">
                             </div>
                             <p class="mb-0 fw-bold">UPI ID: <span class="text-primary">vabinanthana@okaxis</span></p>
+                            <button type="button" class="btn btn-success w-100 d-md-none mt-2" onclick="window.location.href='upi://pay?pa=vabinanthana@okaxis&pn=MomsHairOil&cu=INR'">
+                                <i class="bi bi-phone"></i> Pay via UPI App
+                            </button>
                         </div>
-                        <h6 class="text-uppercase text-muted fw-bold mb-3 small">Step 2: Shipping & Confirmation</h6>
-                        <div class="row g-3">
-                            <div class="col-md-6"><input type="text" class="form-control" id="custName" placeholder="Full Name" required></div>
-                            <div class="col-md-6"><input type="tel" class="form-control" id="custPhone" placeholder="WhatsApp Number" required></div>
+                        <div class="row g-2">
+                            <div class="col-6"><input type="text" class="form-control" id="custName" placeholder="Full Name" required></div>
+                            <div class="col-6"><input type="tel" class="form-control" id="custPhone" placeholder="WhatsApp Number" required></div>
                             <div class="col-12"><textarea class="form-control" id="custAddress" rows="2" placeholder="Full Address with Pincode" required></textarea></div>
                             <div class="col-12">
-                                <label class="form-label small fw-bold">Payment Proof (Screenshot OR Transaction ID)</label>
-                                <div class="input-group mb-2">
-                                    <span class="input-group-text"><i class="bi bi-123"></i></span>
-                                    <input type="text" class="form-control" id="custTxnId" placeholder="Enter UPI Reference / UTR Number">
-                                </div>
+                                <label class="form-label small fw-bold">Payment Proof (Screenshot / UTR)</label>
+                                <input type="text" class="form-control mb-1" id="custTxnId" placeholder="UTR / Ref Number">
                                 <input type="file" class="form-control" id="custScreenshot" accept="image/*">
                             </div>
-                            <div class="col-12">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="termsCheck" required>
-                                    <label class="form-check-label small text-muted" for="termsCheck">I confirm all the details above are correct and I am responsible for any misinformation.</label>
-                                </div>
+                            <div class="col-12 form-check mt-2">
+                                <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                                <label class="form-check-label small text-muted">I confirm all details are correct.</label>
                             </div>
                         </div>
                     </form>
@@ -396,9 +415,7 @@
     <div class="modal fade" id="notificationModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
-                <div class="modal-header border-0 pb-0">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+                <div class="modal-header border-0 pb-0"><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                 <div class="modal-body text-center pt-0 pb-4">
                     <div class="mb-3 text-warning"><i class="bi bi-exclamation-circle fs-1"></i></div>
                     <h5 class="fw-bold mb-2">Attention</h5>
@@ -417,29 +434,26 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center p-4">
-                    <p id="stockLimitMsg" class="mb-0 fs-5 text-muted">We only have a few bottles left in this fresh batch. Please checkout or wait for the next pre-order cycle.</p>
+                    <p id="stockLimitMsg" class="mb-0 fs-5 text-muted">We only have a few bottles left in this fresh batch.</p>
                 </div>
                 <div class="modal-footer justify-content-center border-0">
-                    <button type="button" class="btn btn-dark px-4" data-bs-dismiss="modal">Okay, I understand</button>
+                    <button type="button" class="btn btn-dark px-4" data-bs-dismiss="modal">Okay</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="upiInstructionModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-warning-subtle"><h5 class="modal-title fw-bold">⚠️ Before you pay...</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body text-center"><p class="fs-5">Please <strong>COPY the Reference Code (UTR)</strong> from your payment app after paying.</p><p class="text-muted">You will need to PASTE it in the "Payment Proof" field to confirm your order.</p><a id="btn-proceed-pay" href="#" class="btn btn-success w-100 btn-lg mt-3">I Understand, Proceed to Pay <i class="bi bi-box-arrow-up-right"></i></a></div></div></div></div>
     
     <div class="modal fade" id="orderSuccessModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content text-center p-5">
                 <div class="mb-4 text-primary"><i class="bi bi-heart-fill" style="font-size: 3.5rem;"></i></div>
-                <h3 class="fw-bold mb-2 font-heading">Thank You for Trusting Us! 🌿</h3>
+                <h3 class="fw-bold mb-2 font-heading">Thank You! 🌿</h3>
                 <h5 class="mb-4">Order #<span id="success-order-id" class="text-accent fw-bold"></span></h5>
                 <p class="mb-2 text-muted">We have received your order request. Since every bottle is packed with care, we personally verify every payment.</p>
                 <div class="alert alert-success border-0 bg-success-subtle mb-4">
                     <h6 class="fw-bold mb-1"><i class="bi bi-clock-history"></i> Next Steps:</h6>
-                    <p class="mb-0 small">Please save this Order ID for your reference. You will receive a notification via WhatsApp after payment confirmation.</p>
+                    <p class="mb-0 small">Please save this Order ID. You will receive a WhatsApp update shortly.</p>
                 </div>
-                <p class="small text-muted mb-4">Shipment starts within 24 hours of confirmation.</p>
                 <button type="button" class="btn btn-primary w-100 btn-lg" onclick="window.location.href='tracker.html'">Track My Order</button>
             </div>
         </div>
@@ -454,30 +468,29 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- FETCH MASTER EMAIL ---
         let masterEmail = "vabinanthana@gmail.com"; 
         getDoc(doc(db, "settings", "config")).then(snap => { 
             if(snap.exists() && snap.data().masterEmail) masterEmail = snap.data().masterEmail;
         });
 
-        // --- FETCH DYNAMIC REVIEWS ---
+        // --- LOAD SHIPPING RULES ---
+        window.shippingRules = { freeLimit: 599, tnRate: 90, roiRate: 120 }; // Defaults
+        getDoc(doc(db, "settings", "shipping")).then(snap => {
+            if(snap.exists()) window.shippingRules = snap.data();
+        });
+
+        // --- REVIEWS ---
         async function loadReviews() {
             const track = document.getElementById('dynamicReviewsTrack');
             const q = query(collection(db, "reviews"), where("status", "==", "approved"), limit(10));
             const snapshot = await getDocs(q);
 
-            if (snapshot.empty) { return; }
+            if (snapshot.empty) return;
 
             let html = '';
             snapshot.forEach(docSnap => {
                 const r = docSnap.data();
-                html += `
-                    <div class="review-card-carousel">
-                        <div class="text-accent mb-2">${'★'.repeat(r.rating || 5)}</div>
-                        <p class="fst-italic text-muted">"${r.text}"</p>
-                        <footer class="blockquote-footer mt-2">${r.name}, Verified Buyer</footer>
-                    </div>
-                `;
+                html += `<div class="review-card-carousel"><div class="text-accent mb-2">${'★'.repeat(r.rating || 5)}</div><p class="fst-italic text-muted">"${r.text}"</p><footer class="blockquote-footer mt-2">${r.name}, Verified Buyer</footer></div>`;
             });
 
             const wrapper = document.querySelector('.reviews-wrapper');
@@ -493,81 +506,123 @@
         }
         loadReviews();
 
-        // --- SCROLL TO TOP ---
-        window.onscroll = function() {
-            const btn = document.getElementById("scrollTopBtn");
-            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) { btn.classList.remove("d-none"); btn.classList.add("d-flex"); }
-            else { btn.classList.add("d-none"); btn.classList.remove("d-flex"); }
-        };
-        window.scrollToTop = function() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
-
-        // --- MOBILE MENU CLOSE FIX ---
-        document.addEventListener("DOMContentLoaded", function(){
-            const navLinks = document.querySelectorAll('.close-menu');
-            const menuToggle = document.getElementById('navbarNav');
-            const bsCollapse = new bootstrap.Collapse(menuToggle, {toggle:false});
-            navLinks.forEach((l) => {
-                l.addEventListener('click', () => { bsCollapse.hide() });
-            });
-        });
-
-        // --- INVENTORY TRACKER ---
+        // --- STOCK ---
         window.currentStock = { 'p1': 0, 'p2': 0, 'p3': 0 };
-
         const productsMap = { 'p1': { btnId: 'btn-p1', stockId: 'stock-p1' }, 'p2': { btnId: 'btn-p2', stockId: 'stock-p2' }, 'p3': { btnId: 'btn-p3', stockId: 'stock-p3' } };
+        
         onSnapshot(collection(db, "products"), (snapshot) => {
             snapshot.forEach((doc) => {
                 const prod = productsMap[doc.id];
                 if (prod) {
                     const data = doc.data(); const stock = data.stock || 0;
                     window.currentStock[doc.id] = stock;
-
                     const btn = document.getElementById(prod.btnId); const stockTxt = document.getElementById(prod.stockId);
                     if (stock > 0) {
-                        btn.innerHTML = "Add to Cart"; btn.classList.remove("btn-preorder"); btn.classList.add("btn-primary");
+                        btn.innerHTML = "Add to Cart"; btn.classList.replace("btn-secondary", "btn-primary");
                         stockTxt.innerHTML = `<i class="bi bi-check-circle"></i> Only ${stock} bottles left!`; stockTxt.className = "text-success fw-bold mb-2 small";
                     } else {
-                        btn.innerHTML = "Pre-Order Now"; btn.classList.remove("btn-primary"); btn.classList.add("btn-preorder");
-                        stockTxt.innerHTML = `<i class="bi bi-hourglass-split"></i> Batch Cooking... Ships in 5-7 Days`; stockTxt.className = "text-accent fw-bold mb-2 small";
+                        btn.innerHTML = "Pre-Order Now"; btn.classList.replace("btn-primary", "btn-secondary");
+                        stockTxt.innerHTML = `<i class="bi bi-hourglass-split"></i> Batch Cooking...`; stockTxt.className = "text-accent fw-bold mb-2 small";
                     }
                 }
             });
         });
 
-        // --- CART ---
-        window.cart = []; let currentTotal = 0;
+        // --- CART & CALCULATIONS ---
+        window.cart = []; 
+        window.appliedCoupon = null;
+
         window.addToCart = function(id, name, price) {
             const availableStock = window.currentStock[id] || 0;
             const alreadyInCart = window.cart.filter(item => item.id === id).length;
 
             if (availableStock > 0 && (alreadyInCart + 1) > availableStock) {
-                document.getElementById('stockLimitMsg').innerText = `Sorry! Only ${availableStock} bottle(s) of ${name} are left in this batch. Please checkout or wait for pre-orders.`;
+                document.getElementById('stockLimitMsg').innerText = `Sorry! Only ${availableStock} bottle(s) of ${name} left.`;
                 new bootstrap.Modal(document.getElementById('stockLimitModal')).show();
                 return;
             }
 
-            window.cart.push({ id, name, price }); updateCartDisplay();
+            window.cart.push({ id, name, price }); 
+            updateCartDisplay();
             const cartBtn = document.querySelector('.btn-outline-primary'); cartBtn.classList.add('cart-animate');
             setTimeout(() => { cartBtn.classList.remove('cart-animate'); }, 500);
         }
+
+        window.removeFromCart = function(index) { window.cart.splice(index, 1); updateCartDisplay(); prepareCheckout(); }
         window.updateCartDisplay = function() { document.getElementById('cart-count').innerText = window.cart.length; }
-        
+
         window.prepareCheckout = function() {
             const cartItemsContainer = document.getElementById('cart-items');
-            const totalEl = document.getElementById('cart-total');
-            const proceedPayBtn = document.getElementById('btn-proceed-pay');
-            if (window.cart.length === 0) { cartItemsContainer.innerHTML = '<p class="text-center text-muted">Your cart is empty.</p>'; totalEl.innerText = '₹0.00'; return; }
-            let html = '<ul class="list-group list-group-flush">'; currentTotal = 0;
+            if (window.cart.length === 0) { 
+                cartItemsContainer.innerHTML = '<p class="text-center text-muted">Your cart is empty.</p>'; 
+                recalcTotal(); 
+                return; 
+            }
+            let html = '<ul class="list-group list-group-flush">';
             window.cart.forEach((item, index) => {
-                currentTotal += item.price;
                 html += `<li class="list-group-item d-flex justify-content-between align-items-center">${item.name}<span>₹${item.price}</span><button class="btn btn-sm btn-outline-danger ms-2" onclick="removeFromCart(${index})">&times;</button></li>`;
             });
-            html += '</ul>'; cartItemsContainer.innerHTML = html; totalEl.innerText = '₹' + currentTotal;
-            proceedPayBtn.href = `upi://pay?pa=vabinanthana@okaxis&pn=MomsHairOil&am=${currentTotal}.00&cu=INR`;
+            html += '</ul>'; 
+            cartItemsContainer.innerHTML = html;
+            recalcTotal();
         }
-        window.removeFromCart = function(index) { window.cart.splice(index, 1); window.updateCartDisplay(); window.prepareCheckout(); }
 
-        // --- SHOW NOTIFICATION HELPER ---
+        window.recalcTotal = function() {
+            let subtotal = window.cart.reduce((sum, item) => sum + item.price, 0);
+            
+            // Shipping Logic
+            let shipping = 0;
+            if (subtotal < window.shippingRules.freeLimit && subtotal > 0) {
+                const isTN = document.getElementById('locTN').checked;
+                shipping = isTN ? window.shippingRules.tnRate : window.shippingRules.roiRate;
+            }
+
+            // Coupon Logic
+            let discount = 0;
+            if (window.appliedCoupon) {
+                discount = window.appliedCoupon.value;
+                document.getElementById('row-discount').style.display = 'flex';
+                document.getElementById('display-discount').innerText = `-₹${discount}`;
+            } else {
+                document.getElementById('row-discount').style.display = 'none';
+            }
+
+            let total = subtotal + shipping - discount;
+            if (total < 0) total = 0;
+
+            document.getElementById('display-subtotal').innerText = `₹${subtotal}`;
+            document.getElementById('display-shipping').innerText = shipping === 0 ? "Free" : `₹${shipping}`;
+            document.getElementById('display-total').innerText = `₹${total}`;
+            
+            return { subtotal, shipping, discount, total };
+        }
+
+        window.applyCoupon = async function() {
+            const code = document.getElementById('couponCode').value.toUpperCase().trim();
+            const msgEl = document.getElementById('couponMsg');
+            const btn = event.target;
+            
+            if(!code) return;
+            btn.innerHTML = "..."; 
+
+            const q = query(collection(db, "coupons"), where("code", "==", code));
+            const snap = await getDocs(q);
+
+            if(!snap.empty) {
+                const data = snap.docs[0].data();
+                window.appliedCoupon = { code: data.code, value: data.value };
+                msgEl.innerText = `Coupon Applied: ₹${data.value} OFF`;
+                msgEl.className = "small text-success fw-bold mb-2";
+            } else {
+                window.appliedCoupon = null;
+                msgEl.innerText = "Invalid Coupon Code";
+                msgEl.className = "small text-danger fw-bold mb-2";
+            }
+            msgEl.style.display = 'block';
+            btn.innerHTML = "Apply";
+            recalcTotal();
+        }
+
         window.showNotification = function(msg) {
             document.getElementById('notificationMsg').innerText = msg;
             new bootstrap.Modal(document.getElementById('notificationModal')).show();
@@ -584,19 +639,23 @@
             if (window.cart.length === 0) return showNotification("Cart is empty!");
             if (!name || !phone || !address) return showNotification("Please fill all details.");
             if (!txnId && !hasScreenshot) return showNotification("Please provide payment proof.");
-            if (!terms) return showNotification("Please accept the terms.");
+            if (!terms) return showNotification("Please accept terms.");
 
             const btn = event.target; const originalText = btn.innerHTML; btn.innerHTML = "Processing..."; btn.disabled = true;
-            const orderId = "M-" + Math.floor(100000 + Math.random() * 900000);
-            let itemsString = ""; 
             
-            const deductionPromises = [];
+            // Final Calculation
+            const finals = recalcTotal();
+            const orderId = "M-" + Math.floor(100000 + Math.random() * 900000);
+            
+            let itemsString = ""; 
             const itemCounts = {};
             window.cart.forEach(item => { 
                 itemsString += `${item.name} (₹${item.price})\n`; 
                 itemCounts[item.id] = (itemCounts[item.id] || 0) + 1;
             });
 
+            // Stock Deductions
+            const deductionPromises = [];
             for (const [pid, count] of Object.entries(itemCounts)) {
                 const productRef = doc(db, "products", pid);
                 deductionPromises.push(updateDoc(productRef, { stock: increment(-count) }));
@@ -607,22 +666,27 @@
 
                 await setDoc(doc(db, "orders", orderId), {
                     orderId: orderId, name: name, phone: phone, address: address,
-                    items: itemsString, total: currentTotal,
-                    cartDetails: window.cart, 
+                    items: itemsString, 
+                    
+                    // NEW FIELDS
+                    subtotal: finals.subtotal,
+                    shipping: finals.shipping,
+                    discount: finals.discount,
+                    total: finals.total,
+                    coupon: window.appliedCoupon ? window.appliedCoupon.code : "NONE",
+                    
+                    cartDetails: window.cart,
                     txnId: txnId || "Screenshot Uploaded",
                     status: "Pending Verification", timestamp: serverTimestamp()
                 });
 
                 fetch(`https://formsubmit.co/ajax/${masterEmail}`, {
-                    method: "POST",
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    method: "POST", headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify({ 
                         _subject: `New Order: ${orderId}`, 
-                        order_id: orderId, 
-                        customer_name: name, 
-                        phone: phone, 
-                        items: itemsString,
-                        total_amount: `₹${currentTotal}`, 
+                        order_id: orderId, name, phone, 
+                        items: itemsString, 
+                        total_amount: `₹${finals.total}`, 
                         transaction_ref: txnId 
                     })
                 });
@@ -635,7 +699,7 @@
 
             } catch (error) {
                 console.error("Error:", error);
-                showNotification("Error placing order. Please try again.");
+                showNotification("Error placing order.");
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
