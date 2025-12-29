@@ -528,28 +528,57 @@
             });
         });
 
-        // --- CART & CALCULATIONS ---
+        // --- CART LOGIC ---
         window.cart = []; 
         window.appliedCoupon = null;
 
         window.addToCart = function(id, name, price) {
-            const availableStock = window.currentStock[id] || 0;
-            const alreadyInCart = window.cart.filter(item => item.id === id).length;
+            const stock = window.currentStock[id] || 0;
+            const existingItem = window.cart.find(i => i.id === id);
+            const currentQty = existingItem ? existingItem.quantity : 0;
 
-            if (availableStock > 0 && (alreadyInCart + 1) > availableStock) {
-                document.getElementById('stockLimitMsg').innerText = `Sorry! Only ${availableStock} bottle(s) of ${name} left.`;
+            if (stock > 0 && (currentQty + 1) > stock) {
+                document.getElementById('stockLimitMsg').innerText = `Sorry! Only ${stock} bottle(s) of ${name} left.`;
                 new bootstrap.Modal(document.getElementById('stockLimitModal')).show();
                 return;
             }
 
-            window.cart.push({ id, name, price }); 
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                window.cart.push({ id, name, price, quantity: 1 });
+            }
+            
             updateCartDisplay();
             const cartBtn = document.querySelector('.btn-outline-primary'); cartBtn.classList.add('cart-animate');
             setTimeout(() => { cartBtn.classList.remove('cart-animate'); }, 500);
         }
 
-        window.removeFromCart = function(index) { window.cart.splice(index, 1); updateCartDisplay(); prepareCheckout(); }
-        window.updateCartDisplay = function() { document.getElementById('cart-count').innerText = window.cart.length; }
+        window.updateQuantity = function(index, change) {
+            const item = window.cart[index];
+            const stock = window.currentStock[item.id];
+            const newQty = item.quantity + change;
+
+            if (newQty > stock) {
+                document.getElementById('stockLimitMsg').innerText = `Sorry! Only ${stock} bottle(s) available.`;
+                new bootstrap.Modal(document.getElementById('stockLimitModal')).show();
+                return;
+            }
+
+            if (newQty <= 0) {
+                window.cart.splice(index, 1);
+            } else {
+                item.quantity = newQty;
+            }
+            
+            updateCartDisplay();
+            prepareCheckout();
+        }
+
+        window.updateCartDisplay = function() {
+            const totalCount = window.cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-count').innerText = totalCount;
+        }
 
         window.prepareCheckout = function() {
             const cartItemsContainer = document.getElementById('cart-items');
@@ -560,7 +589,19 @@
             }
             let html = '<ul class="list-group list-group-flush">';
             window.cart.forEach((item, index) => {
-                html += `<li class="list-group-item d-flex justify-content-between align-items-center">${item.name}<span>₹${item.price}</span><button class="btn btn-sm btn-outline-danger ms-2" onclick="removeFromCart(${index})">&times;</button></li>`;
+                html += `
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="fw-bold">${item.name}</div>
+                        <small class="text-muted">₹${item.price} each</small>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="updateQuantity(${index}, -1)">-</button>
+                        <span class="fw-bold">${item.quantity}</span>
+                        <button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="updateQuantity(${index}, 1)">+</button>
+                    </div>
+                    <span class="fw-bold">₹${item.price * item.quantity}</span>
+                </li>`;
             });
             html += '</ul>'; 
             cartItemsContainer.innerHTML = html;
@@ -568,7 +609,7 @@
         }
 
         window.recalcTotal = function() {
-            let subtotal = window.cart.reduce((sum, item) => sum + item.price, 0);
+            let subtotal = window.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             
             // Shipping Logic
             let shipping = 0;
@@ -580,9 +621,21 @@
             // Coupon Logic
             let discount = 0;
             if (window.appliedCoupon) {
-                discount = window.appliedCoupon.value;
-                document.getElementById('row-discount').style.display = 'flex';
-                document.getElementById('display-discount').innerText = `-₹${discount}`;
+                if (window.appliedCoupon.type === 'percent') {
+                    discount = Math.round((subtotal * window.appliedCoupon.value) / 100);
+                } else {
+                    discount = window.appliedCoupon.value;
+                }
+                
+                // Validate Min Order again (in case items removed)
+                if(subtotal < window.appliedCoupon.minOrder) {
+                    discount = 0;
+                    document.getElementById('couponMsg').innerText = `Add ₹${window.appliedCoupon.minOrder - subtotal} more to use this coupon.`;
+                    document.getElementById('couponMsg').className = "small text-warning fw-bold mb-2";
+                } else {
+                    document.getElementById('row-discount').style.display = 'flex';
+                    document.getElementById('display-discount').innerText = `-₹${discount}`;
+                }
             } else {
                 document.getElementById('row-discount').style.display = 'none';
             }
@@ -601,6 +654,7 @@
             const code = document.getElementById('couponCode').value.toUpperCase().trim();
             const msgEl = document.getElementById('couponMsg');
             const btn = event.target;
+            const subtotal = window.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             
             if(!code) return;
             btn.innerHTML = "..."; 
@@ -610,9 +664,25 @@
 
             if(!snap.empty) {
                 const data = snap.docs[0].data();
-                window.appliedCoupon = { code: data.code, value: data.value };
-                msgEl.innerText = `Coupon Applied: ₹${data.value} OFF`;
-                msgEl.className = "small text-success fw-bold mb-2";
+                
+                // Check Expiry
+                if(data.expiry && new Date(data.expiry) < new Date()) {
+                    window.appliedCoupon = null;
+                    msgEl.innerText = "Coupon Expired";
+                    msgEl.className = "small text-danger fw-bold mb-2";
+                }
+                // Check Min Order
+                else if(data.minOrder && subtotal < data.minOrder) {
+                    window.appliedCoupon = null;
+                    msgEl.innerText = `Minimum order ₹${data.minOrder} required`;
+                    msgEl.className = "small text-danger fw-bold mb-2";
+                } 
+                else {
+                    window.appliedCoupon = data;
+                    const desc = data.type === 'percent' ? `${data.value}% OFF` : `₹${data.value} OFF`;
+                    msgEl.innerText = `Coupon Applied: ${desc}`;
+                    msgEl.className = "small text-success fw-bold mb-2";
+                }
             } else {
                 window.appliedCoupon = null;
                 msgEl.innerText = "Invalid Coupon Code";
@@ -648,17 +718,20 @@
             const orderId = "M-" + Math.floor(100000 + Math.random() * 900000);
             
             let itemsString = ""; 
-            const itemCounts = {};
-            window.cart.forEach(item => { 
-                itemsString += `${item.name} (₹${item.price})\n`; 
-                itemCounts[item.id] = (itemCounts[item.id] || 0) + 1;
+            // FLAT DATA for Admin compatibility (expanding groups)
+            const flatCartForAdmin = [];
+            window.cart.forEach(item => {
+                itemsString += `${item.name} x${item.quantity} (₹${item.price * item.quantity})\n`;
+                for(let i=0; i<item.quantity; i++) {
+                    flatCartForAdmin.push({id: item.id, name: item.name, price: item.price});
+                }
             });
 
             // Stock Deductions
             const deductionPromises = [];
-            for (const [pid, count] of Object.entries(itemCounts)) {
-                const productRef = doc(db, "products", pid);
-                deductionPromises.push(updateDoc(productRef, { stock: increment(-count) }));
+            for (const item of window.cart) {
+                const productRef = doc(db, "products", item.id);
+                deductionPromises.push(updateDoc(productRef, { stock: increment(-item.quantity) }));
             }
 
             try {
@@ -668,14 +741,13 @@
                     orderId: orderId, name: name, phone: phone, address: address,
                     items: itemsString, 
                     
-                    // NEW FIELDS
                     subtotal: finals.subtotal,
                     shipping: finals.shipping,
                     discount: finals.discount,
                     total: finals.total,
                     coupon: window.appliedCoupon ? window.appliedCoupon.code : "NONE",
                     
-                    cartDetails: window.cart,
+                    cartDetails: flatCartForAdmin, // Saves as flat list for backward compatibility with admin cancellation
                     txnId: txnId || "Screenshot Uploaded",
                     status: "Pending Verification", timestamp: serverTimestamp()
                 });
