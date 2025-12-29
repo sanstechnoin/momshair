@@ -113,9 +113,9 @@
                 </div>
             </div>
 
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="card shadow-sm border-secondary">
+            <div class="row g-4 mb-4">
+                <div class="col-lg-8 col-md-7">
+                    <div class="card shadow-sm border-secondary h-100">
                         <div class="card-header bg-secondary text-white"><span><i class="bi bi-gear-fill"></i> Admin Settings</span></div>
                         <div class="card-body d-flex flex-wrap align-items-end gap-3">
                             <div class="flex-grow-1">
@@ -123,6 +123,18 @@
                                 <div class="input-group"><span class="input-group-text"><i class="bi bi-envelope"></i></span><input type="email" id="master-email" class="form-control" placeholder="vabinanthana@gmail.com"></div>
                             </div>
                             <button class="btn btn-dark" onclick="saveSettings()">Update Email</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-5">
+                    <div class="card shadow-sm border-danger h-100">
+                        <div class="card-header bg-danger text-white"><span><i class="bi bi-exclamation-triangle-fill"></i> Danger Zone</span></div>
+                        <div class="card-body text-center d-flex flex-column justify-content-center">
+                            <p class="small text-muted mb-2">Delete ALL test orders to clear database.</p>
+                            <button class="btn btn-outline-danger w-100" onclick="deleteAllOrders()">
+                                <i class="bi bi-trash3-fill"></i> DELETE ALL ORDERS
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -188,6 +200,7 @@
         let pendingStatus = null;
         window.currentReviewTab = 'pending';
 
+        // --- AUTH ---
         window.checkLogin = function() {
             if (document.getElementById('admin-pass').value === "brindharani") {
                 document.getElementById('login-overlay').style.display = 'none'; document.getElementById('admin-content').style.display = 'block';
@@ -236,8 +249,6 @@
 
         // --- REVIEWS ---
         async function loadReviewCounts() {
-            // Simple logic: get all and count locally or use separate queries. 
-            // For small scale, separate queries are fine.
             const qP = query(collection(db, "reviews"), where("status", "==", "pending"));
             const sP = await getDocs(qP);
             document.getElementById('badge-pending').innerText = sP.size;
@@ -288,7 +299,7 @@
                 </div>`;
             });
             list.innerHTML = html;
-            loadReviewCounts(); // Refresh counts
+            loadReviewCounts(); 
         };
 
         window.updateReviewStatus = async function(id, newStatus) {
@@ -309,6 +320,50 @@
         window.saveSettings = async function() {
             startLoading();
             try { await new Promise(r => setTimeout(r, 1000)); await setDoc(doc(db, "settings", "config"), { masterEmail: document.getElementById('master-email').value }); stopLoading(); } catch(e){ alert("Error"); stopLoading(); }
+        }
+
+        // --- DANGER ZONE (DELETE ALL ORDERS) ---
+        window.deleteAllOrders = async function() {
+            // 1. First Warning
+            const pass = prompt("⚠️ DANGER ZONE ⚠️\n\nThis will DELETE ALL ORDERS permanently.\nTo confirm, enter the Deletion Master Password:");
+            
+            // 2. Password Check (Code: superadmin)
+            if(pass !== "superadmin") { 
+                alert("❌ Wrong Password. Action Cancelled.");
+                return;
+            }
+            
+            // 3. Second Warning
+            if(!confirm("‼️ FINAL WARNING ‼️\n\nAre you absolutely sure you want to delete every single order from the database? This cannot be undone.")) {
+                return;
+            }
+
+            startLoading();
+            try {
+                const q = query(collection(db, "orders"));
+                const snapshot = await getDocs(q);
+                
+                if(snapshot.empty) {
+                    alert("No orders to delete.");
+                    stopLoading();
+                    return;
+                }
+
+                const deletePromises = [];
+                snapshot.forEach((doc) => {
+                    deletePromises.push(deleteDoc(doc.ref));
+                });
+                
+                await Promise.all(deletePromises);
+                
+                alert("✅ Database Cleared. All orders have been deleted.");
+                loadOrders(); 
+                stopLoading();
+            } catch(e) {
+                console.error(e);
+                alert("Error deleting orders. Check console.");
+                stopLoading();
+            }
         }
 
         // --- ORDERS ---
