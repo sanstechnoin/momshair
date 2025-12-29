@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    
+
     <style>
         .chat-widget-btn { position: fixed; bottom: 20px; right: 20px; z-index: 1050; width: 60px; height: 60px; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: transform 0.3s; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; border: none; }
         .chat-widget-btn:hover { transform: scale(1.1); }
@@ -544,6 +544,20 @@
             if(snap.exists()) window.shippingRules = snap.data();
         });
 
+        // --- CHECK BANNER PROMO (ON LOAD) ---
+        if (!sessionStorage.getItem('promoShown')) {
+            const q = query(collection(db, "coupons"), where("isBanner", "==", true));
+            getDocs(q).then(snap => {
+                if(!snap.empty) {
+                    const c = snap.docs[0].data();
+                    const desc = c.type === 'percent' ? `${c.value}% OFF` : `₹${c.value} OFF`;
+                    document.getElementById('promoText').innerHTML = `Use code <strong class="text-warning">${c.code}</strong> for ${desc}.<br><small>Min Order: ₹${c.minOrder}</small>`;
+                    new bootstrap.Modal(document.getElementById('promoModal')).show();
+                    sessionStorage.setItem('promoShown', 'true');
+                }
+            });
+        }
+
         // --- SUPPORT WIDGET LOGIC ---
         onSnapshot(doc(db, "settings", "support"), (doc) => {
             const isOnline = doc.exists() ? doc.data().isOnline : false;
@@ -587,20 +601,6 @@
             alert("Message sent! We will contact you shortly.");
             toggleChat();
             e.target.reset();
-        }
-
-        // --- CHECK BANNER PROMO (ON LOAD) ---
-        if (!sessionStorage.getItem('promoShown')) {
-            const q = query(collection(db, "coupons"), where("isBanner", "==", true));
-            getDocs(q).then(snap => {
-                if(!snap.empty) {
-                    const c = snap.docs[0].data();
-                    const desc = c.type === 'percent' ? `${c.value}% OFF` : `₹${c.value} OFF`;
-                    document.getElementById('promoText').innerHTML = `Use code <strong class="text-warning">${c.code}</strong> for ${desc}.<br><small>Min Order: ₹${c.minOrder}</small>`;
-                    new bootstrap.Modal(document.getElementById('promoModal')).show();
-                    sessionStorage.setItem('promoShown', 'true');
-                }
-            });
         }
 
         // --- REVIEWS ---
@@ -846,24 +846,6 @@
             btn.innerHTML = "Apply";
             recalcTotal();
         }
-
-        // --- SCROLL TO TOP ---
-        window.onscroll = function() {
-            const btn = document.getElementById("scrollTopBtn");
-            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) { btn.classList.remove("d-none"); btn.classList.add("d-flex"); }
-            else { btn.classList.add("d-none"); btn.classList.remove("d-flex"); }
-        };
-        window.scrollToTop = function() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
-
-        // --- MOBILE MENU CLOSE FIX ---
-        document.addEventListener("DOMContentLoaded", function(){
-            const navLinks = document.querySelectorAll('.close-menu');
-            const menuToggle = document.getElementById('navbarNav');
-            const bsCollapse = new bootstrap.Collapse(menuToggle, {toggle:false});
-            navLinks.forEach((l) => {
-                l.addEventListener('click', () => { bsCollapse.hide() });
-            });
-        });
 
         window.showNotification = function(msg) {
             document.getElementById('notificationMsg').innerText = msg;
