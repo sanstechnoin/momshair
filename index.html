@@ -151,7 +151,9 @@
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm product-card">
                         <span class="badge bg-danger position-absolute top-0 end-0 m-3">36% OFF</span>
-                        <img src="2.png" class="card-img-top p-4" alt="Daily Shine Elixir" style="height: 250px; object-fit: contain;">
+                        <div class="d-flex justify-content-center align-items-center" style="height: 250px;">
+                            <img src="2.png" alt="Daily Shine Elixir" class="p-4" style="height: 100%; width: auto; object-fit: contain;">
+                        </div>
                         <div class="card-body d-flex flex-column text-center">
                             <div class="mb-2">
                                 <span class="badge bg-success-subtle text-success border border-success rounded-pill px-3">
@@ -175,7 +177,9 @@
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm product-card">
                         <span class="badge bg-danger position-absolute top-0 end-0 m-3">45% OFF</span>
-                        <img src="3.png" class="card-img-top p-4" alt="Natural Darkening Oil" style="height: 250px; object-fit: contain;">
+                        <div class="d-flex justify-content-center align-items-center" style="height: 250px;">
+                            <img src="3.png" alt="Natural Darkening Oil" class="p-4" style="height: 100%; width: auto; object-fit: contain;">
+                        </div>
                         <div class="card-body d-flex flex-column text-center">
                             <div class="mb-2">
                                 <span class="badge bg-success-subtle text-success border border-success rounded-pill px-3">
@@ -389,6 +393,22 @@
         </div>
     </div>
 
+    <div class="modal fade" id="notificationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-0 pb-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center pt-0 pb-4">
+                    <div class="mb-3 text-warning"><i class="bi bi-exclamation-circle fs-1"></i></div>
+                    <h5 class="fw-bold mb-2">Attention</h5>
+                    <p class="text-muted" id="notificationMsg">Message goes here.</p>
+                    <button type="button" class="btn btn-dark w-100 rounded-pill mt-2" data-bs-dismiss="modal">Okay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="stockLimitModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
@@ -440,17 +460,13 @@
             if(snap.exists() && snap.data().masterEmail) masterEmail = snap.data().masterEmail;
         });
 
-        // --- FETCH DYNAMIC REVIEWS (SMART SCROLL FIX) ---
+        // --- FETCH DYNAMIC REVIEWS ---
         async function loadReviews() {
             const track = document.getElementById('dynamicReviewsTrack');
-            // Fetch approved reviews
             const q = query(collection(db, "reviews"), where("status", "==", "approved"), limit(10));
             const snapshot = await getDocs(q);
 
-            if (snapshot.empty) {
-                // Keep default static or hide
-                return;
-            }
+            if (snapshot.empty) { return; }
 
             let html = '';
             snapshot.forEach(docSnap => {
@@ -464,9 +480,7 @@
                 `;
             });
 
-            // LOGIC: Only duplicate for infinite scroll if there are enough reviews (e.g., > 3)
             const wrapper = document.querySelector('.reviews-wrapper');
-            
             if (snapshot.size > 3) {
                 track.innerHTML = html + html; 
             } else {
@@ -553,6 +567,12 @@
         }
         window.removeFromCart = function(index) { window.cart.splice(index, 1); window.updateCartDisplay(); window.prepareCheckout(); }
 
+        // --- SHOW NOTIFICATION HELPER ---
+        window.showNotification = function(msg) {
+            document.getElementById('notificationMsg').innerText = msg;
+            new bootstrap.Modal(document.getElementById('notificationModal')).show();
+        }
+
         window.placeOrder = async function() {
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
@@ -561,10 +581,10 @@
             const hasScreenshot = document.getElementById('custScreenshot').value !== "";
             const terms = document.getElementById('termsCheck').checked;
 
-            if (window.cart.length === 0) return alert("Cart is empty!");
-            if (!name || !phone || !address) return alert("Please fill details.");
-            if (!txnId && !hasScreenshot) return alert("Please provide payment proof.");
-            if (!terms) return alert("Please accept terms.");
+            if (window.cart.length === 0) return showNotification("Cart is empty!");
+            if (!name || !phone || !address) return showNotification("Please fill all details.");
+            if (!txnId && !hasScreenshot) return showNotification("Please provide payment proof.");
+            if (!terms) return showNotification("Please accept the terms.");
 
             const btn = event.target; const originalText = btn.innerHTML; btn.innerHTML = "Processing..."; btn.disabled = true;
             const orderId = "M-" + Math.floor(100000 + Math.random() * 900000);
@@ -615,7 +635,7 @@
 
             } catch (error) {
                 console.error("Error:", error);
-                alert("Error placing order.");
+                showNotification("Error placing order. Please try again.");
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
@@ -623,4 +643,3 @@
     </script>
 </body>
 </html>
-
