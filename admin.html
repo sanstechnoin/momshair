@@ -143,12 +143,32 @@
                             <span class="badge bg-white text-success small" id="coupon-count">0 Active</span>
                         </div>
                         <div class="card-body">
-                            <div class="input-group mb-3">
-                                <input type="text" id="new-code" class="form-control text-uppercase" placeholder="CODE (e.g. SAVE10)">
-                                <input type="number" id="new-val" class="form-control" placeholder="Value ₹">
-                                <button class="btn btn-success" onclick="addCoupon()">Add</button>
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <input type="text" id="new-code" class="form-control text-uppercase form-control-sm" placeholder="Code (e.g. SAVE10)">
+                                </div>
+                                <div class="col-6">
+                                    <select id="new-type" class="form-select form-select-sm">
+                                        <option value="flat">Flat Amount (₹)</option>
+                                        <option value="percent">Percentage (%)</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" id="new-val" class="form-control form-control-sm" placeholder="Value (e.g. 50 or 10)">
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" id="new-min" class="form-control form-control-sm" placeholder="Min Order ₹">
+                                </div>
+                                <div class="col-12">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text">Expires</span>
+                                        <input type="date" id="new-expiry" class="form-control">
+                                        <button class="btn btn-success" onclick="addCoupon()">Add Coupon</button>
+                                    </div>
+                                </div>
                             </div>
-                            <h6 class="small text-muted fw-bold">Active Coupons</h6>
+                            
+                            <h6 class="small text-muted fw-bold mt-3 border-top pt-2">Active Coupons</h6>
                             <ul id="coupon-list" class="list-group list-group-flush small" style="max-height: 150px; overflow-y:auto;">
                                 <li class="list-group-item text-center text-muted">Loading...</li>
                             </ul>
@@ -435,7 +455,7 @@
             } catch(e) { showAlert("Error", "Failed to update rules."); stopLoading(); }
         }
 
-        // --- COUPONS ---
+        // --- COUPONS (UPDATED) ---
         async function loadCoupons() {
             const list = document.getElementById('coupon-list');
             list.innerHTML = '';
@@ -451,8 +471,14 @@
 
                 snapshot.forEach(docSnap => {
                     const c = docSnap.data();
+                    const typeLabel = c.type === 'percent' ? '%' : '₹';
+                    const expiry = c.expiry ? `(Exp: ${c.expiry})` : '';
+                    
                     list.innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span><strong>${c.code}</strong> (₹${c.value} OFF)</span>
+                        <div class="d-flex flex-column">
+                            <span class="fw-bold text-dark">${c.code}</span>
+                            <span class="small text-muted">${c.value}${typeLabel} OFF • Min ₹${c.minOrder || 0} ${expiry}</span>
+                        </div>
                         <button class="btn btn-sm btn-outline-danger" onclick="deleteCoupon('${docSnap.id}')">&times;</button>
                     </li>`;
                 });
@@ -461,8 +487,12 @@
 
         window.addCoupon = async function() {
             const code = document.getElementById('new-code').value.toUpperCase().trim();
+            const type = document.getElementById('new-type').value;
             const val = parseInt(document.getElementById('new-val').value);
-            if(!code || !val) { showAlert("Warning", "Please enter a Code and Value.", "warning"); return; }
+            const minOrder = parseInt(document.getElementById('new-min').value) || 0;
+            const expiry = document.getElementById('new-expiry').value;
+
+            if(!code || !val) { showAlert("Warning", "Please enter Code and Value.", "warning"); return; }
             
             startLoading();
             // Check for duplicate
@@ -470,9 +500,19 @@
             const snap = await getDocs(q);
             if(!snap.empty) { stopLoading(); showAlert("Error", "Coupon code already exists!"); return; }
 
-            await addDoc(collection(db, "coupons"), { code: code, value: val });
+            await addDoc(collection(db, "coupons"), { 
+                code: code, 
+                type: type, // 'flat' or 'percent'
+                value: val, 
+                minOrder: minOrder,
+                expiry: expiry // YYYY-MM-DD string
+            });
+            
             document.getElementById('new-code').value = '';
             document.getElementById('new-val').value = '';
+            document.getElementById('new-min').value = '';
+            document.getElementById('new-expiry').value = '';
+            
             loadCoupons(); stopLoading();
         }
 
