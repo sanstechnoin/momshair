@@ -16,6 +16,8 @@
         .status-Payment { background-color: #d1e7dd; color: #0f5132; border-color: #badbcc; }
         .status-Shipped { background-color: #cfe2ff; color: #084298; border-color: #b6d4fe; }
         .status-Delivered { background-color: #212529; color: #fff; border-color: #212529; }
+        /* New style for Payment Notification */
+        .status-Payment-Notification { background-color: #fd9c3d; color: #fff; border-color: #fd9c3d; }
         /* Cancelled status style */
         .status-Cancelled { background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; }
 
@@ -219,7 +221,7 @@
 
         async function loadPendingReviews() {
             const list = document.getElementById('pending-reviews-list');
-            const snapshot = await getDocs(query(collection(db, "reviews"), where("status", "==", "pending")));
+            const snapshot = await getDocs(query(collection(db, "reviews"), where("status", "pending")));
             document.getElementById('review-count').innerText = snapshot.size;
             if (snapshot.empty) { list.innerHTML = '<li class="list-group-item text-center text-muted">No pending reviews.</li>'; return; }
             let html = '';
@@ -281,11 +283,14 @@
             let html = '';
             snapshot.forEach((doc) => {
                 const order = doc.data(); const date = order.timestamp ? new Date(order.timestamp.seconds * 1000).toLocaleDateString() : 'N/A';
+                
                 let statusClass = "status-Pending";
-                if (order.status && order.status.includes("Payment")) statusClass = "status-Payment";
-                if (order.status && order.status.includes("Shipped")) statusClass = "status-Shipped";
-                if (order.status && order.status.includes("Delivered")) statusClass = "status-Delivered";
-                if (order.status && order.status.includes("Cancelled")) statusClass = "status-Cancelled";
+                if (order.status === "Payment Received") statusClass = "status-Payment";
+                else if (order.status === "Payment Notification") statusClass = "status-Payment-Notification";
+                else if (order.status === "Shipped") statusClass = "status-Shipped";
+                else if (order.status === "Delivered") statusClass = "status-Delivered";
+                else if (order.status === "Cancelled") statusClass = "status-Cancelled";
+                else if (order.status && order.status.includes("Pending")) statusClass = "status-Pending";
 
                 html += `<tr class="text-center">
                     <td><small>${date}</small></td>
@@ -297,6 +302,7 @@
                     <td>
                         <select class="form-select form-select-sm status-select ${statusClass}" onchange="updateStatus('${doc.id}', this.value)">
                             <option value="Pending Verification" ${order.status === 'Pending Verification' ? 'selected' : ''}>Pending</option>
+                            <option value="Payment Notification" ${order.status === 'Payment Notification' ? 'selected' : ''}>Payment Notif.</option>
                             <option value="Payment Received" ${order.status === 'Payment Received' ? 'selected' : ''}>Paid</option>
                             <option value="Shipped" ${order.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
                             <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
@@ -321,11 +327,24 @@
         };
 
         window.sendWhatsappUpdate = function(phone, name, orderId, status) {
-            let msg = ""; const trackerLink = window.location.href.replace('admin.html', 'tracker.html');
-            if(status === "Payment Received") msg = `Hello ${name}, payment received for Order ${orderId}. Preparing your batch! 🌿`;
-            else if (status === "Shipped") msg = `Great news ${name}! Order ${orderId} has been SHIPPED! 🚚 Track here: ${trackerLink}`;
-            else if (status === "Delivered") msg = `Hi ${name}, order ${orderId} is Delivered. Please confirm & review: ${trackerLink}`;
-            else msg = `Hello ${name}, update on Order ${orderId}: ${status}.`;
+            // Robust tracker link generation
+            let path = window.location.pathname;
+            let directory = path.substring(0, path.lastIndexOf('/'));
+            const trackerLink = window.location.origin + directory + '/tracker.html';
+
+            let msg = "";
+            if(status === "Payment Received") {
+                msg = `Hello ${name}, payment received for Order ${orderId}. Preparing your batch! 🌿`;
+            } else if (status === "Shipped") {
+                msg = `Great news ${name}! Order ${orderId} has been SHIPPED! 🚚 Track here: ${trackerLink}`;
+            } else if (status === "Delivered") {
+                msg = `Hi ${name}, order ${orderId} is Delivered. Please confirm & review: ${trackerLink}`;
+            } else if (status === "Payment Notification") {
+                msg = `Hello ${name}, regarding Order ${orderId}. We have not received your payment yet. ⚠️ Please share the payment screenshot proof. The order will be cancelled in 24 hours if payment is not confirmed.`;
+            } else {
+                msg = `Hello ${name}, update on Order ${orderId}: ${status}.`;
+            }
+            
             window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
