@@ -23,8 +23,7 @@
         .login-box { background: white; padding: 2.5rem; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; width: 90%; max-width: 400px; }
         #admin-content { display: none; }
         
-        /* RESTORED: Stock Live Indicator Style */
-        .stock-live { font-size: 0.75rem; font-weight: bold; color: #198754; margin-left: 5px; }
+        .stock-live { font-size: 0.7rem; font-weight: bold; color: #198754; display:block; margin-top:2px; }
         
         .sandclock-spin { animation: spin 2s infinite linear; font-size: 3.5rem; color: #1B4D3E; margin-bottom: 1rem; }
         @keyframes spin { 0% { transform: rotate(0deg); } 50% { transform: rotate(180deg); } 100% { transform: rotate(360deg); } }
@@ -81,58 +80,64 @@
             
             <div class="row g-4 mb-4">
                 
-                <div class="col-lg-4">
+                <div class="col-lg-5">
                     <div class="card shadow-sm border-primary h-100">
                         <div class="card-header bg-primary text-white d-flex justify-content-between">
-                            <span><i class="bi bi-box-seam"></i> Inventory & Price</span>
+                            <span><i class="bi bi-box-seam"></i> Inventory (MRP / Sale / Stock)</span>
                             <span class="badge bg-white text-primary">Live DB</span>
                         </div>
                         <div class="card-body">
                             <div class="mb-3 border-bottom pb-2">
                                 <h6 class="fw-bold text-primary small mb-2">Daily Shine (P1)</h6>
-                                <div class="d-flex gap-2 align-items-center mb-1">
-                                    <span class="small fw-bold text-muted" style="width:50px;">100ml</span>
-                                    <input type="number" id="price-p1-100" class="form-control form-control-sm" placeholder="₹ Price">
-                                    <input type="number" id="qty-p1-100" class="form-control form-control-sm" placeholder="Stock">
-                                    <span id="live-p1-100" class="stock-live">...</span>
+                                <div class="d-flex gap-2 align-items-center mb-2">
+                                    <span class="small fw-bold text-muted" style="width:40px;">100ml</span>
+                                    <input type="number" id="mrp-p1-100" class="form-control form-control-sm" placeholder="MRP">
+                                    <input type="number" id="price-p1-100" class="form-control form-control-sm border-success" placeholder="Sale">
+                                    <input type="number" id="qty-p1-100" class="form-control form-control-sm" placeholder="Qty">
+                                    <span id="live-p1-100" class="stock-live" style="width:60px; text-align:right;">...</span>
                                 </div>
                                 <div class="d-flex gap-2 align-items-center">
-                                    <span class="small fw-bold text-muted" style="width:50px;">200ml</span>
-                                    <input type="number" id="price-p1-200" class="form-control form-control-sm" placeholder="₹ Price">
-                                    <input type="number" id="qty-p1-200" class="form-control form-control-sm" placeholder="Stock">
-                                    <span id="live-p1-200" class="stock-live">...</span>
+                                    <span class="small fw-bold text-muted" style="width:40px;">200ml</span>
+                                    <input type="number" id="mrp-p1-200" class="form-control form-control-sm" placeholder="MRP">
+                                    <input type="number" id="price-p1-200" class="form-control form-control-sm border-success" placeholder="Sale">
+                                    <input type="number" id="qty-p1-200" class="form-control form-control-sm" placeholder="Qty">
+                                    <span id="live-p1-200" class="stock-live" style="width:60px; text-align:right;">...</span>
                                 </div>
                             </div>
 
                             <div class="mb-3 border-bottom pb-2">
                                 <h6 class="fw-bold text-primary small mb-2">Natural Dark (P2)</h6>
-                                <div class="d-flex gap-2 align-items-center mb-1">
-                                    <span class="small fw-bold text-muted" style="width:50px;">100ml</span>
-                                    <input type="number" id="price-p2-100" class="form-control form-control-sm" placeholder="₹ Price">
-                                    <input type="number" id="qty-p2-100" class="form-control form-control-sm" placeholder="Stock">
-                                    <span id="live-p2-100" class="stock-live">...</span>
+                                <div class="d-flex gap-2 align-items-center mb-2">
+                                    <span class="small fw-bold text-muted" style="width:40px;">100ml</span>
+                                    <input type="number" id="mrp-p2-100" class="form-control form-control-sm" placeholder="MRP">
+                                    <input type="number" id="price-p2-100" class="form-control form-control-sm border-success" placeholder="Sale">
+                                    <input type="number" id="qty-p2-100" class="form-control form-control-sm" placeholder="Qty">
+                                    <span id="live-p2-100" class="stock-live" style="width:60px; text-align:right;">...</span>
                                 </div>
                                 <div class="d-flex gap-2 align-items-center">
-                                    <span class="small fw-bold text-muted" style="width:50px;">200ml</span>
-                                    <input type="number" id="price-p2-200" class="form-control form-control-sm" placeholder="₹ Price">
-                                    <input type="number" id="qty-p2-200" class="form-control form-control-sm" placeholder="Stock">
-                                    <span id="live-p2-200" class="stock-live">...</span>
+                                    <span class="small fw-bold text-muted" style="width:40px;">200ml</span>
+                                    <input type="number" id="mrp-p2-200" class="form-control form-control-sm" placeholder="MRP">
+                                    <input type="number" id="price-p2-200" class="form-control form-control-sm border-success" placeholder="Sale">
+                                    <input type="number" id="qty-p2-200" class="form-control form-control-sm" placeholder="Qty">
+                                    <span id="live-p2-200" class="stock-live" style="width:60px; text-align:right;">...</span>
                                 </div>
                             </div>
 
                             <div class="mb-3">
                                 <h6 class="fw-bold text-primary small mb-2">Complete Duo (P3)</h6>
-                                <div class="d-flex gap-2 align-items-center mb-1">
-                                    <span class="small fw-bold text-muted" style="width:50px;">100ml</span>
-                                    <input type="number" id="price-p3-100" class="form-control form-control-sm" placeholder="₹ Price">
-                                    <input type="number" id="qty-p3-100" class="form-control form-control-sm" placeholder="Stock">
-                                    <span id="live-p3-100" class="stock-live">...</span>
+                                <div class="d-flex gap-2 align-items-center mb-2">
+                                    <span class="small fw-bold text-muted" style="width:40px;">100ml</span>
+                                    <input type="number" id="mrp-p3-100" class="form-control form-control-sm" placeholder="MRP">
+                                    <input type="number" id="price-p3-100" class="form-control form-control-sm border-success" placeholder="Sale">
+                                    <input type="number" id="qty-p3-100" class="form-control form-control-sm" placeholder="Qty">
+                                    <span id="live-p3-100" class="stock-live" style="width:60px; text-align:right;">...</span>
                                 </div>
                                 <div class="d-flex gap-2 align-items-center">
-                                    <span class="small fw-bold text-muted" style="width:50px;">200ml</span>
-                                    <input type="number" id="price-p3-200" class="form-control form-control-sm" placeholder="₹ Price">
-                                    <input type="number" id="qty-p3-200" class="form-control form-control-sm" placeholder="Stock">
-                                    <span id="live-p3-200" class="stock-live">...</span>
+                                    <span class="small fw-bold text-muted" style="width:40px;">200ml</span>
+                                    <input type="number" id="mrp-p3-200" class="form-control form-control-sm" placeholder="MRP">
+                                    <input type="number" id="price-p3-200" class="form-control form-control-sm border-success" placeholder="Sale">
+                                    <input type="number" id="qty-p3-200" class="form-control form-control-sm" placeholder="Qty">
+                                    <span id="live-p3-200" class="stock-live" style="width:60px; text-align:right;">...</span>
                                 </div>
                             </div>
 
@@ -141,13 +146,13 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <div class="card shadow-sm border-warning h-100">
                         <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
-                            <span class="fw-bold"><i class="bi bi-chat-heart"></i> Reviews</span>
+                            <span class="fw-bold small"><i class="bi bi-chat-heart"></i> Reviews</span>
                             <div>
                                 <button class="review-tab-btn active me-1" id="tab-pending" onclick="loadReviews('pending')">Pending <span id="badge-pending" class="badge bg-danger rounded-pill">0</span></button>
-                                <button class="review-tab-btn" id="tab-approved" onclick="loadReviews('approved')">Live <span id="badge-approved" class="badge bg-success rounded-pill">0</span></button>
+                                <button class="review-tab-btn" id="tab-approved" onclick="loadReviews('approved')">Live</button>
                             </div>
                         </div>
                         <div class="card-body p-0">
@@ -278,19 +283,7 @@
     </div>
 
     <div class="modal fade" id="trackingInputModal" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-primary text-white"><h5 class="modal-title">Shipping</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="text" id="newTrackingNumber" class="form-control" placeholder="Tracking Number"></div><div class="modal-footer"><button type="button" class="btn btn-success" onclick="submitTracking()">Update</button></div></div></div></div>
-    
-    <div class="modal fade" id="updateModal" tabindex="-1" data-bs-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content text-center p-4">
-                <i class="bi bi-hourglass-split sandclock-spin d-block mx-auto"></i>
-                <h5 id="loadingState" class="mt-2">Processing...</h5>
-                <div id="successState" style="display:none" class="mt-3 text-success"><i class="bi bi-check-circle-fill fs-3"></i><div class="fw-bold">Done!</div></div>
-                <div class="progress mt-3" style="height: 10px;"><div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 100%"></div></div>
-                <button id="modalCloseBtn" type="button" class="btn btn-sm btn-secondary mt-3 d-none" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-    
+    <div class="modal fade" id="updateModal" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-4"><i class="bi bi-hourglass-split sandclock-spin d-block mx-auto"></i><h5 id="loadingState" class="mt-2">Processing...</h5><div id="successState" style="display:none" class="mt-3 text-success"><i class="bi bi-check-circle-fill fs-3"></i><div class="fw-bold">Done!</div></div><div class="progress mt-3" style="height: 10px;"><div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 100%"></div></div><button id="modalCloseBtn" type="button" class="btn btn-sm btn-secondary mt-3 d-none" data-bs-dismiss="modal">Close</button></div></div></div>
     <div class="modal fade" id="detailsModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-info text-white"><h5 class="modal-title">Contents</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div id="orderItemsContent" class="p-3 bg-light fw-bold" style="white-space: pre-line;"></div></div></div></div></div>
     <div class="modal fade" id="alertModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-danger text-white" id="alertHeader"><h5 class="modal-title" id="alertTitle">Alert</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body" id="alertBody"></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div></div></div></div>
     <div class="modal fade" id="confirmModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="confirmTitle">Confirm</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="confirmBody"></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary" id="confirmBtnAction">Proceed</button></div></div></div></div>
@@ -335,16 +328,16 @@
                     const d = docSnap.data();
                     const v = d.variants || {}; 
                     if(v['100ml']) {
+                        document.getElementById(`mrp-${pid}-100`).value = v['100ml'].mrp || '';
                         document.getElementById(`price-${pid}-100`).value = v['100ml'].price || '';
                         document.getElementById(`qty-${pid}-100`).value = v['100ml'].stock || 0;
-                        // Populate Live Stock Text
-                        document.getElementById(`live-${pid}-100`).innerText = (v['100ml'].stock || 0) + " In Stock";
+                        document.getElementById(`live-${pid}-100`).innerText = (v['100ml'].stock || 0) + " Stock";
                     }
                     if(v['200ml']) {
+                        document.getElementById(`mrp-${pid}-200`).value = v['200ml'].mrp || '';
                         document.getElementById(`price-${pid}-200`).value = v['200ml'].price || '';
                         document.getElementById(`qty-${pid}-200`).value = v['200ml'].stock || 0;
-                        // Populate Live Stock Text
-                        document.getElementById(`live-${pid}-200`).innerText = (v['200ml'].stock || 0) + " In Stock";
+                        document.getElementById(`live-${pid}-200`).innerText = (v['200ml'].stock || 0) + " Stock";
                     }
                 }
             }
@@ -357,10 +350,12 @@
                 const promises = pIds.map(pid => {
                     const v = {
                         '100ml': {
+                            mrp: parseInt(document.getElementById(`mrp-${pid}-100`).value) || 0,
                             price: parseInt(document.getElementById(`price-${pid}-100`).value) || 0,
                             stock: parseInt(document.getElementById(`qty-${pid}-100`).value) || 0
                         },
                         '200ml': {
+                            mrp: parseInt(document.getElementById(`mrp-${pid}-200`).value) || 0,
                             price: parseInt(document.getElementById(`price-${pid}-200`).value) || 0,
                             stock: parseInt(document.getElementById(`qty-${pid}-200`).value) || 0
                         }
@@ -380,7 +375,8 @@
         function startLoading() { const m = new bootstrap.Modal(document.getElementById('updateModal')); document.getElementById('loadingState').style.display = 'block'; document.getElementById('successState').style.display = 'none'; document.getElementById('modalCloseBtn').classList.add('d-none'); m.show(); }
         function stopLoading() { document.getElementById('loadingState').style.display = 'none'; document.getElementById('successState').style.display = 'block'; document.getElementById('modalCloseBtn').classList.remove('d-none'); }
 
-        async function loadReviewCounts() { try { const sP = await getDocs(query(collection(db, "reviews"), where("status", "==", "pending"))); document.getElementById('badge-pending').innerText = sP.size; const sA = await getDocs(query(collection(db, "reviews"), where("status", "==", "approved"))); document.getElementById('badge-approved').innerText = sA.size; } catch(e){} }
+        // --- Other functions (Reviews, Support, etc) ---
+        async function loadReviewCounts() { try { const sP = await getDocs(query(collection(db, "reviews"), where("status", "==", "pending"))); document.getElementById('badge-pending').innerText = sP.size; const sA = await getDocs(query(collection(db, "reviews"), where("status", "==", "approved"))); document.getElementById('badge-approved').innerText = 0; } catch(e){} }
         window.loadReviews = async function(status) { window.currentReviewTab = status; document.querySelectorAll('.review-tab-btn').forEach(b => b.classList.remove('active')); document.getElementById(`tab-${status}`).classList.add('active'); const l = document.getElementById('reviews-list-container'); l.innerHTML='Loading...'; try { const s = await getDocs(query(collection(db, "reviews"), where("status", "==", status))); if(s.empty) { l.innerHTML='None.'; return; } let h=''; s.forEach(d=>{ const r=d.data(); let b=status==='pending'?`<button class="btn btn-sm btn-success py-0" onclick="updateReviewStatus('${d.id}','approved')">✔</button><button class="btn btn-sm btn-danger py-0" onclick="deleteReview('${d.id}')">✖</button>`:`<button class="btn btn-sm btn-outline-dark py-0" onclick="updateReviewStatus('${d.id}','pending')">Hide</button><button class="btn btn-sm btn-danger py-0" onclick="deleteReview('${d.id}')"><i class="bi bi-trash"></i></button>`; h+=`<div class="list-group-item d-flex justify-content-between align-items-center bg-transparent"><div class="me-2"><span class="fw-bold text-dark small">${r.name}</span> <span class="text-warning small">${'★'.repeat(r.rating)}</span><br><small class="text-muted fst-italic">"${r.text}"</small></div><div class="d-flex gap-1">${b}</div></div>`; }); l.innerHTML=h; loadReviewCounts(); } catch(e){ l.innerHTML='Error'; } };
         window.updateReviewStatus = async function(id, s) { await updateDoc(doc(db, "reviews", id), {status:s}); loadReviews(window.currentReviewTab); };
         window.deleteReview = async function(id) { showConfirm("Delete Review", "Sure?", async () => { await deleteDoc(doc(db, "reviews", id)); loadReviews(window.currentReviewTab); }); };
@@ -402,7 +398,6 @@
         async function loadSettings() { const s = await getDoc(doc(db, "settings", "config")); if(s.exists()) { document.getElementById('master-email').value=s.data().masterEmail; document.getElementById('whatsapp-num').value=s.data().whatsappNumber||""; } }
         window.saveSettings = async function() { startLoading(); await setDoc(doc(db, "settings", "config"), { masterEmail: document.getElementById('master-email').value, whatsappNumber: document.getElementById('whatsapp-num').value }, {merge:true}); stopLoading(); showAlert("Success", "Settings Saved"); }
 
-        // Orders
         window.deleteOrder = function(docId) { showConfirm("Delete Order", "Delete this specific order?", () => { askSecurity(async () => { startLoading(); try { await deleteDoc(doc(db, "orders", docId)); loadOrders(); stopLoading(); } catch(e) { showAlert("Error", "Failed."); stopLoading(); } }); }); };
         window.deleteAllOrders = function() { showConfirm("⚠️ DANGER", "Delete ALL orders?", () => { askSecurity(async () => { startLoading(); try { const s = await getDocs(query(collection(db, "orders"))); s.forEach(d => deleteDoc(d.ref)); showAlert("Success", "All orders cleared.", "success"); loadOrders(); stopLoading(); } catch(e) { showAlert("Error", "Failed."); stopLoading(); } }); }); };
         window.toggleSelectAll = function() { const c = document.getElementById('selectAll').checked; document.querySelectorAll('.order-checkbox').forEach(cb => cb.checked = c); updateBulkBtn(); };
