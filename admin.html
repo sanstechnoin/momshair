@@ -23,6 +23,9 @@
         .login-box { background: white; padding: 2.5rem; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; width: 90%; max-width: 400px; }
         #admin-content { display: none; }
         
+        /* RESTORED: Stock Live Indicator Style */
+        .stock-live { font-size: 0.75rem; font-weight: bold; color: #198754; margin-left: 5px; }
+        
         .sandclock-spin { animation: spin 2s infinite linear; font-size: 3.5rem; color: #1B4D3E; margin-bottom: 1rem; }
         @keyframes spin { 0% { transform: rotate(0deg); } 50% { transform: rotate(180deg); } 100% { transform: rotate(360deg); } }
         
@@ -86,44 +89,50 @@
                         </div>
                         <div class="card-body">
                             <div class="mb-3 border-bottom pb-2">
-                                <h6 class="fw-bold text-primary small">Daily Shine (P1)</h6>
+                                <h6 class="fw-bold text-primary small mb-2">Daily Shine (P1)</h6>
                                 <div class="d-flex gap-2 align-items-center mb-1">
                                     <span class="small fw-bold text-muted" style="width:50px;">100ml</span>
                                     <input type="number" id="price-p1-100" class="form-control form-control-sm" placeholder="₹ Price">
                                     <input type="number" id="qty-p1-100" class="form-control form-control-sm" placeholder="Stock">
+                                    <span id="live-p1-100" class="stock-live">...</span>
                                 </div>
                                 <div class="d-flex gap-2 align-items-center">
                                     <span class="small fw-bold text-muted" style="width:50px;">200ml</span>
                                     <input type="number" id="price-p1-200" class="form-control form-control-sm" placeholder="₹ Price">
                                     <input type="number" id="qty-p1-200" class="form-control form-control-sm" placeholder="Stock">
+                                    <span id="live-p1-200" class="stock-live">...</span>
                                 </div>
                             </div>
 
                             <div class="mb-3 border-bottom pb-2">
-                                <h6 class="fw-bold text-primary small">Natural Dark (P2)</h6>
+                                <h6 class="fw-bold text-primary small mb-2">Natural Dark (P2)</h6>
                                 <div class="d-flex gap-2 align-items-center mb-1">
                                     <span class="small fw-bold text-muted" style="width:50px;">100ml</span>
                                     <input type="number" id="price-p2-100" class="form-control form-control-sm" placeholder="₹ Price">
                                     <input type="number" id="qty-p2-100" class="form-control form-control-sm" placeholder="Stock">
+                                    <span id="live-p2-100" class="stock-live">...</span>
                                 </div>
                                 <div class="d-flex gap-2 align-items-center">
                                     <span class="small fw-bold text-muted" style="width:50px;">200ml</span>
                                     <input type="number" id="price-p2-200" class="form-control form-control-sm" placeholder="₹ Price">
                                     <input type="number" id="qty-p2-200" class="form-control form-control-sm" placeholder="Stock">
+                                    <span id="live-p2-200" class="stock-live">...</span>
                                 </div>
                             </div>
 
                             <div class="mb-3">
-                                <h6 class="fw-bold text-primary small">Complete Duo (P3)</h6>
+                                <h6 class="fw-bold text-primary small mb-2">Complete Duo (P3)</h6>
                                 <div class="d-flex gap-2 align-items-center mb-1">
                                     <span class="small fw-bold text-muted" style="width:50px;">100ml</span>
                                     <input type="number" id="price-p3-100" class="form-control form-control-sm" placeholder="₹ Price">
                                     <input type="number" id="qty-p3-100" class="form-control form-control-sm" placeholder="Stock">
+                                    <span id="live-p3-100" class="stock-live">...</span>
                                 </div>
                                 <div class="d-flex gap-2 align-items-center">
                                     <span class="small fw-bold text-muted" style="width:50px;">200ml</span>
                                     <input type="number" id="price-p3-200" class="form-control form-control-sm" placeholder="₹ Price">
                                     <input type="number" id="qty-p3-200" class="form-control form-control-sm" placeholder="Stock">
+                                    <span id="live-p3-200" class="stock-live">...</span>
                                 </div>
                             </div>
 
@@ -328,10 +337,14 @@
                     if(v['100ml']) {
                         document.getElementById(`price-${pid}-100`).value = v['100ml'].price || '';
                         document.getElementById(`qty-${pid}-100`).value = v['100ml'].stock || 0;
+                        // Populate Live Stock Text
+                        document.getElementById(`live-${pid}-100`).innerText = (v['100ml'].stock || 0) + " In Stock";
                     }
                     if(v['200ml']) {
                         document.getElementById(`price-${pid}-200`).value = v['200ml'].price || '';
                         document.getElementById(`qty-${pid}-200`).value = v['200ml'].stock || 0;
+                        // Populate Live Stock Text
+                        document.getElementById(`live-${pid}-200`).innerText = (v['200ml'].stock || 0) + " In Stock";
                     }
                 }
             }
