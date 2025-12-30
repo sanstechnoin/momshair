@@ -173,14 +173,14 @@
                             <div class="btn-group w-100 mb-3" role="group">
                                 <input type="radio" class="btn-check" name="size-p1" id="p1-100" value="100ml" checked onchange="updateProductDisplay('p1')">
                                 <label class="btn btn-outline-primary btn-sm" for="p1-100">100ml</label>
+                                
                                 <input type="radio" class="btn-check" name="size-p1" id="p1-200" value="200ml" onchange="updateProductDisplay('p1')">
                                 <label class="btn btn-outline-primary btn-sm" for="p1-200">200ml</label>
                             </div>
 
                             <small id="stock-p1" class="text-accent fw-bold mb-2">Loading...</small>
-                            <div class="my-2">
-                                <span class="text-primary fw-bold fs-4" id="price-p1">₹...</span>
-                            </div>
+                            <div class="my-2" id="price-container-p1">
+                                </div>
                             <button id="btn-p1" class="btn btn-primary w-100" onclick="addToCart('p1', 'Daily Shine Elixir')">Add to Cart</button>
                         </div>
                     </div>
@@ -204,9 +204,8 @@
                             </div>
 
                             <small id="stock-p2" class="text-accent fw-bold mb-2">Loading...</small>
-                            <div class="my-2">
-                                <span class="text-primary fw-bold fs-4" id="price-p2">₹...</span>
-                            </div>
+                            <div class="my-2" id="price-container-p2">
+                                </div>
                             <button id="btn-p2" class="btn btn-primary w-100" onclick="addToCart('p2', 'Natural Darkening Oil')">Add to Cart</button>
                         </div>
                     </div>
@@ -234,9 +233,8 @@
                             </div>
 
                             <small id="stock-p3" class="text-accent fw-bold mb-2">Loading...</small>
-                            <div class="my-2">
-                                <span class="text-primary fw-bold fs-3" id="price-p3">₹...</span>
-                            </div>
+                            <div class="my-2" id="price-container-p3">
+                                </div>
                             <button id="btn-p3" class="btn btn-primary w-100 btn-lg" onclick="addToCart('p3', 'The Complete Care Duo')">Add Combo</button>
                         </div>
                     </div>
@@ -567,8 +565,8 @@
                 // Store data, handling potential legacy structure
                 window.productsData[doc.id] = {
                     variants: d.variants || { 
-                        '100ml': { price: 0, stock: 0 }, 
-                        '200ml': { price: 0, stock: 0 } 
+                        '100ml': { mrp: 0, price: 0, stock: 0 }, 
+                        '200ml': { mrp: 0, price: 0, stock: 0 } 
                     }
                 };
                 // Update UI for this product
@@ -586,11 +584,18 @@
             // 2. Get Data for Size
             const variantData = window.productsData[pid].variants[size];
             const price = variantData ? variantData.price : 0;
+            const mrp = variantData ? variantData.mrp : 0; // NEW: Get MRP
             const stock = variantData ? variantData.stock : 0;
             
-            // 3. Update Price Text
-            const priceEl = document.getElementById(`price-${pid}`);
-            priceEl.innerText = price > 0 ? `₹${price}` : "Unavailable";
+            // 3. Update Price HTML (NEW LOGIC)
+            const priceContainer = document.getElementById(`price-container-${pid}`);
+            if (mrp > price && price > 0) {
+                // Sale Active
+                priceContainer.innerHTML = `<span class="text-decoration-line-through text-muted me-2">₹${mrp}</span> <span class="text-primary fw-bold fs-4">₹${price}</span>`;
+            } else {
+                // No Sale
+                priceContainer.innerHTML = `<span class="text-primary fw-bold fs-4">₹${price > 0 ? price : 'Unavailable'}</span>`;
+            }
             
             // 4. Update Stock & Button
             const stockEl = document.getElementById(`stock-${pid}`);
@@ -603,7 +608,7 @@
                 btn.innerText = "Add to Cart";
                 btn.classList.replace("btn-secondary", "btn-primary");
             } else {
-                // PRE-ORDER LOGIC RESTORED
+                // PRE-ORDER LOGIC
                 stockEl.innerHTML = `<i class="bi bi-hourglass-split"></i> Batch Cooking...`;
                 stockEl.className = "text-accent fw-bold mb-2 small";
                 btn.disabled = false; // ENABLED FOR PRE-ORDER
