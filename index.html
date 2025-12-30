@@ -155,59 +155,60 @@
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="font-heading text-primary">Reserve Your Bottle</h2>
-                <p class="text-muted">Introductory pricing active. Limited quantities.</p>
+                <p class="text-muted">Fresh Batch Released. Select Size Below.</p>
             </div>
 
             <div class="row g-4 justify-content-center">
                 
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm product-card">
-                        <span class="badge bg-danger position-absolute top-0 end-0 m-3">36% OFF</span>
+                        <span class="badge bg-danger position-absolute top-0 end-0 m-3">SALE</span>
                         <div class="d-flex justify-content-center align-items-center" style="height: 250px;">
                             <img src="2.png" alt="Daily Shine Elixir" class="p-4" style="height: 100%; width: auto; object-fit: contain;">
                         </div>
                         <div class="card-body d-flex flex-column text-center">
-                            <div class="mb-2">
-                                <span class="badge bg-success-subtle text-success border border-success rounded-pill px-3">
-                                    <i class="bi bi-emoji-smile"></i> Baby & Kid Safe
-                                </span>
-                            </div>
                             <h5 class="card-title font-heading fw-bold">Daily Shine Elixir</h5>
                             <p class="card-text text-muted small">Feather-light hydration. Keeps hair soft, detangled, and glossy all day.</p>
-                            <small id="stock-p1" class="text-accent fw-bold mb-2">Checking Stock...</small>
+                            
+                            <div class="btn-group w-100 mb-3" role="group">
+                                <input type="radio" class="btn-check" name="size-p1" id="p1-100" value="100ml" checked onchange="updateProductDisplay('p1')">
+                                <label class="btn btn-outline-primary btn-sm" for="p1-100">100ml</label>
+                                
+                                <input type="radio" class="btn-check" name="size-p1" id="p1-200" value="200ml" onchange="updateProductDisplay('p1')">
+                                <label class="btn btn-outline-primary btn-sm" for="p1-200">200ml</label>
+                            </div>
+
+                            <small id="stock-p1" class="text-accent fw-bold mb-2">Loading...</small>
                             <div class="my-2">
-                                <span class="text-decoration-line-through text-muted me-2">₹299</span>
-                                <span class="text-primary fw-bold fs-4">₹190</span>
+                                <span class="text-primary fw-bold fs-4" id="price-p1">₹...</span>
                             </div>
-                            <div class="mt-auto">
-                                <button id="btn-p1" class="btn btn-primary w-100" onclick="addToCart('p1', 'Daily Shine Elixir', 190)">Add to Cart</button>
-                            </div>
+                            <button id="btn-p1" class="btn btn-primary w-100" onclick="addToCart('p1', 'Daily Shine Elixir')">Add to Cart</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm product-card">
-                        <span class="badge bg-danger position-absolute top-0 end-0 m-3">45% OFF</span>
+                        <span class="badge bg-danger position-absolute top-0 end-0 m-3">SALE</span>
                         <div class="d-flex justify-content-center align-items-center" style="height: 250px;">
                             <img src="3.png" alt="Natural Darkening Oil" class="p-4" style="height: 100%; width: auto; object-fit: contain;">
                         </div>
                         <div class="card-body d-flex flex-column text-center">
-                            <div class="mb-2">
-                                <span class="badge bg-success-subtle text-success border border-success rounded-pill px-3">
-                                    <i class="bi bi-emoji-smile"></i> Baby & Kid Safe
-                                </span>
-                            </div>
                             <h5 class="card-title font-heading fw-bold">Natural Darkening Oil</h5>
                             <p class="card-text text-muted small">Targeted root nutrition to combat premature greying and preserve dark color.</p>
-                            <small id="stock-p2" class="text-accent fw-bold mb-2">Checking Stock...</small>
+                            
+                            <div class="btn-group w-100 mb-3" role="group">
+                                <input type="radio" class="btn-check" name="size-p2" id="p2-100" value="100ml" checked onchange="updateProductDisplay('p2')">
+                                <label class="btn btn-outline-primary btn-sm" for="p2-100">100ml</label>
+                                <input type="radio" class="btn-check" name="size-p2" id="p2-200" value="200ml" onchange="updateProductDisplay('p2')">
+                                <label class="btn btn-outline-primary btn-sm" for="p2-200">200ml</label>
+                            </div>
+
+                            <small id="stock-p2" class="text-accent fw-bold mb-2">Loading...</small>
                             <div class="my-2">
-                                <span class="text-decoration-line-through text-muted me-2">₹349</span>
-                                <span class="text-primary fw-bold fs-4">₹190</span>
+                                <span class="text-primary fw-bold fs-4" id="price-p2">₹...</span>
                             </div>
-                            <div class="mt-auto">
-                                <button id="btn-p2" class="btn btn-primary w-100" onclick="addToCart('p2', 'Natural Darkening Oil', 190)">Add to Cart</button>
-                            </div>
+                            <button id="btn-p2" class="btn btn-primary w-100" onclick="addToCart('p2', 'Natural Darkening Oil')">Add to Cart</button>
                         </div>
                     </div>
                 </div>
@@ -215,31 +216,29 @@
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm product-card">
                         <span class="badge bg-accent position-absolute top-0 end-0 m-3" style="z-index: 10;">BEST VALUE</span>
-                        
                         <div class="p-4" style="height: 250px;">
                             <div class="position-relative w-100 h-100 d-flex justify-content-center align-items-end" style="border-radius: 5px; overflow: hidden;">
-                                <img src="bg.png" alt="" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.8; z-index: 0;">
-                                <img src="3-1.png" alt="" style="height: 85%; width: auto; position: absolute; left: 15%; bottom: 10px; z-index: 1; transform: rotate(-3deg);">
-                                <img src="2-1.png" alt="Complete Care Duo" style="height: 90%; width: auto; position: absolute; right: 15%; bottom: 5px; z-index: 2; transform: rotate(2deg); filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.3));">
+                                <img src="bg.png" style="position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: 0.8;">
+                                <img src="3-1.png" style="height: 85%; width: auto; position: absolute; left: 15%; bottom: 10px; transform: rotate(-3deg);">
+                                <img src="2-1.png" style="height: 90%; width: auto; position: absolute; right: 15%; bottom: 5px; transform: rotate(2deg);">
                             </div>
                         </div>
-
                         <div class="card-body d-flex flex-column text-center">
-                            <div class="mb-2">
-                                <span class="badge bg-success-subtle text-success border border-success rounded-pill px-3">
-                                    <i class="bi bi-emoji-smile"></i> Baby & Kid Safe
-                                </span>
-                            </div>
                             <h5 class="card-title font-heading fw-bold">The Complete Care Duo</h5>
-                            <p class="card-text text-muted small">1 Nourish + 1 Natural Darkening. The full ritual.</p>
-                            <small id="stock-p3" class="text-accent fw-bold mb-2">Checking Stock...</small>
+                            <p class="card-text text-muted small">1 Nourish + 1 Darkening.</p>
+                            
+                            <div class="btn-group w-100 mb-3" role="group">
+                                <input type="radio" class="btn-check" name="size-p3" id="p3-100" value="100ml" checked onchange="updateProductDisplay('p3')">
+                                <label class="btn btn-outline-primary btn-sm" for="p3-100">100ml Duo</label>
+                                <input type="radio" class="btn-check" name="size-p3" id="p3-200" value="200ml" onchange="updateProductDisplay('p3')">
+                                <label class="btn btn-outline-primary btn-sm" for="p3-200">200ml Duo</label>
+                            </div>
+
+                            <small id="stock-p3" class="text-accent fw-bold mb-2">Loading...</small>
                             <div class="my-2">
-                                <span class="text-decoration-line-through text-muted me-2">₹648</span>
-                                <span class="text-primary fw-bold fs-3">₹370</span>
+                                <span class="text-primary fw-bold fs-3" id="price-p3">₹...</span>
                             </div>
-                            <div class="mt-auto">
-                                <button id="btn-p3" class="btn btn-primary w-100 btn-lg" onclick="addToCart('p3', 'The Complete Care Duo', 370)">Add Combo</button>
-                            </div>
+                            <button id="btn-p3" class="btn btn-primary w-100 btn-lg" onclick="addToCart('p3', 'The Complete Care Duo')">Add Combo</button>
                         </div>
                     </div>
                 </div>
@@ -538,13 +537,12 @@
             if(snap.exists() && snap.data().masterEmail) masterEmail = snap.data().masterEmail;
         });
 
-        // --- LOAD SHIPPING RULES ---
-        window.shippingRules = { freeLimit: 599, tnRate: 90, roiRate: 120 }; // Defaults
+        window.shippingRules = { freeLimit: 599, tnRate: 90, roiRate: 120 };
         getDoc(doc(db, "settings", "shipping")).then(snap => {
             if(snap.exists()) window.shippingRules = snap.data();
         });
 
-        // --- CHECK BANNER PROMO (ON LOAD) ---
+        // Banner Promo
         if (!sessionStorage.getItem('promoShown')) {
             const q = query(collection(db, "coupons"), where("isBanner", "==", true));
             getDocs(q).then(snap => {
@@ -558,111 +556,78 @@
             });
         }
 
-        // --- SUPPORT WIDGET LOGIC ---
-        onSnapshot(doc(db, "settings", "support"), (doc) => {
-            const isOnline = doc.exists() ? doc.data().isOnline : false;
-            const btn = document.getElementById('supportBtn');
-            const icon = document.getElementById('supportIcon');
-            const dot = document.querySelector('.status-dot');
-            const txt = document.getElementById('supportStatusText');
-
-            if (isOnline) {
-                btn.className = "chat-widget-btn online";
-                icon.className = "bi bi-whatsapp";
-                dot.className = "status-dot bg-success";
-                txt.innerHTML = '<span class="status-dot bg-success"></span> Online';
-                document.getElementById('onlineView').style.display = 'block';
-                document.getElementById('offlineView').style.display = 'none';
-            } else {
-                btn.className = "chat-widget-btn offline";
-                icon.className = "bi bi-chat-dots-fill";
-                dot.className = "status-dot bg-danger";
-                txt.innerHTML = '<span class="status-dot bg-danger"></span> Offline';
-                document.getElementById('onlineView').style.display = 'none';
-                document.getElementById('offlineView').style.display = 'block';
-            }
-        });
-
-        window.toggleChat = function() {
-            const win = document.getElementById('chatWindow');
-            win.classList.toggle('active');
-        }
-
-        window.submitEnquiry = async function(e) {
-            e.preventDefault();
-            const name = document.getElementById('enqName').value;
-            const phone = document.getElementById('enqPhone').value;
-            const msg = document.getElementById('enqMsg').value;
-            
-            await addDoc(collection(db, "enquiries"), {
-                name: name, phone: phone, message: msg, timestamp: serverTimestamp(), status: 'new'
-            });
-            
-            alert("Message sent! We will contact you shortly.");
-            toggleChat();
-            e.target.reset();
-        }
-
-        // --- REVIEWS ---
-        async function loadReviews() {
-            const track = document.getElementById('dynamicReviewsTrack');
-            const q = query(collection(db, "reviews"), where("status", "==", "approved"), limit(10));
-            const snapshot = await getDocs(q);
-
-            if (snapshot.empty) return;
-
-            let html = '';
-            snapshot.forEach(docSnap => {
-                const r = docSnap.data();
-                html += `<div class="review-card-carousel"><div class="text-accent mb-2">${'★'.repeat(r.rating || 5)}</div><p class="fst-italic text-muted">"${r.text}"</p><footer class="blockquote-footer mt-2">${r.name}, Verified Buyer</footer></div>`;
-            });
-
-            const wrapper = document.querySelector('.reviews-wrapper');
-            if (snapshot.size > 3) {
-                track.innerHTML = html + html; 
-            } else {
-                track.innerHTML = html; 
-                track.style.animation = 'none'; 
-                track.style.width = '100%'; 
-                track.style.justifyContent = 'center'; 
-                wrapper.style.overflowX = 'auto'; 
-            }
-        }
-        loadReviews();
-
-        // --- STOCK ---
-        window.currentStock = { 'p1': 0, 'p2': 0, 'p3': 0 };
-        const productsMap = { 'p1': { btnId: 'btn-p1', stockId: 'stock-p1' }, 'p2': { btnId: 'btn-p2', stockId: 'stock-p2' }, 'p3': { btnId: 'btn-p3', stockId: 'stock-p3' } };
-        
-        onSnapshot(collection(db, "products"), (snapshot) => {
-            snapshot.forEach((doc) => {
-                const prod = productsMap[doc.id];
-                if (prod) {
-                    const data = doc.data(); const stock = data.stock || 0;
-                    window.currentStock[doc.id] = stock;
-                    const btn = document.getElementById(prod.btnId); const stockTxt = document.getElementById(prod.stockId);
-                    if (stock > 0) {
-                        btn.innerHTML = "Add to Cart"; btn.classList.replace("btn-secondary", "btn-primary");
-                        stockTxt.innerHTML = `<i class="bi bi-check-circle"></i> Only ${stock} bottles left!`; stockTxt.className = "text-success fw-bold mb-2 small";
-                    } else {
-                        btn.innerHTML = "Pre-Order Now"; btn.classList.replace("btn-primary", "btn-secondary");
-                        stockTxt.innerHTML = `<i class="bi bi-hourglass-split"></i> Batch Cooking...`; stockTxt.className = "text-accent fw-bold mb-2 small";
-                    }
-                }
-            });
-        });
-
-        // --- CART LOGIC (GRID ALIGNED) ---
-        window.cart = []; 
+        // --- GLOBAL STATE ---
+        window.productsData = {}; 
+        window.cart = [];
         window.appliedCoupon = null;
 
-        window.addToCart = function(id, name, price) {
-            const stock = window.currentStock[id] || 0;
-            const existingItem = window.cart.find(i => i.id === id);
+        // --- FETCH PRODUCTS & VARIANTS ---
+        onSnapshot(collection(db, "products"), (snapshot) => {
+            snapshot.forEach((doc) => {
+                const d = doc.data();
+                // Store data, handling potential legacy structure
+                window.productsData[doc.id] = {
+                    variants: d.variants || { 
+                        '100ml': { price: 0, stock: 0 }, 
+                        '200ml': { price: 0, stock: 0 } 
+                    }
+                };
+                // Update UI for this product
+                updateProductDisplay(doc.id);
+            });
+        });
+
+        // --- UI UPDATE LOGIC ---
+        window.updateProductDisplay = function(pid) {
+            if(!window.productsData[pid]) return;
+            
+            // 1. Get Selected Size
+            const size = document.querySelector(`input[name="size-${pid}"]:checked`).value;
+            
+            // 2. Get Data for Size
+            const variantData = window.productsData[pid].variants[size];
+            const price = variantData ? variantData.price : 0;
+            const stock = variantData ? variantData.stock : 0;
+            
+            // 3. Update Price Text
+            const priceEl = document.getElementById(`price-${pid}`);
+            priceEl.innerText = price > 0 ? `₹${price}` : "Unavailable";
+            
+            // 4. Update Stock & Button
+            const stockEl = document.getElementById(`stock-${pid}`);
+            const btn = document.getElementById(`btn-${pid}`);
+            
+            if (stock > 0) {
+                stockEl.innerHTML = `<i class="bi bi-check-circle"></i> Only ${stock} left!`;
+                stockEl.className = "text-success fw-bold mb-2 small";
+                btn.disabled = false;
+                btn.innerText = "Add to Cart";
+                btn.classList.replace("btn-secondary", "btn-primary");
+            } else {
+                stockEl.innerHTML = `<i class="bi bi-hourglass-split"></i> Batch Cooking...`;
+                stockEl.className = "text-accent fw-bold mb-2 small";
+                btn.disabled = true;
+                btn.innerText = "Sold Out";
+                btn.classList.replace("btn-primary", "btn-secondary");
+            }
+        };
+
+        // --- CART LOGIC WITH VARIANTS ---
+        window.addToCart = function(pid, baseName) {
+            const size = document.querySelector(`input[name="size-${pid}"]:checked`).value;
+            const variantData = window.productsData[pid].variants[size];
+            
+            if(!variantData || variantData.stock <= 0) return;
+
+            const cartItemId = `${pid}-${size}`;
+            const displayName = `${baseName} (${size})`;
+            const price = variantData.price;
+            
+            const existingItem = window.cart.find(i => i.cartItemId === cartItemId);
             const currentQty = existingItem ? existingItem.quantity : 0;
 
-            if (stock > 0 && (currentQty + 1) > stock) {
-                document.getElementById('stockLimitMsg').innerText = `Sorry! Only ${stock} bottle(s) of ${name} left.`;
+            if ((currentQty + 1) > variantData.stock) {
+                document.getElementById('stockLimitMsg').innerText = `Sorry! Only ${variantData.stock} available.`;
                 new bootstrap.Modal(document.getElementById('stockLimitModal')).show();
                 return;
             }
@@ -670,21 +635,28 @@
             if (existingItem) {
                 existingItem.quantity++;
             } else {
-                window.cart.push({ id, name, price, quantity: 1 });
+                window.cart.push({ 
+                    cartItemId: cartItemId, // Unique ID
+                    pid: pid,              // Real DB ID
+                    size: size,            // Size
+                    name: displayName, 
+                    price: price, 
+                    quantity: 1 
+                });
             }
             
             updateCartDisplay();
-            const cartBtn = document.querySelector('.btn-outline-primary'); cartBtn.classList.add('cart-animate');
-            setTimeout(() => { cartBtn.classList.remove('cart-animate'); }, 500);
+            const btn = document.querySelector('.btn-outline-primary'); 
+            btn.classList.add('bg-light'); setTimeout(()=>btn.classList.remove('bg-light'), 200);
         }
 
         window.updateQuantity = function(index, change) {
             const item = window.cart[index];
-            const stock = window.currentStock[item.id];
+            const variantData = window.productsData[item.pid].variants[item.size];
             const newQty = item.quantity + change;
 
-            if (newQty > stock) {
-                document.getElementById('stockLimitMsg').innerText = `Sorry! Only ${stock} bottle(s) available.`;
+            if (newQty > variantData.stock) {
+                document.getElementById('stockLimitMsg').innerText = `Sorry! Only ${variantData.stock} available.`;
                 new bootstrap.Modal(document.getElementById('stockLimitModal')).show();
                 return;
             }
@@ -694,69 +666,63 @@
             } else {
                 item.quantity = newQty;
             }
-            
             updateCartDisplay();
             prepareCheckout();
         }
 
         window.updateCartDisplay = function() {
-            const totalCount = window.cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.getElementById('cart-count').innerText = totalCount;
+            const count = window.cart.reduce((sum, i) => sum + i.quantity, 0);
+            document.getElementById('cart-count').innerText = count;
         }
-
+        
         window.prepareCheckout = function() {
-            const cartItemsContainer = document.getElementById('cart-items');
-            if (window.cart.length === 0) { 
-                cartItemsContainer.innerHTML = '<p class="text-center text-muted">Your cart is empty.</p>'; 
-                recalcTotal(); 
-                return; 
-            }
-            
-            // GRID ALIGNED LAYOUT
-            let html = '<ul class="list-group list-group-flush border-top border-bottom">';
-            window.cart.forEach((item, index) => {
-                html += `
-                <li class="list-group-item px-0">
-                    <div class="row align-items-center g-2">
-                        <div class="col-6">
-                            <div class="fw-bold text-start text-dark small mb-0">${item.name}</div>
-                            <div class="small text-muted text-start">₹${item.price} each</div>
-                        </div>
-                        <div class="col-3 d-flex justify-content-center">
-                            <div class="input-group input-group-sm" style="width: 80px;">
+             const cartItemsContainer = document.getElementById('cart-items');
+             if (window.cart.length === 0) { 
+                 cartItemsContainer.innerHTML = '<p class="text-center text-muted">Cart is empty.</p>'; 
+                 recalcTotal(); return; 
+             }
+             
+             let html = '<ul class="list-group list-group-flush border-top border-bottom">';
+             window.cart.forEach((item, index) => {
+                 html += `
+                 <li class="list-group-item px-0">
+                     <div class="row align-items-center g-2">
+                         <div class="col-6">
+                             <div class="fw-bold text-start small">${item.name}</div>
+                             <div class="small text-muted text-start">₹${item.price}</div>
+                         </div>
+                         <div class="col-3 d-flex justify-content-center">
+                            <div class="input-group input-group-sm" style="width:80px">
                                 <button class="btn btn-outline-secondary px-2" onclick="updateQuantity(${index}, -1)">-</button>
-                                <span class="input-group-text px-2 bg-white fw-bold">${item.quantity}</span>
+                                <span class="input-group-text bg-white px-2 fw-bold">${item.quantity}</span>
                                 <button class="btn btn-outline-secondary px-2" onclick="updateQuantity(${index}, 1)">+</button>
                             </div>
-                        </div>
-                        <div class="col-3 text-end fw-bold text-primary small">
-                            ₹${item.price * item.quantity}
-                        </div>
-                    </div>
-                </li>`;
-            });
-            html += '</ul>'; 
-            cartItemsContainer.innerHTML = html;
-            recalcTotal();
-            loadCouponSuggestions(); // Refresh suggestions based on new total
+                         </div>
+                         <div class="col-3 text-end fw-bold text-primary small">₹${item.price * item.quantity}</div>
+                     </div>
+                 </li>`;
+             });
+             html += '</ul>';
+             cartItemsContainer.innerHTML = html;
+             recalcTotal();
+             loadCouponSuggestions();
         }
 
         window.recalcTotal = function() {
             let subtotal = window.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             
-            // Shipping Logic
+            // Shipping
             let shipping = 0;
             if (subtotal < window.shippingRules.freeLimit && subtotal > 0) {
                 const isTN = document.getElementById('locTN').checked;
                 shipping = isTN ? window.shippingRules.tnRate : window.shippingRules.roiRate;
             }
 
-            // Coupon Logic
+            // Coupon
             let discount = 0;
             if (window.appliedCoupon) {
-                // Re-validate logic in case quantity changed
                 if(subtotal < window.appliedCoupon.minOrder) {
-                    document.getElementById('couponMsg').innerText = `Add ₹${window.appliedCoupon.minOrder - subtotal} more to use ${window.appliedCoupon.code}`;
+                    document.getElementById('couponMsg').innerText = `Add ₹${window.appliedCoupon.minOrder - subtotal} more`;
                     document.getElementById('couponMsg').className = "small text-warning fw-bold mt-1";
                     document.getElementById('couponMsg').style.display = 'block';
                 } else {
@@ -778,24 +744,20 @@
             if (total < 0) total = 0;
 
             document.getElementById('display-subtotal').innerText = `₹${subtotal}`;
-            document.getElementById('display-shipping').innerText = shipping === 0 ? "Free" : `₹${shipping}`;
+            document.getElementById('display-shipping').innerText = shipping===0?"Free":`₹${shipping}`;
             document.getElementById('display-total').innerText = `₹${total}`;
-            
             return { subtotal, shipping, discount, total };
         }
 
-        // --- COUPON SUGGESTIONS & APPLY ---
+        // Coupon Logic
         window.loadCouponSuggestions = async function() {
             const subtotal = window.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const datalist = document.getElementById('couponSuggestions');
-            datalist.innerHTML = ''; // Clear old
-
+            datalist.innerHTML = ''; 
             const q = query(collection(db, "coupons"), where("isVisible", "==", true));
             const snap = await getDocs(q);
-            
             snap.forEach(doc => {
                 const c = doc.data();
-                // Only suggest if Min Order is met
                 if (subtotal >= (c.minOrder || 0)) {
                     const desc = c.type === 'percent' ? `${c.value}% OFF` : `₹${c.value} OFF`;
                     const opt = document.createElement('option');
@@ -810,82 +772,97 @@
             const code = document.getElementById('couponCode').value.toUpperCase().trim();
             const msgEl = document.getElementById('couponMsg');
             const btn = event.target;
-            const subtotal = window.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            
             if(!code) return;
             btn.innerHTML = "..."; 
-
             const q = query(collection(db, "coupons"), where("code", "==", code));
             const snap = await getDocs(q);
-
             if(!snap.empty) {
                 const data = snap.docs[0].data();
-                
                 if(data.expiry && new Date(data.expiry) < new Date()) {
-                    window.appliedCoupon = null;
-                    msgEl.innerText = "Coupon Expired";
-                    msgEl.className = "small text-danger fw-bold mt-1";
-                }
-                else if(data.minOrder && subtotal < data.minOrder) {
-                    window.appliedCoupon = null;
-                    msgEl.innerText = `Minimum order ₹${data.minOrder} required`;
-                    msgEl.className = "small text-danger fw-bold mt-1";
-                } 
-                else {
-                    window.appliedCoupon = data;
-                    const desc = data.type === 'percent' ? `${data.value}% OFF` : `₹${data.value} OFF`;
-                    msgEl.innerText = `Coupon Applied: ${desc}`;
-                    msgEl.className = "small text-success fw-bold mt-1";
+                    window.appliedCoupon = null; msgEl.innerText = "Expired"; msgEl.className = "text-danger small fw-bold mt-1";
+                } else {
+                    window.appliedCoupon = data; 
+                    msgEl.innerText = "Applied!"; msgEl.className = "text-success small fw-bold mt-1";
                 }
             } else {
-                window.appliedCoupon = null;
-                msgEl.innerText = "Invalid Coupon Code";
-                msgEl.className = "small text-danger fw-bold mt-1";
+                window.appliedCoupon = null; msgEl.innerText = "Invalid Code"; msgEl.className = "text-danger small fw-bold mt-1";
             }
             msgEl.style.display = 'block';
             btn.innerHTML = "Apply";
             recalcTotal();
         }
 
-        window.showNotification = function(msg) {
-            document.getElementById('notificationMsg').innerText = msg;
-            new bootstrap.Modal(document.getElementById('notificationModal')).show();
+        // Support
+        onSnapshot(doc(db, "settings", "support"), (doc) => {
+            const isOnline = doc.exists() ? doc.data().isOnline : false;
+            const btn = document.getElementById('supportBtn');
+            const icon = document.getElementById('supportIcon');
+            const txt = document.getElementById('supportStatusText');
+            if (isOnline) {
+                btn.className = "chat-widget-btn online"; icon.className = "bi bi-whatsapp"; txt.innerHTML = '<span class="status-dot bg-success"></span> Online';
+                document.getElementById('onlineView').style.display = 'block'; document.getElementById('offlineView').style.display = 'none';
+            } else {
+                btn.className = "chat-widget-btn offline"; icon.className = "bi bi-chat-dots-fill"; txt.innerHTML = '<span class="status-dot bg-danger"></span> Offline';
+                document.getElementById('onlineView').style.display = 'none'; document.getElementById('offlineView').style.display = 'block';
+            }
+        });
+        window.toggleChat = function() { document.getElementById('chatWindow').classList.toggle('active'); }
+        window.submitEnquiry = async function(e) {
+            e.preventDefault();
+            await addDoc(collection(db, "enquiries"), { name: document.getElementById('enqName').value, phone: document.getElementById('enqPhone').value, message: document.getElementById('enqMsg').value, timestamp: serverTimestamp(), status: 'new' });
+            alert("Message sent!"); toggleChat(); e.target.reset();
         }
+
+        // Reviews
+        async function loadReviews() {
+            const track = document.getElementById('dynamicReviewsTrack');
+            const q = query(collection(db, "reviews"), where("status", "==", "approved"), limit(10));
+            const snapshot = await getDocs(q);
+            if (snapshot.empty) return;
+            let html = '';
+            snapshot.forEach(docSnap => { const r = docSnap.data(); html += `<div class="review-card-carousel"><div class="text-accent mb-2">${'★'.repeat(r.rating || 5)}</div><p class="fst-italic text-muted">"${r.text}"</p><footer class="blockquote-footer mt-2">${r.name}, Verified Buyer</footer></div>`; });
+            const wrapper = document.querySelector('.reviews-wrapper');
+            if (snapshot.size > 3) track.innerHTML = html + html; 
+            else { track.innerHTML = html; track.style.animation = 'none'; track.style.width = '100%'; track.style.justifyContent = 'center'; wrapper.style.overflowX = 'auto'; }
+        }
+        loadReviews();
+
+        window.showNotification = function(msg) { document.getElementById('notificationMsg').innerText = msg; new bootstrap.Modal(document.getElementById('notificationModal')).show(); }
 
         window.placeOrder = async function() {
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
             const address = document.getElementById('custAddress').value;
             const txnId = document.getElementById('custTxnId').value;
-            const hasScreenshot = document.getElementById('custScreenshot').value !== "";
             const terms = document.getElementById('termsCheck').checked;
 
             if (window.cart.length === 0) return showNotification("Cart is empty!");
             if (!name || !phone || !address) return showNotification("Please fill all details.");
-            if (!txnId && !hasScreenshot) return showNotification("Please provide payment proof.");
+            if (!txnId && document.getElementById('custScreenshot').value === "") return showNotification("Please provide payment proof.");
             if (!terms) return showNotification("Please accept terms.");
 
-            const btn = event.target; const originalText = btn.innerHTML; btn.innerHTML = "Processing..."; btn.disabled = true;
+            const btn = event.target; btn.innerHTML = "Processing..."; btn.disabled = true;
             
-            // Final Calculation
             const finals = recalcTotal();
             const orderId = "M-" + Math.floor(100000 + Math.random() * 900000);
             
             let itemsString = ""; 
             const flatCartForAdmin = [];
+            
             window.cart.forEach(item => {
                 itemsString += `${item.name} x${item.quantity} (₹${item.price * item.quantity})\n`;
                 for(let i=0; i<item.quantity; i++) {
-                    flatCartForAdmin.push({id: item.id, name: item.name, price: item.price});
+                    flatCartForAdmin.push({id: item.pid, size: item.size, name: item.name, price: item.price});
                 }
             });
 
-            // Stock Deductions
+            // Stock Deductions (Using Nested Field Paths for Variants)
             const deductionPromises = [];
-            for (const item of window.cart) {
-                const productRef = doc(db, "products", item.id);
-                deductionPromises.push(updateDoc(productRef, { stock: increment(-item.quantity) }));
-            }
+            window.cart.forEach(item => {
+                const fieldPath = `variants.${item.size}.stock`;
+                const productRef = doc(db, "products", item.pid);
+                deductionPromises.push(updateDoc(productRef, { [fieldPath]: increment(-item.quantity) }));
+            });
 
             try {
                 await Promise.all(deductionPromises);
@@ -893,13 +870,8 @@
                 await setDoc(doc(db, "orders", orderId), {
                     orderId: orderId, name: name, phone: phone, address: address,
                     items: itemsString, 
-                    
-                    subtotal: finals.subtotal,
-                    shipping: finals.shipping,
-                    discount: finals.discount,
-                    total: finals.total,
+                    subtotal: finals.subtotal, shipping: finals.shipping, discount: finals.discount, total: finals.total,
                     coupon: window.appliedCoupon ? window.appliedCoupon.code : "NONE",
-                    
                     cartDetails: flatCartForAdmin, 
                     txnId: txnId || "Screenshot Uploaded",
                     status: "Pending Verification", timestamp: serverTimestamp()
@@ -907,70 +879,32 @@
 
                 fetch(`https://formsubmit.co/ajax/${masterEmail}`, {
                     method: "POST", headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ 
-                        _subject: `New Order: ${orderId}`, 
-                        order_id: orderId, name, phone, 
-                        items: itemsString, 
-                        total_amount: `₹${finals.total}`, 
-                        transaction_ref: txnId 
-                    })
+                    body: JSON.stringify({ _subject: `New Order: ${orderId}`, order_id: orderId, name, phone, items: itemsString, total_amount: `₹${finals.total}`, transaction_ref: txnId })
                 });
                 
                 document.getElementById('success-order-id').innerText = orderId;
-                const checkoutModal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
-                checkoutModal.hide();
-                const successModal = new bootstrap.Modal(document.getElementById('orderSuccessModal'));
-                successModal.show();
+                bootstrap.Modal.getInstance(document.getElementById('cartModal')).hide();
+                new bootstrap.Modal(document.getElementById('orderSuccessModal')).show();
 
             } catch (error) {
                 console.error("Error:", error);
                 showNotification("Error placing order.");
-                btn.innerHTML = originalText;
-                btn.disabled = false;
+                btn.innerHTML = "Place Order"; btn.disabled = false;
             }
         }
+
+        async function loadWhatsAppNumber() {
+            try {
+                const docSnap = await getDoc(doc(db, "settings", "config"));
+                if (docSnap.exists() && docSnap.data().whatsappNumber) {
+                    const newNumber = docSnap.data().whatsappNumber.trim();
+                    document.querySelectorAll('a[href*="wa.me"]').forEach(link => {
+                        link.href = link.href.replace(/wa\.me\/\d+/, `wa.me/${newNumber}`);
+                    });
+                }
+            } catch (error) {}
+        }
+        loadWhatsAppNumber();
     </script>
-    <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    const firebaseConfig = { 
-        apiKey: "AIzaSyA659yIOvlhVTm8-S6RtUDPXxVM8dZZ_kM", 
-        authDomain: "momshairoil-3010.firebaseapp.com", 
-        projectId: "momshairoil-3010", 
-        storageBucket: "momshairoil-3010.firebasestorage.app", 
-        messagingSenderId: "884566098620", 
-        appId: "1:884566098620:web:bca34f4f82d7b6712ec6b9" 
-    };
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    async function loadWhatsAppNumber() {
-        try {
-            // Fetch the number from the settings
-            const docSnap = await getDoc(doc(db, "settings", "config"));
-            if (docSnap.exists() && docSnap.data().whatsappNumber) {
-                const newNumber = docSnap.data().whatsappNumber.trim();
-                
-                // Find ALL links that look like WhatsApp links (wa.me)
-                const whatsappLinks = document.querySelectorAll('a[href*="wa.me"]');
-                
-                whatsappLinks.forEach(link => {
-                    // This regex replaces the old number part with the new number
-                    // It looks for "wa.me/" followed by digits, and replaces those digits.
-                    link.href = link.href.replace(/wa\.me\/\d+/, `wa.me/${newNumber}`);
-                });
-                console.log("WhatsApp number updated to:", newNumber);
-            }
-        } catch (error) {
-            console.error("Failed to load WhatsApp number:", error);
-        }
-    }
-
-    // Run the function when page loads
-    loadWhatsAppNumber();
-</script>
 </body>
 </html>
-
-
