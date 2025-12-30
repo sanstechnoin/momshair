@@ -22,6 +22,21 @@
         .chat-window.active { display: block; opacity: 1; transform: translateY(0); }
         .chat-header { background: #1B4D3E; color: white; padding: 15px; display: flex; align-items: center; justify-content: space-between; }
         .status-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+
+        /* JUGGLE ANIMATION FOR CART */
+        @keyframes juggle {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(-15deg) scale(1.1); }
+            50% { transform: rotate(15deg) scale(1.2); }
+            75% { transform: rotate(-5deg) scale(1.1); }
+            100% { transform: rotate(0deg) scale(1); }
+        }
+        .cart-juggle {
+            animation: juggle 0.5s ease-in-out;
+            background-color: #198754 !important; /* Green Flash */
+            color: white !important;
+            border-color: #198754 !important;
+        }
     </style>
 </head>
 <body>
@@ -55,7 +70,7 @@
                 </ul>
             </div>
             
-            <button class="btn btn-outline-primary rounded-pill px-3 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#cartModal" onclick="prepareCheckout()">
+            <button id="navCartBtn" class="btn btn-outline-primary rounded-pill px-3 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#cartModal" onclick="prepareCheckout()">
                 <i class="bi bi-cart3"></i> <span id="cart-count" class="badge bg-primary rounded-circle">0</span>
             </button>
         </div>
@@ -214,13 +229,11 @@
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm product-card">
                         <span class="badge bg-accent position-absolute top-0 end-0 m-3" style="z-index: 10;">BEST VALUE</span>
-                        <div class="p-4" style="height: 250px;">
-                            <div class="position-relative w-100 h-100 d-flex justify-content-center align-items-end" style="border-radius: 5px; overflow: hidden;">
-                                <img src="bg.png" style="position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: 0.8;">
-                                <img src="3-1.png" style="height: 85%; width: auto; position: absolute; left: 15%; bottom: 10px; transform: rotate(-3deg);">
-                                <img src="2-1.png" style="height: 90%; width: auto; position: absolute; right: 15%; bottom: 5px; transform: rotate(2deg);">
-                            </div>
+                        
+                        <div class="d-flex justify-content-center align-items-center" style="height: 250px;">
+                            <img src="4.png" alt="Complete Care Duo" class="p-4" style="height: 100%; width: auto; object-fit: contain;">
                         </div>
+
                         <div class="card-body d-flex flex-column text-center">
                             <h5 class="card-title font-heading fw-bold">The Complete Care Duo</h5>
                             <p class="card-text text-muted small">1 Nourish + 1 Darkening.</p>
@@ -584,16 +597,16 @@
             // 2. Get Data for Size
             const variantData = window.productsData[pid].variants[size];
             const price = variantData ? variantData.price : 0;
-            const mrp = variantData ? variantData.mrp : 0; // NEW: Get MRP
+            const mrp = variantData ? variantData.mrp : 0; // MRP Logic
             const stock = variantData ? variantData.stock : 0;
             
-            // 3. Update Price HTML (NEW LOGIC)
+            // 3. Update Price HTML (with Strikethrough if Sale active)
             const priceContainer = document.getElementById(`price-container-${pid}`);
             if (mrp > price && price > 0) {
                 // Sale Active
                 priceContainer.innerHTML = `<span class="text-decoration-line-through text-muted me-2">₹${mrp}</span> <span class="text-primary fw-bold fs-4">₹${price}</span>`;
             } else {
-                // No Sale
+                // No Sale or No Price
                 priceContainer.innerHTML = `<span class="text-primary fw-bold fs-4">₹${price > 0 ? price : 'Unavailable'}</span>`;
             }
             
@@ -653,8 +666,11 @@
             }
             
             updateCartDisplay();
-            const btn = document.querySelector('.btn-outline-primary'); 
-            btn.classList.add('bg-light'); setTimeout(()=>btn.classList.remove('bg-light'), 200);
+            
+            // JUGGLE ANIMATION
+            const btn = document.getElementById('navCartBtn'); 
+            btn.classList.add('cart-juggle'); 
+            setTimeout(()=>btn.classList.remove('cart-juggle'), 500);
         }
 
         window.updateQuantity = function(index, change) {
