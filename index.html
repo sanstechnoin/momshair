@@ -930,6 +930,47 @@
             }
         }
     </script>
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = { 
+        apiKey: "AIzaSyA659yIOvlhVTm8-S6RtUDPXxVM8dZZ_kM", 
+        authDomain: "momshairoil-3010.firebaseapp.com", 
+        projectId: "momshairoil-3010", 
+        storageBucket: "momshairoil-3010.firebasestorage.app", 
+        messagingSenderId: "884566098620", 
+        appId: "1:884566098620:web:bca34f4f82d7b6712ec6b9" 
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadWhatsAppNumber() {
+        try {
+            // Fetch the number from the settings
+            const docSnap = await getDoc(doc(db, "settings", "config"));
+            if (docSnap.exists() && docSnap.data().whatsappNumber) {
+                const newNumber = docSnap.data().whatsappNumber.trim();
+                
+                // Find ALL links that look like WhatsApp links (wa.me)
+                const whatsappLinks = document.querySelectorAll('a[href*="wa.me"]');
+                
+                whatsappLinks.forEach(link => {
+                    // This regex replaces the old number part with the new number
+                    // It looks for "wa.me/" followed by digits, and replaces those digits.
+                    link.href = link.href.replace(/wa\.me\/\d+/, `wa.me/${newNumber}`);
+                });
+                console.log("WhatsApp number updated to:", newNumber);
+            }
+        } catch (error) {
+            console.error("Failed to load WhatsApp number:", error);
+        }
+    }
+
+    // Run the function when page loads
+    loadWhatsAppNumber();
+</script>
 </body>
 </html>
+
 
