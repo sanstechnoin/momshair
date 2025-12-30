@@ -40,6 +40,12 @@
         .msg-card:hover { background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 
         .table-checkbox { width: 40px; text-align: center; }
+
+        #supportToggle:checked {
+        background-color: #2cd07e !important; /* Bright Green */
+        border-color: #2cd07e !important;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e") !important;
+        }
         
         @media (min-width: 992px) { .border-lg-end { border-right: 1px solid #dee2e6; } }
         @media (max-width: 991px) { .mobile-mb { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #dee2e6; } }
@@ -104,23 +110,40 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4">
-                    <div class="card shadow-sm border-primary h-100">
-                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                            <span><i class="bi bi-headset"></i> Support</span>
-                            <div class="form-check form-switch m-0">
-                                <input class="form-check-input" type="checkbox" id="supportToggle" onchange="toggleSupportStatus()">
-                                <label class="form-check-label text-white small fw-bold" for="supportToggle" id="supportLabel">Offline</label>
-                            </div>
+<div class="col-lg-4">
+    <div class="card shadow-sm border-primary h-100">
+        <div class="card-header bg-primary text-white p-2">
+            <div class="d-flex align-items-center justify-content-between gap-2">
+                
+                <div class="d-flex align-items-center gap-2">
+                    <span><i class="bi bi-headset"></i></span>
+                    <div class="form-check form-switch m-0">
+                        <input class="form-check-input shadow-none" type="checkbox" id="supportToggle" onchange="toggleSupportStatus()"
+                               style="background-color: #e9ecef; border-color: white; --bs-form-switch-bg: url('data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%27-4 -4 8 8%27%3e%3ccircle r=%273%27 fill=%27rgba%280, 0, 0, 0.25%29%27/%3e%3c/svg%3e');">
                         </div>
-                        <div class="card-body p-0">
-                            <h6 class="small text-muted fw-bold p-2 border-bottom bg-light m-0">Inbox (Offline Forms)</h6>
-                            <div id="enquiry-list" class="list-group list-group-flush" style="max-height: 215px; overflow-y:auto;">
-                                <div class="text-center text-muted py-3 small">Loading messages...</div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
+
+                <input type="text" class="form-control form-control-sm border-0" 
+                       placeholder="https://wa.me/..." 
+                       style="min-width: 100px; font-size: 0.85rem;">
+
+                <button class="btn btn-light btn-sm text-primary fw-bold px-3 shadow-sm" style="font-size: 0.85rem;">
+                    Save
+                </button>
+
+            </div>
+            
+            <label class="d-none" id="supportLabel">Offline</label>
+        </div>
+
+        <div class="card-body p-0">
+            <h6 class="small text-muted fw-bold p-2 border-bottom bg-light m-0">Inbox (Offline Forms)</h6>
+            <div id="enquiry-list" class="list-group list-group-flush" style="max-height: 215px; overflow-y:auto;">
+                <div class="text-center text-muted py-3 small">Loading messages...</div>
+            </div>
+        </div>
+    </div>
+</div>
             </div>
 
             <div class="row g-4 mb-4">
