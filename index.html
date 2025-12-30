@@ -168,12 +168,11 @@
                         </div>
                         <div class="card-body d-flex flex-column text-center">
                             <h5 class="card-title font-heading fw-bold">Daily Shine Elixir</h5>
-                            <p class="card-text text-muted small">Feather-light hydration. Keeps hair soft, detangled, and glossy all day.</p>
+                            <p class="card-text text-muted small">Feather-light hydration.</p>
                             
                             <div class="btn-group w-100 mb-3" role="group">
                                 <input type="radio" class="btn-check" name="size-p1" id="p1-100" value="100ml" checked onchange="updateProductDisplay('p1')">
                                 <label class="btn btn-outline-primary btn-sm" for="p1-100">100ml</label>
-                                
                                 <input type="radio" class="btn-check" name="size-p1" id="p1-200" value="200ml" onchange="updateProductDisplay('p1')">
                                 <label class="btn btn-outline-primary btn-sm" for="p1-200">200ml</label>
                             </div>
@@ -195,7 +194,7 @@
                         </div>
                         <div class="card-body d-flex flex-column text-center">
                             <h5 class="card-title font-heading fw-bold">Natural Darkening Oil</h5>
-                            <p class="card-text text-muted small">Targeted root nutrition to combat premature greying and preserve dark color.</p>
+                            <p class="card-text text-muted small">Targeted root nutrition.</p>
                             
                             <div class="btn-group w-100 mb-3" role="group">
                                 <input type="radio" class="btn-check" name="size-p2" id="p2-100" value="100ml" checked onchange="updateProductDisplay('p2')">
@@ -604,10 +603,11 @@
                 btn.innerText = "Add to Cart";
                 btn.classList.replace("btn-secondary", "btn-primary");
             } else {
+                // PRE-ORDER LOGIC RESTORED
                 stockEl.innerHTML = `<i class="bi bi-hourglass-split"></i> Batch Cooking...`;
                 stockEl.className = "text-accent fw-bold mb-2 small";
-                btn.disabled = true;
-                btn.innerText = "Sold Out";
+                btn.disabled = false; // ENABLED FOR PRE-ORDER
+                btn.innerText = "Pre-Order Now";
                 btn.classList.replace("btn-primary", "btn-secondary");
             }
         };
@@ -617,7 +617,7 @@
             const size = document.querySelector(`input[name="size-${pid}"]:checked`).value;
             const variantData = window.productsData[pid].variants[size];
             
-            if(!variantData || variantData.stock <= 0) return;
+            if(!variantData) return;
 
             const cartItemId = `${pid}-${size}`;
             const displayName = `${baseName} (${size})`;
@@ -626,7 +626,9 @@
             const existingItem = window.cart.find(i => i.cartItemId === cartItemId);
             const currentQty = existingItem ? existingItem.quantity : 0;
 
-            if ((currentQty + 1) > variantData.stock) {
+            // Only limit stock if positive stock exists (regular order)
+            // If stock <= 0 (Pre-Order), allow unlimited
+            if (variantData.stock > 0 && (currentQty + 1) > variantData.stock) {
                 document.getElementById('stockLimitMsg').innerText = `Sorry! Only ${variantData.stock} available.`;
                 new bootstrap.Modal(document.getElementById('stockLimitModal')).show();
                 return;
@@ -655,7 +657,8 @@
             const variantData = window.productsData[item.pid].variants[item.size];
             const newQty = item.quantity + change;
 
-            if (newQty > variantData.stock) {
+            // Only limit stock if positive stock exists (regular order)
+            if (variantData.stock > 0 && newQty > variantData.stock) {
                 document.getElementById('stockLimitMsg').innerText = `Sorry! Only ${variantData.stock} available.`;
                 new bootstrap.Modal(document.getElementById('stockLimitModal')).show();
                 return;
