@@ -936,8 +936,22 @@
             } catch (error) {}
         }
         loadWhatsAppNumber();
+
+        // This closes the navbar automatically when you click a link on mobile
+        const navLinks = document.querySelectorAll('.close-menu');
+        const menuToggle = document.getElementById('navbarNav');
+        navLinks.forEach((l) => {
+            l.addEventListener('click', () => {
+    
+                if (typeof bootstrap !== 'undefined') {
+                    const bsCollapse = bootstrap.Collapse.getInstance(menuToggle);
+                    if(bsCollapse) bsCollapse.hide();
+                }
+            });
+        });
     </script>
 </body>
 </html>
+
 
 
