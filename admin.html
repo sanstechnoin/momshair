@@ -70,7 +70,7 @@
             <div class="container-fluid">
                 <span class="navbar-brand mb-0 h1"><i class="bi bi-shield-lock"></i> Admin Panel</span>
                 <div>
-                    <button class="btn btn-outline-light btn-sm me-2" onclick="location.reload()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+                    <button class="btn btn-outline-light btn-sm me-2" onclick="softRefresh()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
                     <button class="btn btn-danger btn-sm" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</button>
                 </div>
             </div>
@@ -104,7 +104,6 @@
                                     <span id="live-p1-200" class="stock-live" style="width:60px; text-align:right;">...</span>
                                 </div>
                             </div>
-
                             <div class="mb-3 border-bottom pb-2">
                                 <h6 class="fw-bold text-primary small mb-2">Natural Dark (P2)</h6>
                                 <div class="d-flex gap-2 align-items-center mb-2">
@@ -122,7 +121,6 @@
                                     <span id="live-p2-200" class="stock-live" style="width:60px; text-align:right;">...</span>
                                 </div>
                             </div>
-
                             <div class="mb-3">
                                 <h6 class="fw-bold text-primary small mb-2">Complete Duo (P3)</h6>
                                 <div class="d-flex gap-2 align-items-center mb-2">
@@ -140,7 +138,6 @@
                                     <span id="live-p3-200" class="stock-live" style="width:60px; text-align:right;">...</span>
                                 </div>
                             </div>
-
                             <button class="btn btn-sm btn-success w-100" onclick="saveInventory()">Save All Changes</button>
                         </div>
                     </div>
@@ -301,8 +298,10 @@
 
         let allOrdersCache = []; 
         let pendingOrderId = null, pendingStatus = null, pendingConfirmCallback = null, pendingSecurityCallback = null;
+        let unsubSupport = null, unsubCoupons = null, unsubEnquiries = null; // Store listeners
         window.currentReviewTab = 'pending';
 
+        // AUTH
         window.checkLogin = function() {
             if (document.getElementById('admin-pass').value === "brindharani") {
                 document.getElementById('login-overlay').style.display = 'none'; document.getElementById('admin-content').style.display = 'block';
@@ -315,11 +314,23 @@
             initDashboard();
         }
 
+        // SOFT REFRESH (Fixed)
+        window.softRefresh = function() {
+            // Detach listeners to prevent stacking
+            if(unsubSupport) unsubSupport();
+            if(unsubCoupons) unsubCoupons();
+            if(unsubEnquiries) unsubEnquiries();
+            // Clear UI
+            document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" class="text-center py-5">Refreshing...</td></tr>';
+            initDashboard();
+        };
+
         function initDashboard() {
             loadOrders(); loadInventory(); loadReviews('pending'); loadReviewCounts(); loadSettings();
             loadShippingRules(); loadCoupons(); loadSupportSettings(); loadEnquiries();
         }
 
+        // --- INVENTORY ---
         async function loadInventory() {
             const pIds = ['p1', 'p2', 'p3'];
             for (const pid of pIds) {
@@ -367,37 +378,92 @@
             } catch (e) { console.error(e); showAlert("Error", "Failed to save."); stopLoading(); }
         }
 
-        window.showAlert = function(t, m, type='danger') { document.getElementById('alertTitle').innerText=t; document.getElementById('alertBody').innerText=m; document.getElementById('alertHeader').className=`modal-header text-white bg-${type}`; new bootstrap.Modal(document.getElementById('alertModal')).show(); }
-        window.showConfirm = function(t, m, cb) { document.getElementById('confirmTitle').innerText=t; document.getElementById('confirmBody').innerText=m; pendingConfirmCallback=cb; const modal=new bootstrap.Modal(document.getElementById('confirmModal')); document.getElementById('confirmBtnAction').onclick=function(){ modal.hide(); if(pendingConfirmCallback) pendingConfirmCallback(); }; modal.show(); }
-        window.askSecurity = function(cb) { document.getElementById('secPassInput').value=''; document.getElementById('secError').style.display='none'; pendingSecurityCallback=cb; new bootstrap.Modal(document.getElementById('securityModal')).show(); }
-        window.verifySecurity = function() { if(document.getElementById('secPassInput').value==='superadmin') { bootstrap.Modal.getInstance(document.getElementById('securityModal')).hide(); if(pendingSecurityCallback) pendingSecurityCallback(); } else { document.getElementById('secError').style.display='block'; } }
-        
-        function startLoading() { const m = new bootstrap.Modal(document.getElementById('updateModal')); document.getElementById('loadingState').style.display = 'block'; document.getElementById('successState').style.display = 'none'; document.getElementById('modalCloseBtn').classList.add('d-none'); m.show(); }
-        function stopLoading() { document.getElementById('loadingState').style.display = 'none'; document.getElementById('successState').style.display = 'block'; document.getElementById('modalCloseBtn').classList.remove('d-none'); }
-
-        // --- Other functions (Reviews, Support, etc) ---
+        // --- REVIEWS ---
         async function loadReviewCounts() { try { const sP = await getDocs(query(collection(db, "reviews"), where("status", "==", "pending"))); document.getElementById('badge-pending').innerText = sP.size; const sA = await getDocs(query(collection(db, "reviews"), where("status", "==", "approved"))); document.getElementById('badge-approved').innerText = 0; } catch(e){} }
-        window.loadReviews = async function(status) { window.currentReviewTab = status; document.querySelectorAll('.review-tab-btn').forEach(b => b.classList.remove('active')); document.getElementById(`tab-${status}`).classList.add('active'); const l = document.getElementById('reviews-list-container'); l.innerHTML='Loading...'; try { const s = await getDocs(query(collection(db, "reviews"), where("status", "==", status))); if(s.empty) { l.innerHTML='None.'; return; } let h=''; s.forEach(d=>{ const r=d.data(); let b=status==='pending'?`<button class="btn btn-sm btn-success py-0" onclick="updateReviewStatus('${d.id}','approved')">✔</button><button class="btn btn-sm btn-danger py-0" onclick="deleteReview('${d.id}')">✖</button>`:`<button class="btn btn-sm btn-outline-dark py-0" onclick="updateReviewStatus('${d.id}','pending')">Hide</button><button class="btn btn-sm btn-danger py-0" onclick="deleteReview('${d.id}')"><i class="bi bi-trash"></i></button>`; h+=`<div class="list-group-item d-flex justify-content-between align-items-center bg-transparent"><div class="me-2"><span class="fw-bold text-dark small">${r.name}</span> <span class="text-warning small">${'★'.repeat(r.rating)}</span><br><small class="text-muted fst-italic">"${r.text}"</small></div><div class="d-flex gap-1">${b}</div></div>`; }); l.innerHTML=h; loadReviewCounts(); } catch(e){ l.innerHTML='Error'; } };
+        
+        window.loadReviews = async function(status) { 
+            window.currentReviewTab = status; 
+            document.querySelectorAll('.review-tab-btn').forEach(b => b.classList.remove('active')); 
+            document.getElementById(`tab-${status}`).classList.add('active'); 
+            const l = document.getElementById('reviews-list-container'); 
+            l.innerHTML='<div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>'; 
+            
+            try { 
+                const s = await getDocs(query(collection(db, "reviews"), where("status", "==", status))); 
+                if(s.empty) { l.innerHTML='<div class="text-center text-muted py-4 small">None</div>'; return; } 
+                let h=''; 
+                s.forEach(d=>{ 
+                    const r=d.data(); 
+                    let b=status==='pending'?`<button class="btn btn-sm btn-success py-0" onclick="updateReviewStatus('${d.id}','approved')">✔</button><button class="btn btn-sm btn-danger py-0" onclick="deleteReview('${d.id}')">✖</button>`:`<button class="btn btn-sm btn-outline-dark py-0" onclick="updateReviewStatus('${d.id}','pending')">Hide</button><button class="btn btn-sm btn-danger py-0" onclick="deleteReview('${d.id}')"><i class="bi bi-trash"></i></button>`; 
+                    h+=`<div class="list-group-item d-flex justify-content-between align-items-center bg-transparent"><div class="me-2"><span class="fw-bold text-dark small">${r.name}</span> <span class="text-warning small">${'★'.repeat(r.rating)}</span><br><small class="text-muted fst-italic">"${r.text}"</small></div><div class="d-flex gap-1">${b}</div></div>`; 
+                }); 
+                l.innerHTML=h; loadReviewCounts(); 
+            } catch(e){ l.innerHTML='<div class="text-danger small p-2">Error loading</div>'; } 
+        };
         window.updateReviewStatus = async function(id, s) { await updateDoc(doc(db, "reviews", id), {status:s}); loadReviews(window.currentReviewTab); };
         window.deleteReview = async function(id) { showConfirm("Delete Review", "Sure?", async () => { await deleteDoc(doc(db, "reviews", id)); loadReviews(window.currentReviewTab); }); };
 
-        function loadSupportSettings() { onSnapshot(doc(db, "settings", "support"), d => { if(d.exists()) { const isOnline = d.data().isOnline; document.getElementById('supportToggle').checked = isOnline; const l = document.getElementById('supportLabel'); l.innerText = isOnline ? "Online (WhatsApp)" : "Offline (Form)"; l.className = isOnline ? "form-check-label text-white small fw-bold" : "form-check-label text-white-50 small"; }}); }
+        // --- SUPPORT & ENQUIRIES ---
+        function loadSupportSettings() { 
+            unsubSupport = onSnapshot(doc(db, "settings", "support"), d => { 
+                if(d.exists()) { 
+                    const isOnline = d.data().isOnline; 
+                    document.getElementById('supportToggle').checked = isOnline; 
+                    const l = document.getElementById('supportLabel'); 
+                    l.innerText = isOnline ? "Online" : "Offline"; 
+                    l.className = isOnline ? "form-check-label text-white small fw-bold" : "form-check-label text-white-50 small"; 
+                }
+            }); 
+        }
         window.toggleSupportStatus = async function() { await setDoc(doc(db, "settings", "support"), { isOnline: document.getElementById('supportToggle').checked }); }
         
-        function loadEnquiries() { onSnapshot(query(collection(db, "enquiries"), orderBy("timestamp", "desc")), s => { let h=''; s.forEach(d => { const m=d.data(); const t = m.timestamp ? new Date(m.timestamp.seconds*1000).toLocaleDateString() : ''; h+=`<div class="list-group-item msg-card border-0 mb-2 rounded bg-light small"><div class="d-flex justify-content-between"><strong class="text-dark small">${m.name}</strong><small class="text-muted" style="font-size:0.65rem">${t}</small></div><p class="text-muted mb-1 text-truncate">${m.message}</p><div class="d-flex gap-2"><a href="https://wa.me/91${m.phone}" target="_blank" class="text-success text-decoration-none fw-bold"><i class="bi bi-whatsapp"></i> Reply</a><span class="text-danger fw-bold" style="cursor:pointer;" onclick="deleteEnquiry('${d.id}')">&times; Del</span></div></div>`; }); document.getElementById('enquiry-list').innerHTML = h || '<div class="text-center text-muted py-3 small">No offline messages.</div>'; }); }
+        function loadEnquiries() { 
+            unsubEnquiries = onSnapshot(query(collection(db, "enquiries"), orderBy("timestamp", "desc")), s => { 
+                let h=''; 
+                if(s.empty) { document.getElementById('enquiry-list').innerHTML = '<div class="text-center text-muted py-3 small">No offline messages.</div>'; return; }
+                s.forEach(d => { 
+                    const m=d.data(); 
+                    const t = m.timestamp ? new Date(m.timestamp.seconds*1000).toLocaleDateString() : ''; 
+                    // FIXED WHATSAPP LINK
+                    let phoneClean = m.phone.replace(/\D/g, ''); 
+                    if(phoneClean.length === 10) phoneClean = '91' + phoneClean;
+
+                    h+=`<div class="list-group-item msg-card border-0 mb-2 rounded bg-light small"><div class="d-flex justify-content-between"><strong class="text-dark small">${m.name}</strong><small class="text-muted" style="font-size:0.65rem">${t}</small></div><p class="text-muted mb-1 text-truncate">${m.message}</p><div class="d-flex gap-2"><a href="https://wa.me/${phoneClean}" target="_blank" class="text-success text-decoration-none fw-bold"><i class="bi bi-whatsapp"></i> Reply</a><span class="text-danger fw-bold" style="cursor:pointer;" onclick="deleteEnquiry('${d.id}')">&times; Del</span></div></div>`; 
+                }); 
+                document.getElementById('enquiry-list').innerHTML = h; 
+            }, (e) => { console.log("Enquiries index missing or empty"); }); 
+        }
         window.deleteEnquiry = async function(id) { if(confirm("Delete message?")) await deleteDoc(doc(db, "enquiries", id)); }
         
+        // --- SHIPPING ---
         async function loadShippingRules() { const s = await getDoc(doc(db, "settings", "shipping")); if(s.exists()) { const d=s.data(); document.getElementById('ship-free').value=d.freeLimit; document.getElementById('ship-tn').value=d.tnRate; document.getElementById('ship-roi').value=d.roiRate; } }
         window.saveShippingRules = async function() { startLoading(); await setDoc(doc(db, "settings", "shipping"), { freeLimit: parseInt(document.getElementById('ship-free').value), tnRate: parseInt(document.getElementById('ship-tn').value), roiRate: parseInt(document.getElementById('ship-roi').value) }); stopLoading(); showAlert("Success", "Updated"); }
         
-        async function loadCoupons() { onSnapshot(collection(db, "coupons"), s => { document.getElementById('coupon-count').innerText=s.size + " Active"; let h=''; s.forEach(d => { const c=d.data(); const tl = c.type === 'percent' ? '%' : '₹'; const e = c.isVisible ? 'bi-eye-fill icon-active' : 'bi-eye-slash-fill icon-inactive'; const st = c.isBanner ? 'bi-megaphone-fill icon-banner' : 'bi-megaphone icon-inactive'; h+=`<li class="list-group-item d-flex justify-content-between align-items-center px-2 py-1"><div><span class="fw-bold text-dark small">${c.code}</span> <span class="text-muted" style="font-size:0.7rem">${c.value}${tl} OFF • Min ₹${c.minOrder}</span></div><div class="d-flex align-items-center gap-1"><i class="bi ${e} icon-btn" style="font-size:0.9rem" onclick="toggleCouponField('${d.id}', 'isVisible', ${!c.isVisible})" title="Show"></i><i class="bi ${st} icon-btn" style="font-size:0.9rem" onclick="toggleCouponField('${d.id}', 'isBanner', ${!c.isBanner})" title="Banner"></i><button class="btn btn-sm btn-outline-danger ms-2 px-2 py-0" onclick="deleteCoupon('${d.id}')">&times;</button></div></li>`; }); document.getElementById('coupon-list').innerHTML=h; }); }
+        // --- COUPONS ---
+        async function loadCoupons() { 
+            unsubCoupons = onSnapshot(collection(db, "coupons"), s => { 
+                document.getElementById('coupon-count').innerText=s.size + " Active"; 
+                let h=''; 
+                if(s.empty) h='<li class="list-group-item text-center text-muted">No coupons.</li>';
+                else s.forEach(d => { 
+                    const c=d.data(); 
+                    const tl = c.type === 'percent' ? '%' : '₹'; 
+                    const e = c.isVisible ? 'bi-eye-fill icon-active' : 'bi-eye-slash-fill icon-inactive'; 
+                    const st = c.isBanner ? 'bi-megaphone-fill icon-banner' : 'bi-megaphone icon-inactive'; 
+                    h+=`<li class="list-group-item d-flex justify-content-between align-items-center px-2 py-1"><div><span class="fw-bold small">${c.code}</span> <span class="text-muted small">${c.value}${tl} OFF • Min ₹${c.minOrder}</span></div><div class="d-flex align-items-center gap-1"><i class="bi ${e} icon-btn" style="font-size:0.9rem" onclick="toggleCouponField('${d.id}', 'isVisible', ${!c.isVisible})" title="Show"></i><i class="bi ${st} icon-btn" style="font-size:0.9rem" onclick="toggleCouponField('${d.id}', 'isBanner', ${!c.isBanner})" title="Banner"></i><button class="btn btn-sm btn-outline-danger ms-2 px-2 py-0" onclick="deleteCoupon('${d.id}')">&times;</button></div></li>`; 
+                }); 
+                document.getElementById('coupon-list').innerHTML=h; 
+            }); 
+        }
         window.toggleCouponField = async function(id, f, v) { await updateDoc(doc(db, "coupons", id), { [f]: v }); }
         window.addCoupon = async function() { const c=document.getElementById('new-code').value.toUpperCase().trim(), v=document.getElementById('new-val').value; if(c&&v) { startLoading(); const q = query(collection(db, "coupons"), where("code", "==", c)); const snap = await getDocs(q); if(!snap.empty) { stopLoading(); showAlert("Error", "Code exists!"); return; } await addDoc(collection(db, "coupons"), {code:c, value: parseInt(v), type: document.getElementById('new-type').value, minOrder: parseInt(document.getElementById('new-min').value)||0, expiry: document.getElementById('new-expiry').value, isVisible:true, isBanner:false}); document.getElementById('new-code').value=''; stopLoading(); } }
         window.deleteCoupon = async function(id) { if(confirm("Delete coupon?")) await deleteDoc(doc(db, "coupons", id)); }
         
+        // --- SETTINGS ---
         async function loadSettings() { const s = await getDoc(doc(db, "settings", "config")); if(s.exists()) { document.getElementById('master-email').value=s.data().masterEmail; document.getElementById('whatsapp-num').value=s.data().whatsappNumber||""; } }
         window.saveSettings = async function() { startLoading(); await setDoc(doc(db, "settings", "config"), { masterEmail: document.getElementById('master-email').value, whatsappNumber: document.getElementById('whatsapp-num').value }, {merge:true}); stopLoading(); showAlert("Success", "Settings Saved"); }
 
+        // --- ORDERS ---
         window.deleteOrder = function(docId) { showConfirm("Delete Order", "Delete this specific order?", () => { askSecurity(async () => { startLoading(); try { await deleteDoc(doc(db, "orders", docId)); loadOrders(); stopLoading(); } catch(e) { showAlert("Error", "Failed."); stopLoading(); } }); }); };
         window.deleteAllOrders = function() { showConfirm("⚠️ DANGER", "Delete ALL orders?", () => { askSecurity(async () => { startLoading(); try { const s = await getDocs(query(collection(db, "orders"))); s.forEach(d => deleteDoc(d.ref)); showAlert("Success", "All orders cleared.", "success"); loadOrders(); stopLoading(); } catch(e) { showAlert("Error", "Failed."); stopLoading(); } }); }); };
         window.toggleSelectAll = function() { const c = document.getElementById('selectAll').checked; document.querySelectorAll('.order-checkbox').forEach(cb => cb.checked = c); updateBulkBtn(); };
@@ -433,7 +499,14 @@
             } catch (e) { showAlert("Error", "Failed update."); stopLoading(); }
         }
         window.viewDetails = function(enc) { document.getElementById('orderItemsContent').innerText = decodeURIComponent(enc); new bootstrap.Modal(document.getElementById('detailsModal')).show(); };
-        window.sendWhatsappUpdate = function(ph, nm, oid, st) { let msg = ""; if(st === "Payment Received") msg = `Hello ${nm}, payment received for Order ${oid}. Preparing your batch! 🌿`; else if (st === "Shipped") msg = `Great news ${nm}! Order ${oid} has been SHIPPED! 🚚 Track here: ${window.location.origin}/tracker.html`; else msg = `Hello ${nm}, update on Order ${oid}: ${st}.`; window.open(`https://wa.me/91${ph}?text=${encodeURIComponent(msg)}`, '_blank'); };
+        window.sendWhatsappUpdate = function(ph, nm, oid, st) { 
+            let cleanPhone = ph.replace(/\D/g, ''); 
+            if(cleanPhone.length === 10) cleanPhone = '91' + cleanPhone;
+            let msg = ""; if(st === "Payment Received") msg = `Hello ${nm}, payment received for Order ${oid}. Preparing your batch! 🌿`; else if (st === "Shipped") msg = `Great news ${nm}! Order ${oid} has been SHIPPED! 🚚 Track here: ${window.location.origin}/tracker.html`; else msg = `Hello ${nm}, update on Order ${oid}: ${st}.`; window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank'); 
+        };
+        
+        function startLoading() { const m = new bootstrap.Modal(document.getElementById('updateModal')); document.getElementById('loadingState').style.display = 'block'; document.getElementById('successState').style.display = 'none'; document.getElementById('modalCloseBtn').classList.add('d-none'); m.show(); }
+        function stopLoading() { document.getElementById('loadingState').style.display = 'none'; document.getElementById('successState').style.display = 'block'; document.getElementById('modalCloseBtn').classList.remove('d-none'); }
     </script>
 </body>
 </html>
