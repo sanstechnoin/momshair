@@ -222,7 +222,7 @@
                                 </div>
                                 <div class="col-12 border-top pt-2">
                                     <label class="form-label fw-bold small text-primary"><i class="bi bi-qr-code"></i> Update Payment QR Code Image</label>
-                                    <div class="input-group">
+                                   <div class="input-group">
                                         <input type="file" id="qrFile" class="form-control" accept="image/*">
                                         <button class="btn btn-outline-primary" type="button" onclick="uploadQrCode()">Upload New QR</button>
                                     </div>
@@ -444,7 +444,7 @@
             }, {merge:true}); 
             stopLoading(); 
         }
-        window.uploadQrCode = async function() {
+         window.uploadQrCode = async function() {
             const file = document.getElementById('qrFile').files[0];
             if(!file) return alert("Select a file first");
             startLoading();
@@ -460,7 +460,7 @@
         window.deleteAllOrders = function() { showConfirm("⚠️ DANGER", "Delete ALL orders?", () => { askSecurity(async () => { startLoading(); const s = await getDocs(query(collection(db, "orders"))); s.forEach(d => deleteDoc(d.ref)); loadOrders(); stopLoading(); }); }); };
         window.toggleSelectAll = function() { const c = document.getElementById('selectAll').checked; document.querySelectorAll('.order-checkbox').forEach(cb => cb.checked = c); updateBulkBtn(); };
         window.updateBulkBtn = function() { const c = document.querySelectorAll('.order-checkbox:checked').length; const b = document.getElementById('bulkDeleteBtn'); b.disabled = c === 0; b.innerHTML = c > 0 ? `<i class="bi bi-trash"></i> Delete (${c})` : `<i class="bi bi-trash"></i> Delete Selected`; };
-        window.deleteSelectedOrders = function() { const s = Array.from(document.querySelectorAll('.order-checkbox:checked')).map(cb => cb.value); if(s.length === 0) return; showConfirm("Bulk Delete", `Delete ${s.length} orders?`, () => { askSecurity(async () => { startLoading(); await Promise.all(s.map(id => deleteDoc(doc(db, "orders", id)))); loadOrders(); stopLoading(); } catch(e) { showAlert("Error", "Failed."); stopLoading(); } }); }); };
+        window.deleteSelectedOrders = function() { const s = Array.from(document.querySelectorAll('.order-checkbox:checked')).map(cb => cb.value); if(s.length === 0) return; showConfirm("Bulk Delete", `Delete ${s.length} orders?`, () => { askSecurity(async () => { startLoading(); await Promise.all(s.map(id => deleteDoc(doc(db, "orders", id)))); loadOrders(); stopLoading(); }); }); };
 
         async function loadOrders() {
             try {
