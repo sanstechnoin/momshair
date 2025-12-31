@@ -37,7 +37,7 @@
             color: white !important;
             border-color: #198754 !important;
         }
-    </style>
+   </style>
 </head>
 <body>
 
@@ -184,19 +184,16 @@
                         <div class="card-body d-flex flex-column text-center">
                             <h5 class="card-title font-heading fw-bold">Daily Shine Elixir</h5>
                             <p class="card-text text-muted small">Feather-light hydration.</p>
-                            
                             <div class="btn-group w-100 mb-3" role="group">
                                 <input type="radio" class="btn-check" name="size-p1" id="p1-100" value="100ml" checked onchange="updateProductDisplay('p1')">
                                 <label class="btn btn-outline-primary btn-sm" for="p1-100">100ml</label>
-                                
                                 <input type="radio" class="btn-check" name="size-p1" id="p1-200" value="200ml" onchange="updateProductDisplay('p1')">
                                 <label class="btn btn-outline-primary btn-sm" for="p1-200">200ml</label>
                             </div>
-
                             <small id="stock-p1" class="text-accent fw-bold mb-2">Loading...</small>
                             <div class="my-2" id="price-container-p1">
                                 </div>
-                            <button id="btn-p1" class="btn btn-primary w-100" onclick="addToCart('p1', 'Daily Shine Elixir')">Add to Cart</button>
+                           <button id="btn-p1" class="btn btn-primary w-100" onclick="addToCart('p1', 'Daily Shine Elixir')">Add to Cart</button>
                         </div>
                     </div>
                 </div>
@@ -210,18 +207,16 @@
                         <div class="card-body d-flex flex-column text-center">
                             <h5 class="card-title font-heading fw-bold">Natural Darkening Oil</h5>
                             <p class="card-text text-muted small">Targeted root nutrition.</p>
-                            
                             <div class="btn-group w-100 mb-3" role="group">
                                 <input type="radio" class="btn-check" name="size-p2" id="p2-100" value="100ml" checked onchange="updateProductDisplay('p2')">
                                 <label class="btn btn-outline-primary btn-sm" for="p2-100">100ml</label>
                                 <input type="radio" class="btn-check" name="size-p2" id="p2-200" value="200ml" onchange="updateProductDisplay('p2')">
                                 <label class="btn btn-outline-primary btn-sm" for="p2-200">200ml</label>
                             </div>
-
                             <small id="stock-p2" class="text-accent fw-bold mb-2">Loading...</small>
                             <div class="my-2" id="price-container-p2">
                                 </div>
-                            <button id="btn-p2" class="btn btn-primary w-100" onclick="addToCart('p2', 'Natural Darkening Oil')">Add to Cart</button>
+                           <button id="btn-p2" class="btn btn-primary w-100" onclick="addToCart('p2', 'Natural Darkening Oil')">Add to Cart</button>
                         </div>
                     </div>
                 </div>
@@ -230,24 +225,21 @@
                     <div class="card h-100 border-0 shadow-sm product-card">
                         <span class="badge bg-accent position-absolute top-0 end-0 m-3" style="z-index: 10;">BEST VALUE</span>
                         
-                        <div class="d-flex justify-content-center align-items-center" style="height: 250px;">
-                            <img src="4.png" alt="Complete Care Duo" class="p-4" style="height: 100%; width: auto; object-fit: contain;">
-                        </div>
+                         <div class="d-flex justify-content-center align-items-center" style="height: 250px;">
 
+                            <img src="4.png" alt="Complete Care Duo" class="p-4" style="height: 100%; width: auto; object-fit: contain;">
+                         </div>
                         <div class="card-body d-flex flex-column text-center">
                             <h5 class="card-title font-heading fw-bold">The Complete Care Duo</h5>
                             <p class="card-text text-muted small">1 Nourish + 1 Darkening.</p>
-                            
                             <div class="btn-group w-100 mb-3" role="group">
                                 <input type="radio" class="btn-check" name="size-p3" id="p3-100" value="100ml" checked onchange="updateProductDisplay('p3')">
                                 <label class="btn btn-outline-primary btn-sm" for="p3-100">100ml Duo</label>
                                 <input type="radio" class="btn-check" name="size-p3" id="p3-200" value="200ml" onchange="updateProductDisplay('p3')">
                                 <label class="btn btn-outline-primary btn-sm" for="p3-200">200ml Duo</label>
                             </div>
-
                             <small id="stock-p3" class="text-accent fw-bold mb-2">Loading...</small>
-                            <div class="my-2" id="price-container-p3">
-                                </div>
+                            <div class="my-2" id="price-container-p3"></div>
                             <button id="btn-p3" class="btn btn-primary w-100 btn-lg" onclick="addToCart('p3', 'The Complete Care Duo')">Add Combo</button>
                         </div>
                     </div>
@@ -440,10 +432,12 @@
                         <h6 class="text-uppercase text-muted fw-bold mb-3 small">Details & Payment</h6>
                         <div class="bg-light p-3 rounded mb-3 text-center">
                             <div class="d-none d-md-block mb-2">
-                                <img src="qrcode.png" alt="UPI QR" style="width: 100px;" class="border p-1 bg-white">
+                                <a id="paymentLinkAnchor" href="#" target="_blank">
+                                    <img src="qrcode.png" alt="UPI QR" style="width: 100px;" class="border p-1 bg-white" id="paymentQRImage">
+                                </a>
                             </div>
-                            <p class="mb-0 fw-bold">UPI ID: <span class="text-primary">vabinanthana@okaxis</span></p>
-                            <button type="button" class="btn btn-success w-100 d-md-none mt-2" onclick="window.location.href='upi://pay?pa=vabinanthana@okaxis&pn=MomsHairOil&cu=INR'">
+                            <p class="mb-0 fw-bold">UPI ID: <span id="displayUpiId" class="text-primary">vabinanthana@okaxis</span></p>
+                            <button id="upiAppBtn" type="button" class="btn btn-success w-100 d-md-none mt-2" onclick="window.location.href='upi://pay?pa=vabinanthana@okaxis&pn=MomsHairOil&cu=INR'">
                                 <i class="bi bi-phone"></i> Pay via UPI App
                             </button>
                         </div>
@@ -552,6 +546,45 @@
             if(snap.exists()) window.shippingRules = snap.data();
         });
 
+        // --- NEW: Load Dynamic Payment Details (QR + Link + Text) ---
+        async function loadPaymentDetails() {
+            try {
+                const docSnap = await getDoc(doc(db, "settings", "config"));
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    
+                    // 1. Update QR Image from DB if exists
+                    if (data.qrCodeUrl) {
+                        const qrImg = document.getElementById('paymentQRImage'); 
+                        if(qrImg) qrImg.src = data.qrCodeUrl;
+                    }
+
+                    // 2. Update UPI Link if exists
+                    if (data.upiLinkUrl) {
+                        // Desktop/Clickable Image Link
+                        const qrAnchor = document.getElementById('paymentLinkAnchor');
+                        if(qrAnchor) qrAnchor.href = data.upiLinkUrl;
+                        
+                        // Mobile Button Link
+                        const upiBtn = document.getElementById('upiAppBtn');
+                        if (upiBtn) {
+                            upiBtn.onclick = function() { window.location.href = data.upiLinkUrl; };
+                        }
+
+                        // Text Display (Extract 'pa' param from url)
+                        try {
+                            // Extract just the pa= part using regex
+                            const match = data.upiLinkUrl.match(/[?&]pa=([^&]+)/);
+                            if (match && match[1]) {
+                                document.getElementById('displayUpiId').innerText = decodeURIComponent(match[1]);
+                            }
+                        } catch(e) { console.log("Could not parse UPI ID from link"); }
+                    }
+                }
+            } catch (error) { console.log("Using default payment details"); }
+        }
+        loadPaymentDetails(); // Call on load
+
         // Banner Promo
         if (!sessionStorage.getItem('promoShown')) {
             const q = query(collection(db, "coupons"), where("isBanner", "==", true));
@@ -575,14 +608,12 @@
         onSnapshot(collection(db, "products"), (snapshot) => {
             snapshot.forEach((doc) => {
                 const d = doc.data();
-                // Store data, handling potential legacy structure
                 window.productsData[doc.id] = {
                     variants: d.variants || { 
                         '100ml': { mrp: 0, price: 0, stock: 0 }, 
                         '200ml': { mrp: 0, price: 0, stock: 0 } 
                     }
                 };
-                // Update UI for this product
                 updateProductDisplay(doc.id);
             });
         });
@@ -590,30 +621,19 @@
         // --- UI UPDATE LOGIC ---
         window.updateProductDisplay = function(pid) {
             if(!window.productsData[pid]) return;
-            
-            // 1. Get Selected Size
             const size = document.querySelector(`input[name="size-${pid}"]:checked`).value;
-            
-            // 2. Get Data for Size
             const variantData = window.productsData[pid].variants[size];
             const price = variantData ? variantData.price : 0;
-            const mrp = variantData ? variantData.mrp : 0; // MRP Logic
+            const mrp = variantData ? variantData.mrp : 0; 
             const stock = variantData ? variantData.stock : 0;
-            
-            // 3. Update Price HTML (with Strikethrough if Sale active)
             const priceContainer = document.getElementById(`price-container-${pid}`);
             if (mrp > price && price > 0) {
-                // Sale Active
                 priceContainer.innerHTML = `<span class="text-decoration-line-through text-muted me-2">₹${mrp}</span> <span class="text-primary fw-bold fs-4">₹${price}</span>`;
             } else {
-                // No Sale or No Price
                 priceContainer.innerHTML = `<span class="text-primary fw-bold fs-4">₹${price > 0 ? price : 'Unavailable'}</span>`;
             }
-            
-            // 4. Update Stock & Button
             const stockEl = document.getElementById(`stock-${pid}`);
             const btn = document.getElementById(`btn-${pid}`);
-            
             if (stock > 0) {
                 stockEl.innerHTML = `<i class="bi bi-check-circle"></i> Only ${stock} left!`;
                 stockEl.className = "text-success fw-bold mb-2 small";
@@ -621,10 +641,9 @@
                 btn.innerText = "Add to Cart";
                 btn.classList.replace("btn-secondary", "btn-primary");
             } else {
-                // PRE-ORDER LOGIC
                 stockEl.innerHTML = `<i class="bi bi-hourglass-split"></i> Batch Cooking...`;
                 stockEl.className = "text-accent fw-bold mb-2 small";
-                btn.disabled = false; // ENABLED FOR PRE-ORDER
+                btn.disabled = false; 
                 btn.innerText = "Pre-Order Now";
                 btn.classList.replace("btn-primary", "btn-secondary");
             }
@@ -634,18 +653,13 @@
         window.addToCart = function(pid, baseName) {
             const size = document.querySelector(`input[name="size-${pid}"]:checked`).value;
             const variantData = window.productsData[pid].variants[size];
-            
             if(!variantData) return;
-
             const cartItemId = `${pid}-${size}`;
             const displayName = `${baseName} (${size})`;
             const price = variantData.price;
-            
             const existingItem = window.cart.find(i => i.cartItemId === cartItemId);
             const currentQty = existingItem ? existingItem.quantity : 0;
 
-            // Only limit stock if positive stock exists (regular order)
-            // If stock <= 0 (Pre-Order), allow unlimited
             if (variantData.stock > 0 && (currentQty + 1) > variantData.stock) {
                 document.getElementById('stockLimitMsg').innerText = `Sorry! Only ${variantData.stock} available.`;
                 new bootstrap.Modal(document.getElementById('stockLimitModal')).show();
@@ -656,18 +670,15 @@
                 existingItem.quantity++;
             } else {
                 window.cart.push({ 
-                    cartItemId: cartItemId, // Unique ID
-                    pid: pid,              // Real DB ID
-                    size: size,            // Size
+                    cartItemId: cartItemId, 
+                    pid: pid,              
+                    size: size,            
                     name: displayName, 
                     price: price, 
                     quantity: 1 
                 });
             }
-            
             updateCartDisplay();
-            
-            // JUGGLE ANIMATION
             const btn = document.getElementById('navCartBtn'); 
             btn.classList.add('cart-juggle'); 
             setTimeout(()=>btn.classList.remove('cart-juggle'), 500);
@@ -678,7 +689,6 @@
             const variantData = window.productsData[item.pid].variants[item.size];
             const newQty = item.quantity + change;
 
-            // Only limit stock if positive stock exists (regular order)
             if (variantData.stock > 0 && newQty > variantData.stock) {
                 document.getElementById('stockLimitMsg').innerText = `Sorry! Only ${variantData.stock} available.`;
                 new bootstrap.Modal(document.getElementById('stockLimitModal')).show();
@@ -705,7 +715,6 @@
                  cartItemsContainer.innerHTML = '<p class="text-center text-muted">Cart is empty.</p>'; 
                  recalcTotal(); return; 
              }
-             
              let html = '<ul class="list-group list-group-flush border-top border-bottom">';
              window.cart.forEach((item, index) => {
                  html += `
@@ -734,15 +743,11 @@
 
         window.recalcTotal = function() {
             let subtotal = window.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            
-            // Shipping
             let shipping = 0;
             if (subtotal < window.shippingRules.freeLimit && subtotal > 0) {
                 const isTN = document.getElementById('locTN').checked;
                 shipping = isTN ? window.shippingRules.tnRate : window.shippingRules.roiRate;
             }
-
-            // Coupon
             let discount = 0;
             if (window.appliedCoupon) {
                 if(subtotal < window.appliedCoupon.minOrder) {
@@ -763,10 +768,8 @@
                 document.getElementById('row-discount').style.display = 'none';
                 document.getElementById('couponMsg').style.display = 'none';
             }
-
             let total = subtotal + shipping - discount;
             if (total < 0) total = 0;
-
             document.getElementById('display-subtotal').innerText = `₹${subtotal}`;
             document.getElementById('display-shipping').innerText = shipping===0?"Free":`₹${shipping}`;
             document.getElementById('display-total').innerText = `₹${total}`;
@@ -880,7 +883,7 @@
                 }
             });
 
-            // Stock Deductions (Using Nested Field Paths for Variants)
+            // Stock Deductions
             const deductionPromises = [];
             window.cart.forEach(item => {
                 const fieldPath = `variants.${item.size}.stock`;
