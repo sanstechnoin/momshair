@@ -38,7 +38,7 @@
             border-color: #198754 !important;
         }
    </style>
-</head>
+/head>
 <body>
 
     <button onclick="scrollToTop()" id="scrollTopBtn" class="btn btn-primary rounded-circle shadow-lg d-none align-items-center justify-content-center">
@@ -184,16 +184,19 @@
                         <div class="card-body d-flex flex-column text-center">
                             <h5 class="card-title font-heading fw-bold">Daily Shine Elixir</h5>
                             <p class="card-text text-muted small">Feather-light hydration.</p>
+                            
                             <div class="btn-group w-100 mb-3" role="group">
                                 <input type="radio" class="btn-check" name="size-p1" id="p1-100" value="100ml" checked onchange="updateProductDisplay('p1')">
                                 <label class="btn btn-outline-primary btn-sm" for="p1-100">100ml</label>
+                                
                                 <input type="radio" class="btn-check" name="size-p1" id="p1-200" value="200ml" onchange="updateProductDisplay('p1')">
                                 <label class="btn btn-outline-primary btn-sm" for="p1-200">200ml</label>
                             </div>
+
                             <small id="stock-p1" class="text-accent fw-bold mb-2">Loading...</small>
                             <div class="my-2" id="price-container-p1">
                                 </div>
-                           <button id="btn-p1" class="btn btn-primary w-100" onclick="addToCart('p1', 'Daily Shine Elixir')">Add to Cart</button>
+                            <button id="btn-p1" class="btn btn-primary w-100" onclick="addToCart('p1', 'Daily Shine Elixir')">Add to Cart</button>
                         </div>
                     </div>
                 </div>
@@ -207,16 +210,18 @@
                         <div class="card-body d-flex flex-column text-center">
                             <h5 class="card-title font-heading fw-bold">Natural Darkening Oil</h5>
                             <p class="card-text text-muted small">Targeted root nutrition.</p>
+                            
                             <div class="btn-group w-100 mb-3" role="group">
                                 <input type="radio" class="btn-check" name="size-p2" id="p2-100" value="100ml" checked onchange="updateProductDisplay('p2')">
                                 <label class="btn btn-outline-primary btn-sm" for="p2-100">100ml</label>
                                 <input type="radio" class="btn-check" name="size-p2" id="p2-200" value="200ml" onchange="updateProductDisplay('p2')">
                                 <label class="btn btn-outline-primary btn-sm" for="p2-200">200ml</label>
                             </div>
+
                             <small id="stock-p2" class="text-accent fw-bold mb-2">Loading...</small>
                             <div class="my-2" id="price-container-p2">
                                 </div>
-                           <button id="btn-p2" class="btn btn-primary w-100" onclick="addToCart('p2', 'Natural Darkening Oil')">Add to Cart</button>
+                            <button id="btn-p2" class="btn btn-primary w-100" onclick="addToCart('p2', 'Natural Darkening Oil')">Add to Cart</button>
                         </div>
                     </div>
                 </div>
@@ -225,21 +230,24 @@
                     <div class="card h-100 border-0 shadow-sm product-card">
                         <span class="badge bg-accent position-absolute top-0 end-0 m-3" style="z-index: 10;">BEST VALUE</span>
                         
-                         <div class="d-flex justify-content-center align-items-center" style="height: 250px;">
-
+                        <div class="d-flex justify-content-center align-items-center" style="height: 250px;">
                             <img src="4.png" alt="Complete Care Duo" class="p-4" style="height: 100%; width: auto; object-fit: contain;">
-                         </div>
+                        </div>
+
                         <div class="card-body d-flex flex-column text-center">
                             <h5 class="card-title font-heading fw-bold">The Complete Care Duo</h5>
                             <p class="card-text text-muted small">1 Nourish + 1 Darkening.</p>
+                            
                             <div class="btn-group w-100 mb-3" role="group">
                                 <input type="radio" class="btn-check" name="size-p3" id="p3-100" value="100ml" checked onchange="updateProductDisplay('p3')">
                                 <label class="btn btn-outline-primary btn-sm" for="p3-100">100ml Duo</label>
                                 <input type="radio" class="btn-check" name="size-p3" id="p3-200" value="200ml" onchange="updateProductDisplay('p3')">
                                 <label class="btn btn-outline-primary btn-sm" for="p3-200">200ml Duo</label>
                             </div>
+
                             <small id="stock-p3" class="text-accent fw-bold mb-2">Loading...</small>
-                            <div class="my-2" id="price-container-p3"></div>
+                            <div class="my-2" id="price-container-p3">
+                                </div>
                             <button id="btn-p3" class="btn btn-primary w-100 btn-lg" onclick="addToCart('p3', 'The Complete Care Duo')">Add Combo</button>
                         </div>
                     </div>
@@ -559,26 +567,22 @@
                         if(qrImg) qrImg.src = data.qrCodeUrl;
                     }
 
-                    // 2. Update UPI Link if exists
-                    if (data.upiLinkUrl) {
+                    // 2. Update UPI ID Text if exists
+                    if (data.upiId) {
+                        document.getElementById('displayUpiId').innerText = data.upiId;
+                        
+                        // Construct the full UPI link dynamically
+                        const fullLink = `upi://pay?pa=${data.upiId}&pn=MomsHairOil&cu=INR`;
+                        
                         // Desktop/Clickable Image Link
                         const qrAnchor = document.getElementById('paymentLinkAnchor');
-                        if(qrAnchor) qrAnchor.href = data.upiLinkUrl;
+                        if(qrAnchor) qrAnchor.href = fullLink;
                         
                         // Mobile Button Link
                         const upiBtn = document.getElementById('upiAppBtn');
                         if (upiBtn) {
-                            upiBtn.onclick = function() { window.location.href = data.upiLinkUrl; };
+                            upiBtn.onclick = function() { window.location.href = fullLink; };
                         }
-
-                        // Text Display (Extract 'pa' param from url)
-                        try {
-                            // Extract just the pa= part using regex
-                            const match = data.upiLinkUrl.match(/[?&]pa=([^&]+)/);
-                            if (match && match[1]) {
-                                document.getElementById('displayUpiId').innerText = decodeURIComponent(match[1]);
-                            }
-                        } catch(e) { console.log("Could not parse UPI ID from link"); }
                     }
                 }
             } catch (error) { console.log("Using default payment details"); }
