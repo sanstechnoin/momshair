@@ -212,28 +212,21 @@
                                     <input type="email" id="master-email" class="form-control">
                                 </div>
                                 <div class="col-md-6">
-    <label class="form-label fw-bold small">WhatsApp Number</label>
-    <div class="input-group">
-        <span class="input-group-text"><i class="bi bi-whatsapp"></i></span>
-        <input type="text" id="whatsapp-num" class="form-control" placeholder="919876543210">
-    </div>
-</div>
-
-<div class="col-12 border-top pt-3 mt-3">
-    <label class="form-label fw-bold small text-primary"><i class="bi bi-link-45deg"></i> UPI Payment Link</label>
-    <div class="input-group">
-        <span class="input-group-text"><i class="bi bi-wallet2"></i></span>
-        <input type="text" id="upi-link" class="form-control" placeholder="upi://pay?pa=yourname@upi&pn=MomsHairOil...">
-    </div>
-    <small class="text-muted">Paste your full UPI link here (e.g. upi://pay?pa=...). It will update the QR click action on the website.</small>
-</div>
+                                    <label class="form-label fw-bold small">WhatsApp Number</label>
+                                    <input type="text" id="whatsapp-num" class="form-control" placeholder="9199...">
+                                </div>
                                 <div class="col-12 border-top pt-2">
-                                    <label class="form-label fw-bold small text-primary"><i class="bi bi-qr-code"></i> Update Payment QR Code</label>
+                                    <label class="form-label fw-bold small text-primary"><i class="bi bi-wallet2"></i> UPI ID (e.g. name@bank)</label>
+                                    <input type="text" id="upi-id" class="form-control" placeholder="vabinanthana@okaxis">
+                                    <small class="text-muted">Enter just your UPI ID. We'll generate the payment link automatically.</small>
+                                </div>
+                                <div class="col-12 border-top pt-2">
+                                    <label class="form-label fw-bold small text-primary"><i class="bi bi-qr-code"></i> Update Payment QR Code Image</label>
                                     <div class="input-group">
                                         <input type="file" id="qrFile" class="form-control" accept="image/*">
                                         <button class="btn btn-outline-primary" type="button" onclick="uploadQrCode()">Upload New QR</button>
                                     </div>
-                                    <small class="text-muted">Upload a clear square image.</small>
+                                    <small class="text-muted">Upload a clear square image of your UPI QR code.</small>
                                 </div>
                                 <div class="col-12 text-end">
                                     <button class="btn btn-dark px-4" onclick="saveSettings()">Save All Settings</button>
@@ -432,27 +425,25 @@
         window.deleteCoupon = async function(id) { if(confirm("Delete coupon?")) await deleteDoc(doc(db, "coupons", id)); }
 
         // --- SETTINGS & QR CODE ---
-        // NEW (Add the upi-link line)
-async function loadSettings() { 
-    const s = await getDoc(doc(db, "settings", "config")); 
-    if(s.exists()) { 
-        document.getElementById('master-email').value=s.data().masterEmail; 
-        document.getElementById('whatsapp-num').value=s.data().whatsappNumber||""; 
-        // Added line:
-        document.getElementById('upi-link').value = s.data().upiLinkUrl || ""; 
-    } 
-}
+        async function loadSettings() { 
+            const s = await getDoc(doc(db, "settings", "config")); 
+            if(s.exists()) { 
+                document.getElementById('master-email').value=s.data().masterEmail; 
+                document.getElementById('whatsapp-num').value=s.data().whatsappNumber||""; 
+                // LOAD UPI ID
+                document.getElementById('upi-id').value = s.data().upiId || ""; 
+            } 
+        }
         window.saveSettings = async function() { 
-    startLoading(); 
-    await setDoc(doc(db, "settings", "config"), { 
-        masterEmail: document.getElementById('master-email').value, 
-        whatsappNumber: document.getElementById('whatsapp-num').value,
-        // Added field:
-        upiLinkUrl: document.getElementById('upi-link').value 
-    }, {merge:true}); 
-    stopLoading(); 
-    showAlert("Success", "Settings Saved"); 
-}
+            startLoading(); 
+            await setDoc(doc(db, "settings", "config"), { 
+                masterEmail: document.getElementById('master-email').value, 
+                whatsappNumber: document.getElementById('whatsapp-num').value,
+                // SAVE UPI ID
+                upiId: document.getElementById('upi-id').value 
+            }, {merge:true}); 
+            stopLoading(); 
+        }
         window.uploadQrCode = async function() {
             const file = document.getElementById('qrFile').files[0];
             if(!file) return alert("Select a file first");
@@ -469,7 +460,7 @@ async function loadSettings() {
         window.deleteAllOrders = function() { showConfirm("⚠️ DANGER", "Delete ALL orders?", () => { askSecurity(async () => { startLoading(); const s = await getDocs(query(collection(db, "orders"))); s.forEach(d => deleteDoc(d.ref)); loadOrders(); stopLoading(); }); }); };
         window.toggleSelectAll = function() { const c = document.getElementById('selectAll').checked; document.querySelectorAll('.order-checkbox').forEach(cb => cb.checked = c); updateBulkBtn(); };
         window.updateBulkBtn = function() { const c = document.querySelectorAll('.order-checkbox:checked').length; const b = document.getElementById('bulkDeleteBtn'); b.disabled = c === 0; b.innerHTML = c > 0 ? `<i class="bi bi-trash"></i> Delete (${c})` : `<i class="bi bi-trash"></i> Delete Selected`; };
-        window.deleteSelectedOrders = function() { const s = Array.from(document.querySelectorAll('.order-checkbox:checked')).map(cb => cb.value); if(s.length === 0) return; showConfirm("Bulk Delete", `Delete ${s.length} orders?`, () => { askSecurity(async () => { startLoading(); await Promise.all(s.map(id => deleteDoc(doc(db, "orders", id)))); loadOrders(); stopLoading(); }); }); };
+        window.deleteSelectedOrders = function() { const s = Array.from(document.querySelectorAll('.order-checkbox:checked')).map(cb => cb.value); if(s.length === 0) return; showConfirm("Bulk Delete", `Delete ${s.length} orders?`, () => { askSecurity(async () => { startLoading(); await Promise.all(s.map(id => deleteDoc(doc(db, "orders", id)))); loadOrders(); stopLoading(); } catch(e) { showAlert("Error", "Failed."); stopLoading(); } }); }); };
 
         async function loadOrders() {
             try {
