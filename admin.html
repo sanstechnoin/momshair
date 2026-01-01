@@ -428,7 +428,36 @@
         window.saveShippingRules = async function() { startLoading(); await setDoc(doc(db, "settings", "shipping"), { freeLimit: parseInt(document.getElementById('ship-free').value), tnRate: parseInt(document.getElementById('ship-tn').value), roiRate: parseInt(document.getElementById('ship-roi').value) }); stopLoading(); }
         async function loadCoupons() { unsubCoupons = onSnapshot(query(collection(db, "coupons")), s => { document.getElementById('coupon-count').innerText=s.size + " Active"; let h=''; s.forEach(d => { const c=d.data(); const tl = c.type === 'percent' ? '%' : '₹'; const e = c.isVisible ? 'bi-eye-fill icon-active' : 'bi-eye-slash-fill icon-inactive'; const st = c.isBanner ? 'bi-megaphone-fill icon-banner' : 'bi-megaphone icon-inactive'; h+=`<li class="list-group-item d-flex justify-content-between align-items-center px-2 py-1"><div><span class="fw-bold small">${c.code}</span> <span class="text-muted small">${c.value}${tl} OFF • Min ₹${c.minOrder}</span></div><div class="d-flex align-items-center gap-1"><i class="bi ${e} icon-btn" style="font-size:0.9rem" onclick="toggleCouponField('${d.id}', 'isVisible', ${!c.isVisible})" title="Show"></i><i class="bi ${st} icon-btn" style="font-size:0.9rem" onclick="toggleCouponField('${d.id}', 'isBanner', ${!c.isBanner})" title="Banner"></i><button class="btn btn-sm btn-outline-danger ms-2 px-2 py-0" onclick="deleteCoupon('${d.id}')">&times;</button></div></li>`; }); document.getElementById('coupon-list').innerHTML=h; }); }
         window.toggleCouponField = async function(id, f, v) { await updateDoc(doc(db, "coupons", id), { [f]: v }); }
-        window.addCoupon = async function() { const c=document.getElementById('new-code').value.toUpperCase().trim(), v=document.getElementById('new-val').value; if(c&&v) { startLoading(); await addDoc(collection(db, "coupons"), {code:c, value: parseInt(v), type: document.getElementById('new-type').value, minOrder: parseInt(document.getElementById('new-min').value)||0, expiry: document.getElementById('new-expiry').value, isVisible:true, isBanner:false}); document.getElementById('new-code').value=''; stopLoading(); } }
+        window.addCoupon = async function() {
+            const c = document.getElementById('new-code').value.toUpperCase().trim();
+            const v = document.getElementById('new-val').value;
+            
+            // 1. Get the entered expiry date
+            let expiryDate = document.getElementById('new-expiry').value;
+
+            // 2. If no date is selected, set it to 1 year from today by default
+            if (!expiryDate) {
+                const d = new Date();
+                d.setFullYear(d.getFullYear() + 1);
+                // Format date as YYYY-MM-DD
+                expiryDate = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, '0') + "-" + String(d.getDate()).padStart(2, '0');
+            }
+
+            if(c && v) { 
+                startLoading(); 
+                await addDoc(collection(db, "coupons"), {
+                    code: c, 
+                    value: parseInt(v), 
+                    type: document.getElementById('new-type').value, 
+                    minOrder: parseInt(document.getElementById('new-min').value) || 0, 
+                    expiry: expiryDate, // Use the calculated date
+                    isVisible: true, 
+                    isBanner: false
+                }); 
+                document.getElementById('new-code').value = ''; 
+                stopLoading(); 
+            } 
+        }
         window.deleteCoupon = async function(id) { if(confirm("Delete coupon?")) await deleteDoc(doc(db, "coupons", id)); }
 
         // --- SETTINGS & QR CODE (FIXED: Added UPI ID Save) ---
