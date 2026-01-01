@@ -223,20 +223,23 @@
                                 
                                 <div class="col-12 border-top pt-2">
                                     <label class="form-label fw-bold small text-primary"><i class="bi bi-wallet2"></i> UPI ID</label>
-                                    <input type="text" id="upi-id" class="form-control" placeholder="vabinanthana@okaxis">
-                                    <small class="text-muted">Enter ONLY the UPI ID (e.g. name@bank). Do not enter the full link.</small>
+                                    <input type="text" id="upi-id" class="form-control" placeholder="vbrindharani-1@okaxis">
+                                    <small class="text-muted">Enter the UPI ID (e.g. name@bank)</small>
                                 </div>
-                                
-                                <div class="col-12 border-top pt-2">
+
+                                <div class="col-12 text-end pb-3 border-bottom">
+                                    <button class="btn btn-dark px-4" onclick="saveSettings()">Save All Settings</button>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 pt-3">
+                                <div class="col-12">
                                     <label class="form-label fw-bold small text-primary"><i class="bi bi-qr-code"></i> Update Payment QR Code Image</label>
                                     <div class="input-group">
                                         <input type="file" id="qrFile" class="form-control" accept="image/*">
                                         <button class="btn btn-outline-primary" type="button" onclick="uploadQrCode()">Upload New QR</button>
                                     </div>
-                                    <small class="text-muted">Upload a clear square image of your UPI QR code.</small>
-                                </div>
-                                <div class="col-12 text-end">
-                                    <button class="btn btn-dark px-4" onclick="saveSettings()">Save All Settings</button>
+                                    <small class="text-muted">Upload a clear square image. This saves immediately.</small>
                                 </div>
                             </div>
                         </div>
