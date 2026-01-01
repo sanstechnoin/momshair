@@ -519,12 +519,36 @@
         window.uploadQrCode = async function() {
             const file = document.getElementById('qrFile').files[0];
             if(!file) return alert("Select a file first");
-            startLoading();
-            const sRef = ref(storage, 'settings/payment_qr.png');
-            await uploadBytes(sRef, file);
-            const url = await getDownloadURL(sRef);
-            await setDoc(doc(db, "settings", "config"), { qrCodeUrl: url }, {merge:true});
-            stopLoading();
+            
+            startLoading(); // Show the spinner
+            
+            try {
+                // 1. Use a TIMESTAMP in the filename. 
+                // This creates a unique name (e.g. payment_qr_174001.png) every time you upload.
+                // This forces the browser to see it as a completely new image.
+                const timestamp = new Date().getTime();
+                const uniqueName = `settings/payment_qr_${timestamp}.png`;
+                const sRef = ref(storage, uniqueName);
+                
+                // 2. Upload the file
+                await uploadBytes(sRef, file);
+                
+                // 3. Get the new internet link
+                const url = await getDownloadURL(sRef);
+                
+                // 4. Save this new link to your database
+                await setDoc(doc(db, "settings", "config"), { qrCodeUrl: url }, {merge:true});
+                
+                stopLoading(); // Hide the spinner
+                
+                // Optional: Show a quick success message
+                alert("QR Code updated successfully! The new image is now live.");
+                
+            } catch (error) {
+                console.error("Upload failed:", error);
+                stopLoading(); // Force the spinner to close even if there is an error
+                alert("Error uploading: " + error.message);
+            }
         }
 
         // --- ORDERS ---
