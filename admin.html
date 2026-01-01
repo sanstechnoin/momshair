@@ -517,39 +517,69 @@
             stopLoading(); 
         }
         window.uploadQrCode = async function() {
-            const file = document.getElementById('qrFile').files[0];
-            if(!file) return alert("Select a file first");
+            const fileInput = document.getElementById('qrFile');
+            const file = fileInput.files[0];
             
-            startLoading(); // Show the spinner
+            if (!file) {
+                alert("Please select a file first.");
+                return;
+            }
+
+            // 1. Get the modal element
+            const modalEl = document.getElementById('updateModal');
+            // 2. Safely get the Bootstrap modal instance
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
             
+            // 3. Show Loading State
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('successState').style.display = 'none';
+            modal.show();
+
             try {
-                // 1. Use a TIMESTAMP in the filename. 
-                // This creates a unique name (e.g. payment_qr_174001.png) every time you upload.
-                // This forces the browser to see it as a completely new image.
+                // 4. Create unique filename (timestamp) so browser doesn't cache it
                 const timestamp = new Date().getTime();
-                const uniqueName = `settings/payment_qr_${timestamp}.png`;
-                const sRef = ref(storage, uniqueName);
+                const uniqueName = "settings/payment_qr_" + timestamp + ".png";
                 
-                // 2. Upload the file
+                // 5. Upload to Firebase Storage
+                const sRef = ref(storage, uniqueName);
                 await uploadBytes(sRef, file);
                 
-                // 3. Get the new internet link
+                // 6. Get the new URL
                 const url = await getDownloadURL(sRef);
                 
-                // 4. Save this new link to your database
-                await setDoc(doc(db, "settings", "config"), { qrCodeUrl: url }, {merge:true});
+                // 7. Save URL to Database
+                await setDoc(doc(db, "settings", "config"), { qrCodeUrl: url }, { merge: true });
+
+                // 8. Show Success State
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('successState').style.display = 'block';
                 
-                stopLoading(); // Hide the spinner
-                
-                // Optional: Show a quick success message
-                alert("QR Code updated successfully! The new image is now live.");
+                // 9. Close automatically after 1.5 seconds
+                setTimeout(() => {
+                    modal.hide();
+                    // Force clean up any stuck gray backdrops
+                    const backdrops = document.querySelectorAll('.modal-backdrop');
+                    backdrops.forEach(b => b.remove());
+                    // Clear the input
+                    fileInput.value = '';
+                }, 1500);
                 
             } catch (error) {
-                console.error("Upload failed:", error);
-                stopLoading(); // Force the spinner to close even if there is an error
-                alert("Error uploading: " + error.message);
+                console.error("Upload Error:", error);
+                
+                // FORCE CLOSE MODAL ON ERROR
+                modal.hide();
+                const backdrops = document.querySelectorAll('.modal-backdrop');
+                backdrops.forEach(b => b.remove());
+                
+                // Show the specific error message to you
+                if (error.code === 'storage/unauthorized') {
+                    alert("⚠️ Permission Denied.\n\nYour Firebase Storage rules might be blocking the upload.\n\nGo to Firebase Console > Storage > Rules and ensure writing is allowed.");
+                } else {
+                    alert("⚠️ Upload Failed: " + error.message);
+                }
             }
-        }
+        };
 
         // --- ORDERS ---
         window.deleteOrder = function(docId) { showConfirm("Delete Order", "Delete this specific order?", () => { askSecurity(async () => { startLoading(); await deleteDoc(doc(db, "orders", docId)); loadOrders(); stopLoading(); }); }); };
