@@ -564,7 +564,10 @@
                     // 1. Update QR Image from DB if exists
                     if (data.qrCodeUrl) {
                         const qrImg = document.getElementById('paymentQRImage'); 
-                        if(qrImg) qrImg.src = data.qrCodeUrl;
+                        if(qrImg) {
+                            // FIX: Add a random time parameter (?t=...) to force the browser to ignore cache and load the new image
+                            qrImg.src = data.qrCodeUrl + (data.qrCodeUrl.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
+                        }
                     }
 
                     // 2. Update UPI ID Text if exists
@@ -585,7 +588,7 @@
                         }
                     }
                 }
-            } catch (error) { console.log("Using default payment details"); }
+            } catch (error) { console.log("Using default payment details", error); }
         }
         loadPaymentDetails(); // Call on load
 
@@ -971,6 +974,7 @@ window.applyCoupon = async function() {
     </script>
 </body>
 </html>
+
 
 
 
