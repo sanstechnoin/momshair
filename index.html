@@ -799,25 +799,44 @@
             });
         }
 
-        window.applyCoupon = async function() {
+window.applyCoupon = async function() {
             const code = document.getElementById('couponCode').value.toUpperCase().trim();
             const msgEl = document.getElementById('couponMsg');
             const btn = event.target;
+            
             if(!code) return;
             btn.innerHTML = "..."; 
+            
             const q = query(collection(db, "coupons"), where("code", "==", code));
             const snap = await getDocs(q);
+            
             if(!snap.empty) {
                 const data = snap.docs[0].data();
-                if(data.expiry && new Date(data.expiry) < new Date()) {
-                    window.appliedCoupon = null; msgEl.innerText = "Expired"; msgEl.className = "text-danger small fw-bold mt-1";
-                } else {
+                
+                // --- FIX START ---
+                // Get current local date in YYYY-MM-DD format
+                const d = new Date();
+                const today = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, '0') + "-" + String(d.getDate()).padStart(2, '0');
+
+                // Check if expiry date string is strictly less than today's date string
+                // Example: if expiry is "2024-01-01" and today is "2024-01-01", it is NOT expired.
+                if(data.expiry && data.expiry < today) {
+                    window.appliedCoupon = null; 
+                    msgEl.innerText = "Expired"; 
+                    msgEl.className = "text-danger small fw-bold mt-1";
+                } 
+                // --- FIX END ---
+                else {
                     window.appliedCoupon = data; 
-                    msgEl.innerText = "Applied!"; msgEl.className = "text-success small fw-bold mt-1";
+                    msgEl.innerText = "Applied!"; 
+                    msgEl.className = "text-success small fw-bold mt-1";
                 }
             } else {
-                window.appliedCoupon = null; msgEl.innerText = "Invalid Code"; msgEl.className = "text-danger small fw-bold mt-1";
+                window.appliedCoupon = null; 
+                msgEl.innerText = "Invalid Code"; 
+                msgEl.className = "text-danger small fw-bold mt-1";
             }
+            
             msgEl.style.display = 'block';
             btn.innerHTML = "Apply";
             recalcTotal();
@@ -952,6 +971,7 @@
     </script>
 </body>
 </html>
+
 
 
 
