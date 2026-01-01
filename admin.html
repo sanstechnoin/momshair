@@ -261,7 +261,10 @@
                         <h5 class="mb-0"><i class="bi bi-list-check"></i> Order Management</h5>
                         <div class="d-flex gap-2 align-items-center">
                             <div class="input-group input-group-sm">
-                                <span class="input-group-text">Filter</span><input type="date" id="dateFrom" class="form-control" onchange="filterOrders()">
+                                <span class="input-group-text">From</span>
+                                <input type="date" id="dateFrom" class="form-control" onchange="filterOrders()">
+                                <span class="input-group-text">To</span>
+                                <input type="date" id="dateTo" class="form-control" onchange="filterOrders()">
                                 <button class="btn btn-outline-secondary" onclick="resetDateFilter()">Clear</button>
                             </div>
                             <button class="btn btn-sm btn-outline-danger" onclick="deleteSelectedOrders()" id="bulkDeleteBtn" disabled><i class="bi bi-trash"></i> Delete Selected</button>
@@ -353,7 +356,37 @@
             loadOrders(); loadInventory(); loadReviews('pending'); loadReviewCounts(); loadSettings();
             loadShippingRules(); loadCoupons(); loadSupportSettings(); loadEnquiries();
         }
+        // ---  LOGIC FOR DELETES ---
+        window.showConfirm = function(title, body, callback) {
+            document.getElementById('confirmTitle').innerText = title;
+            document.getElementById('confirmBody').innerText = body;
+            pendingConfirmCallback = callback;
+            new bootstrap.Modal(document.getElementById('confirmModal')).show();
+        };
 
+        // Initialize Confirm Button Action
+        document.getElementById('confirmBtnAction').onclick = function() {
+            if(pendingConfirmCallback) pendingConfirmCallback();
+            bootstrap.Modal.getInstance(document.getElementById('confirmModal')).hide();
+        };
+
+        window.askSecurity = function(callback) {
+            pendingSecurityCallback = callback;
+            document.getElementById('secPassInput').value = '';
+            document.getElementById('secError').style.display = 'none';
+            new bootstrap.Modal(document.getElementById('securityModal')).show();
+        };
+
+        window.verifySecurity = function() {
+            const pass = document.getElementById('secPassInput').value;
+            // Checks against the same password used for login
+            if (pass === "brindharani") { 
+                bootstrap.Modal.getInstance(document.getElementById('securityModal')).hide();
+                if(pendingSecurityCallback) pendingSecurityCallback();
+            } else {
+                document.getElementById('secError').style.display = 'block';
+            }
+        };
         // --- INVENTORY ---
         async function loadInventory() {
             const pIds = ['p1', 'p2', 'p3'];
