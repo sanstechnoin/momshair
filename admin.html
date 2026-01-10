@@ -317,10 +317,13 @@
     <div class="modal fade" id="securityModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-dark text-white"><h5>Security Check</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="password" id="secPassInput" class="form-control text-center" placeholder="Master Password"><div id="secError" class="text-danger small mt-2 fw-bold" style="display:none;">Incorrect</div></div><div class="modal-footer"><button type="button" class="btn btn-danger" onclick="verifySecurity()">Verify</button></div></div></div></div>
     <div class="modal fade" id="proofModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content bg-transparent border-0">
-                <div class="modal-body p-0 text-center position-relative">
-                    <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3 fs-5 bg-dark p-2 rounded-circle" data-bs-dismiss="modal"></button>
+            <div class="modal-content bg-transparent border-0 shadow-none">
+                <div class="modal-body p-0 text-center position-relative">                  
                     <img id="proofImage" src="" class="img-fluid rounded shadow-lg" style="max-height: 85vh; background: #fff;">
+                    <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3 fs-5 bg-dark p-2 rounded-circle shadow" 
+                            data-bs-dismiss="modal" 
+                            style="z-index: 10; opacity: 1; border: 2px solid white;">
+                    </button>
                 </div>
             </div>
         </div>
