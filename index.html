@@ -665,10 +665,11 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, setDoc, doc, serverTimestamp, onSnapshot, getDoc, updateDoc, increment, query, where, limit, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
         const firebaseConfig = { apiKey: "AIzaSyA659yIOvlhVTm8-S6RtUDPXxVM8dZZ_kM", authDomain: "momshairoil-3010.firebaseapp.com", projectId: "momshairoil-3010", storageBucket: "momshairoil-3010.firebasestorage.app", messagingSenderId: "884566098620", appId: "1:884566098620:web:bca34f4f82d7b6712ec6b9" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const storage = getStorage(app);
 
         let masterEmail = "vabinanthana@gmail.com"; 
         getDoc(doc(db, "settings", "config")).then(snap => { 
@@ -1041,11 +1042,14 @@
             const phone = document.getElementById('custPhone').value;
             const address = document.getElementById('custAddress').value;
             const txnId = document.getElementById('custTxnId').value;
+            const fileInput = document.getElementById('custScreenshot'); // Get file input
             const terms = document.getElementById('termsCheck').checked;
 
             if (window.cart.length === 0) return showNotification("Cart is empty!");
             if (!name || !phone || !address) return showNotification("Please fill all details.");
-            if (!txnId && document.getElementById('custScreenshot').value === "") return showNotification("Please provide payment proof.");
+            
+            // Check if either UTR or File is provided
+            if (!txnId && fileInput.files.length === 0) return showNotification("Please provide UTR or Screenshot.");
             if (!terms) return showNotification("Please accept terms.");
 
             const btn = event.target; btn.innerHTML = "Processing..."; btn.disabled = true;
@@ -1053,6 +1057,22 @@
             const finals = recalcTotal();
             const orderId = "M-" + Math.floor(100000 + Math.random() * 900000);
             
+              let screenshotUrl = "";
+            if (fileInput.files.length > 0) {
+                try {
+                    const file = fileInput.files[0];
+                    const storageRef = ref(storage, `payment_proofs/${orderId}_${file.name}`);
+                    const snapshot = await uploadBytes(storageRef, file);
+                    screenshotUrl = await getDownloadURL(snapshot.ref);
+                } catch (err) {
+                    console.error("Upload failed", err);
+                    showNotification("Image upload failed. Order NOT placed.");
+                    btn.innerHTML = "Place Order"; btn.disabled = false;
+                    return;
+                }
+            }
+            // --------------------------------
+
             let itemsString = ""; 
             const flatCartForAdmin = [];
             
@@ -1081,12 +1101,13 @@
                     coupon: window.appliedCoupon ? window.appliedCoupon.code : "NONE",
                     cartDetails: flatCartForAdmin, 
                     txnId: txnId || "Screenshot Uploaded",
+                    screenshot: screenshotUrl, 
                     status: "Pending Verification", timestamp: serverTimestamp()
                 });
 
                 fetch(`https://formsubmit.co/ajax/${masterEmail}`, {
                     method: "POST", headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ _subject: `New Order: ${orderId}`, order_id: orderId, name, phone, items: itemsString, total_amount: `₹${finals.total}`, transaction_ref: txnId })
+                    body: JSON.stringify({ _subject: `New Order: ${orderId}`, order_id: orderId, name, phone, items: itemsString, total_amount: `₹${finals.total}`, transaction_ref: txnId, proof_link: screenshotUrl })
                 });
                 
                 document.getElementById('success-order-id').innerText = orderId;
@@ -1128,6 +1149,7 @@
     </script>
 </body>
 </html>
+
 
 
 
