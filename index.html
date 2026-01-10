@@ -592,7 +592,7 @@
                     </form>
                 </div>
                 <div class="modal-footer flex-column">
-                    <button type="button" class="btn btn-primary w-100 py-2 fs-5" onclick="placeOrder()">Place Order <i class="bi bi-arrow-right"></i></button>
+                    <button id="placeOrderBtn" type="button" class="btn btn-primary w-100 py-2 fs-5" onclick="placeOrder()">Place Order <i class="bi bi-arrow-right"></i></button>
                 </div>
             </div>
         </div>
@@ -1041,23 +1041,30 @@
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
             const address = document.getElementById('custAddress').value;
-            const txnId = document.getElementById('custTxnId').value;
-            const fileInput = document.getElementById('custScreenshot'); // Get file input
+            const txnId = document.getElementById('custTxnId').value.trim(); // Trim extra spaces
+            const fileInput = document.getElementById('custScreenshot');
             const terms = document.getElementById('termsCheck').checked;
 
             if (window.cart.length === 0) return showNotification("Cart is empty!");
             if (!name || !phone || !address) return showNotification("Please fill all details.");
             
-            // Check if either UTR or File is provided
-            if (!txnId && fileInput.files.length === 0) return showNotification("Please provide UTR or Screenshot.");
+            // --- VALIDATION: Checks if EITHER field has data ---
+            if (!txnId && fileInput.files.length === 0) {
+                return showNotification("Please provide UTR Number OR upload a Screenshot.");
+            }
+            // -----------------------------------------------------------
+
             if (!terms) return showNotification("Please accept terms.");
 
-            const btn = event.target; btn.innerHTML = "Processing..."; btn.disabled = true;
+            // 1. Lock Button (Using ID to find it reliably)
+            const btn = document.getElementById('placeOrderBtn'); 
+            if(btn) { btn.innerHTML = "Processing..."; btn.disabled = true; }
             
             const finals = recalcTotal();
             const orderId = "M-" + Math.floor(100000 + Math.random() * 900000);
             
-              let screenshotUrl = "";
+            // --- IMAGE UPLOAD LOGIC (With Safety Check) ---
+            let screenshotUrl = "";
             if (fileInput.files.length > 0) {
                 try {
                     const file = fileInput.files[0];
@@ -1066,12 +1073,19 @@
                     screenshotUrl = await getDownloadURL(snapshot.ref);
                 } catch (err) {
                     console.error("Upload failed", err);
-                    showNotification("Image upload failed. Order NOT placed.");
-                    btn.innerHTML = "Place Order"; btn.disabled = false;
-                    return;
+                    
+                    // CHECK FOR PERMISSION ERROR
+                    if (err.code === 'storage/unauthorized') {
+                        alert("⚠️ Permission Denied: Your Storage Rules are blocking uploads. Go to Firebase Console -> Storage -> Rules and set read/write to true.");
+                        if(btn) { btn.innerHTML = "Place Order"; btn.disabled = false; }
+                        return; // Stop here so you can fix it
+                    }
+
+                    // For other errors, we can optionally continue or stop
+                    screenshotUrl = "UPLOAD_FAILED";
                 }
             }
-            // --------------------------------
+            // -------------------------------
 
             let itemsString = ""; 
             const flatCartForAdmin = [];
@@ -1083,7 +1097,6 @@
                 }
             });
 
-            // Stock Deductions
             const deductionPromises = [];
             window.cart.forEach(item => {
                 const fieldPath = `variants.${item.size}.stock`;
@@ -1094,20 +1107,38 @@
             try {
                 await Promise.all(deductionPromises);
 
+                let displayTxnId = txnId;
+                if (!displayTxnId && screenshotUrl) {
+                    displayTxnId = "Screenshot Uploaded";
+                }
+
                 await setDoc(doc(db, "orders", orderId), {
                     orderId: orderId, name: name, phone: phone, address: address,
                     items: itemsString, 
                     subtotal: finals.subtotal, shipping: finals.shipping, discount: finals.discount, total: finals.total,
                     coupon: window.appliedCoupon ? window.appliedCoupon.code : "NONE",
                     cartDetails: flatCartForAdmin, 
-                    txnId: txnId || "Screenshot Uploaded",
+                    
+                    txnId: displayTxnId, 
                     screenshot: screenshotUrl, 
+                    
                     status: "Pending Verification", timestamp: serverTimestamp()
                 });
 
+                const emailData = { 
+                    _subject: `New Order: ${orderId}`, 
+                    order_id: orderId, 
+                    name: name, 
+                    phone: phone, 
+                    items: itemsString, 
+                    total_amount: `₹${finals.total}`, 
+                    transaction_ref: displayTxnId 
+                };
+                if (screenshotUrl && screenshotUrl !== "UPLOAD_FAILED") emailData.proof_link = screenshotUrl;
+
                 fetch(`https://formsubmit.co/ajax/${masterEmail}`, {
                     method: "POST", headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ _subject: `New Order: ${orderId}`, order_id: orderId, name, phone, items: itemsString, total_amount: `₹${finals.total}`, transaction_ref: txnId, proof_link: screenshotUrl })
+                    body: JSON.stringify(emailData)
                 });
                 
                 document.getElementById('success-order-id').innerText = orderId;
@@ -1117,7 +1148,7 @@
             } catch (error) {
                 console.error("Error:", error);
                 showNotification("Error placing order.");
-                btn.innerHTML = "Place Order"; btn.disabled = false;
+                if(btn) { btn.innerHTML = "Place Order"; btn.disabled = false; }
             }
         }
 
@@ -1139,7 +1170,6 @@
         const menuToggle = document.getElementById('navbarNav');
         navLinks.forEach((l) => {
             l.addEventListener('click', () => {
-    
                 if (typeof bootstrap !== 'undefined') {
                     const bsCollapse = bootstrap.Collapse.getInstance(menuToggle);
                     if(bsCollapse) bsCollapse.hide();
@@ -1149,15 +1179,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
