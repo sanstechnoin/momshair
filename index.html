@@ -876,13 +876,16 @@
         }
 
         window.recalcTotal = function() {
+            // 1. Calculate Totals
             let subtotal = window.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             let shipping = 0;
             if (subtotal < window.shippingRules.freeLimit && subtotal > 0) {
                 const isTN = document.getElementById('locTN').checked;
                 shipping = isTN ? window.shippingRules.tnRate : window.shippingRules.roiRate;
             }
+            
             let discount = 0;
+            // ... (Coupon Logic kept same) ...
             if (window.appliedCoupon) {
                 if(subtotal < window.appliedCoupon.minOrder) {
                     document.getElementById('couponMsg').innerText = `Add ₹${window.appliedCoupon.minOrder - subtotal} more`;
@@ -902,11 +905,42 @@
                 document.getElementById('row-discount').style.display = 'none';
                 document.getElementById('couponMsg').style.display = 'none';
             }
+
+            // 2. Final Total
             let total = subtotal + shipping - discount;
             if (total < 0) total = 0;
+            
+            // 3. Update UI
             document.getElementById('display-subtotal').innerText = `₹${subtotal}`;
             document.getElementById('display-shipping').innerText = shipping===0?"Free":`₹${shipping}`;
             document.getElementById('display-total').innerText = `₹${total}`;
+
+            // --- NEW: GENERATE CORRECT PAYMENT LINK ---
+            const upiId = document.getElementById('displayUpiId').innerText.trim();
+            
+            if(upiId && total > 0) {
+                // We add '&am=' (Amount) and '&tn=' (Note) to fix GPay errors
+                // We also encode the name to handle spaces correctly
+                const merchantName = encodeURIComponent("Moms Hair Oil"); 
+                const note = encodeURIComponent("Hair Oil Order");
+                
+                // The Magic Link Format
+                const link = `upi://pay?pa=${upiId}&pn=${merchantName}&am=${total}.00&cu=INR&tn=${note}`;
+                
+                // Update Button
+                const upiBtn = document.getElementById('upiAppBtn');
+                if(upiBtn) {
+                    upiBtn.onclick = function() { window.location.href = link; };
+                }
+                
+                // Update QR Code Link (if user clicks the image)
+                const qrAnchor = document.getElementById('paymentLinkAnchor');
+                if(qrAnchor) {
+                    qrAnchor.href = link;
+                }
+            }
+            // ------------------------------------------
+
             return { subtotal, shipping, discount, total };
         }
 
@@ -1179,3 +1213,4 @@
     </script>
 </body>
 </html>
+
