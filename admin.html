@@ -605,15 +605,48 @@
             let html = '';
             orders.forEach(o => {
                 const d = o.timestamp ? new Date(o.timestamp.seconds * 1000).toLocaleDateString() : 'N/A';
+                
                 let sc = "status-Pending";
                 if (o.status && o.status.includes("Payment")) sc = "status-Payment";
                 else if (o.status && o.status.includes("Shipped")) sc = "status-Shipped";
                 else if (o.status && o.status.includes("Delivered")) sc = "status-Delivered";
                 else if (o.status && o.status.includes("Cancelled")) sc = "status-Cancelled";
 
-                html += `<tr class="text-center"><td class="table-checkbox"><input class="form-check-input order-checkbox" type="checkbox" value="${o.id}" onclick="updateBulkBtn()"></td><td><small>${d}</small></td><td><span class="badge bg-secondary">${o.orderId || o.id}</span></td><td class="text-start"><strong>${o.name}</strong><br><small>${o.phone}</small></td><td class="text-start"><small>${o.address}</small></td><td><strong>₹${o.total}</strong><br><small class="text-muted">UTR: ${o.txnId || 'N/A'}</small></td><td>${o.trackingNumber || '-'}</td><td><select class="form-select form-select-sm status-select ${sc}" onchange="updateStatus('${o.id}', this.value)"><option value="Pending Verification" ${o.status==='Pending Verification'?'selected':''}>Pending</option><option value="Payment Notification" ${o.status==='Payment Notification'?'selected':''}>Payment Notif.</option><option value="Payment Received" ${o.status==='Payment Received'?'selected':''}>Paid</option><option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option><option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option><option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option></select></td><td><div class="d-flex flex-column gap-1"><button class="btn btn-sm btn-outline-primary" onclick="viewDetails('${encodeURIComponent(o.items)}')">Details</button><button class="btn btn-sm btn-success" onclick="sendWhatsappUpdate('${o.phone}', '${o.name}', '${o.orderId}', '${o.status}')">Notify</button><button class="btn btn-sm btn-outline-danger" onclick="deleteOrder('${o.id}')"><i class="bi bi-trash"></i></button></div></td></tr>`;
+                // --- NEW: Logic to display View Proof button ---
+                let paymentDisplay = `UTR: ${o.txnId || 'N/A'}`;
+                if (o.screenshot) {
+                    paymentDisplay += `<br><a href="${o.screenshot}" target="_blank" class="badge bg-info text-decoration-none mt-1">📷 View Proof</a>`;
+                }
+                // -----------------------------------------------
+
+                html += `<tr class="text-center">
+                    <td class="table-checkbox"><input class="form-check-input order-checkbox" type="checkbox" value="${o.id}" onclick="updateBulkBtn()"></td>
+                    <td><small>${d}</small></td>
+                    <td><span class="badge bg-secondary">${o.orderId || o.id}</span></td>
+                    <td class="text-start"><strong>${o.name}</strong><br><small>${o.phone}</small></td>
+                    <td class="text-start"><small>${o.address}</small></td>
+                    
+                    <td><strong>₹${o.total}</strong><br><small class="text-muted">${paymentDisplay}</small></td>
+                    
+                    <td>${o.trackingNumber || '-'}</td>
+                    <td><select class="form-select form-select-sm status-select ${sc}" onchange="updateStatus('${o.id}', this.value)">
+                        <option value="Pending Verification" ${o.status==='Pending Verification'?'selected':''}>Pending</option>
+                        <option value="Payment Notification" ${o.status==='Payment Notification'?'selected':''}>Payment Notif.</option>
+                        <option value="Payment Received" ${o.status==='Payment Received'?'selected':''}>Paid</option>
+                        <option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option>
+                        <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
+                        <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option>
+                    </select></td>
+                    <td><div class="d-flex flex-column gap-1">
+                        <button class="btn btn-sm btn-outline-primary" onclick="viewDetails('${encodeURIComponent(o.items)}')">Details</button>
+                        <button class="btn btn-sm btn-success" onclick="sendWhatsappUpdate('${o.phone}', '${o.name}', '${o.orderId}', '${o.status}')">Notify</button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteOrder('${o.id}')"><i class="bi bi-trash"></i></button>
+                    </div></td>
+                </tr>`;
             });
-            tb.innerHTML = html; document.getElementById('selectAll').checked = false; updateBulkBtn();
+            tb.innerHTML = html; 
+            document.getElementById('selectAll').checked = false; 
+            updateBulkBtn();
         }
         window.updateStatus = function(docId, newStatus) { if (newStatus === "Shipped") { pendingOrderId = docId; pendingStatus = newStatus; document.getElementById('newTrackingNumber').value = ""; new bootstrap.Modal(document.getElementById('trackingInputModal')).show(); } else { performUpdate(docId, newStatus); } };
         window.submitTracking = function() { const t = document.getElementById('newTrackingNumber').value.trim() || "NA"; bootstrap.Modal.getInstance(document.getElementById('trackingInputModal')).hide(); performUpdate(pendingOrderId, pendingStatus, t); };
