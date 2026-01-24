@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance & Accounts - Mom's Hair Oil</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        .fin-card { border: none; border-radius: 12px; color: white; position: relative; overflow: hidden; }
+        .bg-revenue { background: linear-gradient(135deg, #1B4D3E 0%, #2ecc71 100%); }
+        .bg-expense { background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%); }
+        .bg-profit  { background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%); color: #fff; }
+        .bg-loss    { background: #2c3e50; }
+
+        .big-num { font-size: 2.2rem; font-weight: 800; }
+        
+        /* Balance Sheet Table */
+        .bs-table th { background-color: #f8f9fa; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .bs-head { background-color: #2c3e50; color: white; padding: 10px; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center; }
+        .bs-row { border-bottom: 1px solid #eee; padding: 8px 0; display: flex; justify-content: space-between; }
+        .bs-total { background-color: #e9ecef; font-weight: bold; padding: 10px 0; border-top: 2px solid #dee2e6; }
+    </style>
+</head>
+<body>
+
+    <div id="finance-content">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow px-3">
+            <div class="container-fluid">
+                <span class="navbar-brand fw-bold"><i class="bi bi-wallet2"></i> Accounts</span>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-secondary text-white border-secondary fw-bold">FY</span>
+                        <select id="fySelect" class="form-select bg-dark text-white border-secondary fw-bold" onchange="changeFY()">
+                            </select>
+                    </div>
+                    <a href="admin.html" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Back</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-4">
+
+            <h6 class="text-muted fw-bold text-uppercase mb-3"><i class="bi bi-graph-up"></i> Profit & Loss (Auto-Calculated)</h6>
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="card fin-card bg-revenue h-100 p-3">
+                        <div class="card-body">
+                            <h6 class="text-uppercase opacity-75 fw-bold">Revenue</h6>
+                            <div class="big-num" id="display-revenue">₹0</div>
+                            <small class="opacity-75">Sales (Paid/Shipped)</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card fin-card bg-expense h-100 p-3">
+                        <div class="card-body">
+                            <h6 class="text-uppercase opacity-75 fw-bold">Expenses</h6>
+                            <div class="big-num" id="display-expense">₹0</div>
+                            <small class="opacity-75">Materials, Ops, Ads</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card fin-card bg-profit h-100 p-3" id="profit-card">
+                        <div class="card-body">
+                            <h6 class="text-uppercase opacity-75 fw-bold text-dark">Net Profit</h6>
+                            <div class="big-num text-dark" id="display-profit">₹0</div>
+                            <small class="text-dark fw-bold" id="profit-status">...</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-end mb-3">
+                <h6 class="text-muted fw-bold text-uppercase mb-0"><i class="bi bi-columns"></i> Balance Sheet (As of March 31)</h6>
+                <button class="btn btn-sm btn-primary" onclick="openBalanceSheetModal()"><i class="bi bi-pencil-square"></i> Edit Figures</button>
+            </div>
+
+            <div class="card shadow-sm border-0 mb-5">
+                <div class="card-body p-0">
+                    <div class="row g-0">
+                        <div class="col-md-6 border-end">
+                            <div class="bs-head"><span>Liabilities (What You Owe)</span></div>
+                            <div class="p-3">
+                                <div class="bs-row"><span>Capital Account (Investment)</span><span class="fw-bold" id="lbl-capital">₹0</span></div>
+                                <div class="bs-row text-success"><span>(+) Net Profit (From Above)</span><span class="fw-bold" id="lbl-profit">₹0</span></div>
+                                <div class="bs-row text-danger"><span>(-) Drawings (Personal Use)</span><span class="fw-bold" id="lbl-drawings">-₹0</span></div>
+                                <div class="bs-row mt-3"><span>Loans / Creditors</span><span class="fw-bold" id="lbl-loans">₹0</span></div>
+                                <div class="bs-row"><span>Other Liabilities</span><span class="fw-bold" id="lbl-other-liab">₹0</span></div>
+                            </div>
+                            <div class="bs-total text-center text-primary fs-5">Total: <span id="total-liabilities">₹0</span></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="bs-head"><span>Assets (What You Own)</span></div>
+                            <div class="p-3">
+                                <div class="bs-row"><span>Fixed Assets (Equipment)</span><span class="fw-bold" id="lbl-fixed">₹0</span></div>
+                                <div class="bs-row"><span>Closing Stock (Oil/Material)</span><span class="fw-bold" id="lbl-stock">₹0</span></div>
+                                <div class="bs-row"><span>Cash in Hand</span><span class="fw-bold" id="lbl-cash">₹0</span></div>
+                                <div class="bs-row"><span>Bank Balance</span><span class="fw-bold" id="lbl-bank">₹0</span></div>
+                                <div class="bs-row"><span>Other Assets</span><span class="fw-bold" id="lbl-other-asset">₹0</span></div>
+                            </div>
+                            <div class="bs-total text-center text-success fs-5">Total: <span id="total-assets">₹0</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="card shadow border-0 h-100">
+                        <div class="card-header bg-dark text-white fw-bold"><i class="bi bi-plus-circle"></i> Quick Expense</div>
+                        <div class="card-body">
+                            <form onsubmit="addExpense(event)">
+                                <div class="mb-2"><label class="small fw-bold">Date</label><input type="date" id="expDate" class="form-control form-control-sm" required></div>
+                                <div class="mb-2">
+                                    <label class="small fw-bold">Category</label>
+                                    <select id="expCat" class="form-select form-select-sm" required>
+                                        <option value="Raw Materials">🥥 Raw Materials</option>
+                                        <option value="Packaging">📦 Packaging</option>
+                                        <option value="Logistics">🚚 Logistics</option>
+                                        <option value="Marketing">📢 Marketing</option>
+                                        <option value="Operations">⚡ Operations</option>
+                                        <option value="Other">🔹 Other</option>
+                                    </select>
+                                </div>
+                                <div class="mb-2"><label class="small fw-bold">Description</label><input type="text" id="expDesc" class="form-control form-control-sm" placeholder="e.g. 5L Oil" required></div>
+                                <div class="mb-3"><label class="small fw-bold">Amount (₹)</label><input type="number" id="expAmt" class="form-control form-control-sm fw-bold" placeholder="0" required></div>
+                                <button type="submit" id="addBtn" class="btn btn-dark w-100 btn-sm">Save</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="card shadow border-0 h-100">
+                        <div class="card-header bg-white fw-bold d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-list-check"></i> Expense Register (Selected FY)</span>
+                            <span class="badge bg-secondary" id="expense-count">0</span>
+                        </div>
+                        <div class="card-body p-0 table-responsive" style="max-height: 400px;">
+                            <table class="table table-hover align-middle mb-0 small">
+                                <thead class="table-light"><tr><th>Date</th><th>Category</th><th>Desc</th><th>Amount</th><th></th></tr></thead>
+                                <tbody id="expenseTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="bsModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold">Edit Balance Sheet Data</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="small text-muted mb-3">Enter closing values for <strong id="modal-fy-label"></strong>.</p>
+                    <form id="bsForm">
+                        <h6 class="text-primary border-bottom pb-1 mb-2 small fw-bold">Liabilities Side</h6>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6"><label class="small fw-bold">Capital Investment</label><input type="number" id="inp-capital" class="form-control form-control-sm"></div>
+                            <div class="col-6"><label class="small fw-bold">Drawings (Withdrawn)</label><input type="number" id="inp-drawings" class="form-control form-control-sm"></div>
+                            <div class="col-6"><label class="small fw-bold">Loans / Creditors</label><input type="number" id="inp-loans" class="form-control form-control-sm"></div>
+                            <div class="col-6"><label class="small fw-bold">Other Liabilities</label><input type="number" id="inp-other-liab" class="form-control form-control-sm"></div>
+                        </div>
+
+                        <h6 class="text-success border-bottom pb-1 mb-2 small fw-bold">Assets Side</h6>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6"><label class="small fw-bold">Fixed Assets</label><input type="number" id="inp-fixed" class="form-control form-control-sm"></div>
+                            <div class="col-6"><label class="small fw-bold">Closing Stock Value</label><input type="number" id="inp-stock" class="form-control form-control-sm"></div>
+                            <div class="col-6"><label class="small fw-bold">Cash In Hand</label><input type="number" id="inp-cash" class="form-control form-control-sm"></div>
+                            <div class="col-6"><label class="small fw-bold">Bank Balance</label><input type="number" id="inp-bank" class="form-control form-control-sm"></div>
+                            <div class="col-12"><label class="small fw-bold">Other Assets</label><input type="number" id="inp-other-asset" class="form-control form-control-sm"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary w-100" onclick="saveBalanceSheet()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, setDoc, getDoc, deleteDoc, addDoc, query, orderBy, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyA659yIOvlhVTm8-S6RtUDPXxVM8dZZ_kM", authDomain: "momshairoil-3010.firebaseapp.com", projectId: "momshairoil-3010", storageBucket: "momshairoil-3010.firebasestorage.app", messagingSenderId: "884566098620", appId: "1:884566098620:web:bca34f4f82d7b6712ec6b9" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- AUTH CHECK ---
+        if (sessionStorage.getItem("adminLoggedIn") !== "true") window.location.href="admin.html";
+
+        let currentFY = "";
+        let globalProfit = 0;
+
+        // 1. INITIALIZE FY DROPDOWN
+        function initFY() {
+            const fySelect = document.getElementById('fySelect');
+            const d = new Date();
+            const currYear = d.getFullYear();
+            const currMonth = d.getMonth(); // 0-11
+            
+            // Logic: If Month is Jan-Mar (0-2), FY is (Year-1)-(Year). Else (Year)-(Year+1)
+            let startY = (currMonth < 3) ? currYear - 1 : currYear;
+            
+            // Generate last 3 years options
+            for(let i = 0; i < 3; i++) {
+                let y = startY - i;
+                let opt = document.createElement('option');
+                opt.value = `${y}-${y+1}`;
+                opt.innerText = `FY ${y}-${(y+1).toString().substr(2)}`;
+                if(i === 0) opt.selected = true;
+                fySelect.appendChild(opt);
+            }
+            changeFY();
+        }
+        initFY();
+
+        // 2. MAIN LOGIC: CHANGE FY
+        window.changeFY = async function() {
+            currentFY = document.getElementById('fySelect').value; // e.g., "2024-2025"
+            document.getElementById('modal-fy-label').innerText = `FY ${currentFY}`;
+
+            // Calculate Dates: April 1st of StartYear to March 31st of EndYear
+            const [y1, y2] = currentFY.split('-').map(Number);
+            const startDate = new Date(y1, 3, 1); // April 1 (Month 3 is April)
+            const endDate = new Date(y2, 2, 31, 23, 59, 59); // March 31 (Month 2 is March)
+
+            // Reset UI
+            document.getElementById('display-revenue').innerHTML = '...';
+            document.getElementById('display-expense').innerHTML = '...';
+            
+            await loadPnL(startDate, endDate);
+            await loadBalanceSheetData(currentFY);
+        }
+
+        // 3. LOAD PROFIT & LOSS (REVENUE vs EXPENSE)
+        async function loadPnL(start, end) {
+            let totalRev = 0;
+            let totalExp = 0;
+
+            // A. Fetch Orders (Revenue)
+            const oSnap = await getDocs(collection(db, "orders"));
+            oSnap.forEach(doc => {
+                const d = doc.data();
+                if(d.timestamp) {
+                    const t = new Date(d.timestamp.seconds * 1000);
+                    if(t >= start && t <= end) {
+                        // Only count completed money
+                        if(["Payment Received", "Shipped", "Delivered"].includes(d.status)) {
+                            totalRev += (d.total || 0);
+                        }
+                    }
+                }
+            });
+
+            // B. Fetch Expenses
+            const eSnap = await getDocs(query(collection(db, "expenses"), orderBy("date", "desc")));
+            let html = "";
+            let count = 0;
+            
+            eSnap.forEach(doc => {
+                const d = doc.data();
+                const t = new Date(d.date);
+                if(t >= start && t <= end) {
+                    totalExp += (d.amount || 0);
+                    count++;
+                    html += `<tr><td>${d.date}</td><td><span class="badge bg-light text-dark border">${d.category}</span></td><td>${d.description}</td><td class="text-danger fw-bold">-₹${d.amount}</td><td><button class="btn btn-sm text-muted" onclick="deleteExpense('${doc.id}')">&times;</button></td></tr>`;
+                }
+            });
+
+            // UI Updates
+            globalProfit = totalRev - totalExp;
+            
+            document.getElementById('display-revenue').innerText = `₹${totalRev.toLocaleString()}`;
+            document.getElementById('display-expense').innerText = `₹${totalExp.toLocaleString()}`;
+            document.getElementById('display-profit').innerText = `₹${globalProfit.toLocaleString()}`;
+            document.getElementById('expenseTableBody').innerHTML = html || '<tr><td colspan="5" class="text-center text-muted">No expenses for this FY</td></tr>';
+            document.getElementById('expense-count').innerText = count;
+
+            const pCard = document.getElementById('profit-card');
+            const pStatus = document.getElementById('profit-status');
+            if (globalProfit >= 0) {
+                pCard.className = "card fin-card bg-profit h-100 p-3";
+                pStatus.innerText = "😊 Profitable";
+            } else {
+                pCard.className = "card fin-card bg-loss h-100 p-3";
+                pStatus.innerText = "📉 Loss Making";
+            }
+        }
+
+        // 4. LOAD BALANCE SHEET (MANUAL ENTRIES)
+        async function loadBalanceSheetData(fyId) {
+            // Update "Net Profit" row in Balance Sheet immediately
+            document.getElementById('lbl-profit').innerText = `₹${globalProfit.toLocaleString()}`;
+
+            // Fetch stored manual values
+            const docSnap = await getDoc(doc(db, "balance_sheet", fyId));
+            let data = { capital:0, drawings:0, loans:0, other_liab:0, fixed:0, stock:0, cash:0, bank:0, other_asset:0 };
+            
+            if(docSnap.exists()) data = docSnap.data();
+
+            // Populate UI Labels
+            document.getElementById('lbl-capital').innerText = `₹${data.capital}`;
+            document.getElementById('lbl-drawings').innerText = `-₹${data.drawings}`;
+            document.getElementById('lbl-loans').innerText = `₹${data.loans}`;
+            document.getElementById('lbl-other-liab').innerText = `₹${data.other_liab}`;
+            
+            document.getElementById('lbl-fixed').innerText = `₹${data.fixed}`;
+            document.getElementById('lbl-stock').innerText = `₹${data.stock}`;
+            document.getElementById('lbl-cash').innerText = `₹${data.cash}`;
+            document.getElementById('lbl-bank').innerText = `₹${data.bank}`;
+            document.getElementById('lbl-other-asset').innerText = `₹${data.other_asset}`;
+
+            // Populate Modal Inputs (for editing)
+            document.getElementById('inp-capital').value = data.capital || "";
+            document.getElementById('inp-drawings').value = data.drawings || "";
+            document.getElementById('inp-loans').value = data.loans || "";
+            document.getElementById('inp-other-liab').value = data.other_liab || "";
+            
+            document.getElementById('inp-fixed').value = data.fixed || "";
+            document.getElementById('inp-stock').value = data.stock || "";
+            document.getElementById('inp-cash').value = data.cash || "";
+            document.getElementById('inp-bank').value = data.bank || "";
+            document.getElementById('inp-other-asset').value = data.other_asset || "";
+
+            // Calculate Totals
+            // Liabilities = Capital + Profit - Drawings + Loans + Others
+            const totLiab = (data.capital || 0) + globalProfit - (data.drawings || 0) + (data.loans || 0) + (data.other_liab || 0);
+            document.getElementById('total-liabilities').innerText = `₹${totLiab.toLocaleString()}`;
+
+            // Assets = Fixed + Stock + Cash + Bank + Others
+            const totAsset = (data.fixed || 0) + (data.stock || 0) + (data.cash || 0) + (data.bank || 0) + (data.other_asset || 0);
+            document.getElementById('total-assets').innerText = `₹${totAsset.toLocaleString()}`;
+        }
+
+        // 5. SAVE BALANCE SHEET (MANUAL)
+        window.saveBalanceSheet = async function() {
+            const data = {
+                capital: parseFloat(document.getElementById('inp-capital').value) || 0,
+                drawings: parseFloat(document.getElementById('inp-drawings').value) || 0,
+                loans: parseFloat(document.getElementById('inp-loans').value) || 0,
+                other_liab: parseFloat(document.getElementById('inp-other-liab').value) || 0,
+                fixed: parseFloat(document.getElementById('inp-fixed').value) || 0,
+                stock: parseFloat(document.getElementById('inp-stock').value) || 0,
+                cash: parseFloat(document.getElementById('inp-cash').value) || 0,
+                bank: parseFloat(document.getElementById('inp-bank').value) || 0,
+                other_asset: parseFloat(document.getElementById('inp-other-asset').value) || 0,
+            };
+
+            await setDoc(doc(db, "balance_sheet", currentFY), data);
+            
+            // Close Modal & Reload
+            const modalEl = document.getElementById('bsModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal.hide();
+            loadBalanceSheetData(currentFY);
+        }
+
+        window.openBalanceSheetModal = function() {
+            new bootstrap.Modal(document.getElementById('bsModal')).show();
+        }
+
+        // 6. ADD EXPENSE
+        window.addExpense = async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('addBtn');
+            btn.innerHTML = "..."; btn.disabled = true;
+
+            const newExp = {
+                date: document.getElementById('expDate').value,
+                category: document.getElementById('expCat').value,
+                description: document.getElementById('expDesc').value,
+                amount: parseFloat(document.getElementById('expAmt').value),
+                timestamp: Timestamp.now()
+            };
+
+            await addDoc(collection(db, "expenses"), newExp);
+            document.getElementById('expDesc').value = '';
+            document.getElementById('expAmt').value = '';
+            btn.innerHTML = "Save"; btn.disabled = false;
+            changeFY(); // Refresh Data
+        }
+
+        window.deleteExpense = async function(id) {
+            if(confirm("Delete this expense?")) {
+                await deleteDoc(doc(db, "expenses", id));
+                changeFY();
+            }
+        }
+    </script>
+</body>
+</html>
