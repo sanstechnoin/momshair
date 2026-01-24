@@ -624,9 +624,18 @@
                 else if (o.status && o.status.includes("Delivered")) sc = "status-Delivered";
                 else if (o.status && o.status.includes("Cancelled")) sc = "status-Cancelled";
 
-                let paymentDisplay = `UTR: ${o.txnId || 'N/A'}`;
-                if (o.screenshot && o.screenshot !== "UPLOAD_FAILED") {
-                    paymentDisplay += `<br><span onclick="viewProof('${o.screenshot}')" class="badge bg-info text-decoration-none mt-1" style="cursor:pointer;">📷 View Proof</span>`;
+                // --- SMART DISPLAY: Handles UPI vs Cash ---
+                let paymentDisplay = "";
+                
+                if (o.paymentMethod === "Cash" || o.txnId === "CASH_PAYMENT") {
+                    // It's a Cash Order
+                    paymentDisplay = `<span class="badge bg-success"><i class="bi bi-cash-stack"></i> CASH ORDER</span>`;
+                } else {
+                    // It's a UPI Order
+                    paymentDisplay = `UTR: ${o.txnId || 'N/A'}`;
+                    if (o.screenshot && o.screenshot !== "UPLOAD_FAILED") {
+                        paymentDisplay += `<br><span onclick="viewProof('${o.screenshot}')" class="badge bg-info text-decoration-none mt-1" style="cursor:pointer;">📷 View Proof</span>`;
+                    }
                 }
                 // -----------------------------------------------
 
