@@ -564,29 +564,49 @@
 
                     <form id="checkoutForm">
                         <h6 class="text-uppercase text-muted fw-bold mb-3 small">Details & Payment</h6>
-                        <div class="bg-light p-3 rounded mb-3 text-center">
-                            <div class="d-none d-md-block mb-2">
-                                <a id="paymentLinkAnchor" href="#" target="_blank">
-                                    <img src="qrcode.png" alt="UPI QR" style="width: 100px;" class="border p-1 bg-white" id="paymentQRImage">
-                                </a>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Select Payment Method</label>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="payMethod" id="payUPI" value="UPI" checked onchange="togglePaymentMethod()">
+                                    <label class="form-check-label fw-bold" for="payUPI">UPI / GPay</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="payMethod" id="payCash" value="CASH" onchange="togglePaymentMethod()">
+                                    <label class="form-check-label fw-bold" for="payCash">Cash Payment</label>
+                                </div>
                             </div>
-                            <p class="mb-0 fw-bold">UPI ID: <span id="displayUpiId" class="text-primary">vabinanthana@okaxis</span></p>
-                            <button id="upiAppBtn" type="button" class="btn btn-success w-100 d-md-none mt-2" onclick="window.location.href='upi://pay?pa=vabinanthana@okaxis&pn=MomsHairOil&cu=INR'">
-                                <i class="bi bi-phone"></i> Pay via UPI App
-                            </button>
                         </div>
+
+                        <div id="upiSection">
+                            <div class="bg-light p-3 rounded mb-3 text-center">
+                                <div class="d-none d-md-block mb-2">
+                                    <a id="paymentLinkAnchor" href="#" target="_blank">
+                                        <img src="qrcode.png" alt="UPI QR" style="width: 100px;" class="border p-1 bg-white" id="paymentQRImage">
+                                    </a>
+                                </div>
+                                <p class="mb-0 fw-bold">UPI ID: <span id="displayUpiId" class="text-primary">vabinanthana@okaxis</span></p>
+                                <button id="upiAppBtn" type="button" class="btn btn-success w-100 d-md-none mt-2" onclick="window.location.href='upi://pay?pa=vabinanthana@okaxis&pn=MomsHairOil&cu=INR'">
+                                    <i class="bi bi-phone"></i> Pay via UPI App
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="row g-2">
                             <div class="col-6"><input type="text" class="form-control" id="custName" placeholder="Full Name" required></div>
                             <div class="col-6"><input type="tel" class="form-control" id="custPhone" placeholder="WhatsApp Number" required></div>
                             <div class="col-12"><textarea class="form-control" id="custAddress" rows="2" placeholder="Full Address with Pincode" required></textarea></div>
-                            <div class="col-12">
+                            
+                            <div class="col-12" id="upiInputs">
                                 <label class="form-label small fw-bold">Payment Proof (Screenshot / UTR)</label>
                                 <input type="text" class="form-control mb-1" id="custTxnId" placeholder="UTR / Ref Number">
                                 <input type="file" class="form-control" id="custScreenshot" accept="image/*">
                             </div>
+
                             <div class="col-12 form-check mt-2">
                                 <input class="form-check-input" type="checkbox" id="termsCheck" required>
-                                <label class="form-check-label small text-muted">I confirm all details are correct. I am responsibile for any misinformation provided here.</label>
+                                <label class="form-check-label small text-muted">I confirm all details are correct. I am responsible for any misinformation provided here.</label>
                             </div>
                         </div>
                     </form>
@@ -1075,31 +1095,35 @@
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
             const address = document.getElementById('custAddress').value;
-            const txnId = document.getElementById('custTxnId').value.trim(); // Trim extra spaces
+            const txnId = document.getElementById('custTxnId').value.trim();
             const fileInput = document.getElementById('custScreenshot');
             const terms = document.getElementById('termsCheck').checked;
+            
+            // NEW: Check Payment Method
+            const isCash = document.getElementById('payCash').checked;
 
             if (window.cart.length === 0) return showNotification("Cart is empty!");
             if (!name || !phone || !address) return showNotification("Please fill all details.");
             
-            // --- VALIDATION: Checks if EITHER field has data ---
-            if (!txnId && fileInput.files.length === 0) {
-                return showNotification("Please provide UTR Number OR upload a Screenshot.");
+            // --- VALIDATION: Only check Payment Proof if UPI is selected ---
+            if (!isCash) {
+                if (!txnId && fileInput.files.length === 0) {
+                    return showNotification("Please provide UTR Number OR upload a Screenshot.");
+                }
             }
-            // -----------------------------------------------------------
+            // --------------------------------------------------------------
 
             if (!terms) return showNotification("Please accept terms.");
 
-            // 1. Lock Button (Using ID to find it reliably)
             const btn = document.getElementById('placeOrderBtn'); 
             if(btn) { btn.innerHTML = "Processing..."; btn.disabled = true; }
             
             const finals = recalcTotal();
             const orderId = "M-" + Math.floor(100000 + Math.random() * 900000);
             
-            // --- IMAGE UPLOAD LOGIC (With Safety Check) ---
             let screenshotUrl = "";
-            if (fileInput.files.length > 0) {
+            // Only upload image if UPI selected AND file exists
+            if (!isCash && fileInput.files.length > 0) {
                 try {
                     const file = fileInput.files[0];
                     const storageRef = ref(storage, `payment_proofs/${orderId}_${file.name}`);
@@ -1107,28 +1131,20 @@
                     screenshotUrl = await getDownloadURL(snapshot.ref);
                 } catch (err) {
                     console.error("Upload failed", err);
-                    
-                    // CHECK FOR PERMISSION ERROR
                     if (err.code === 'storage/unauthorized') {
-                        alert("⚠️ Permission Denied: Your Storage Rules are blocking uploads. Go to Firebase Console -> Storage -> Rules and set read/write to true.");
+                        alert("⚠️ Permission Denied: Check Storage Rules.");
                         if(btn) { btn.innerHTML = "Place Order"; btn.disabled = false; }
-                        return; // Stop here so you can fix it
+                        return; 
                     }
-
-                    // For other errors, we can optionally continue or stop
                     screenshotUrl = "UPLOAD_FAILED";
                 }
             }
-            // -------------------------------
 
             let itemsString = ""; 
             const flatCartForAdmin = [];
-            
             window.cart.forEach(item => {
                 itemsString += `${item.name} x${item.quantity} (₹${item.price * item.quantity})\n`;
-                for(let i=0; i<item.quantity; i++) {
-                    flatCartForAdmin.push({id: item.pid, size: item.size, name: item.name, price: item.price});
-                }
+                for(let i=0; i<item.quantity; i++) flatCartForAdmin.push({id: item.pid, size: item.size, name: item.name, price: item.price});
             });
 
             const deductionPromises = [];
@@ -1141,8 +1157,11 @@
             try {
                 await Promise.all(deductionPromises);
 
+                // Determine what to save as Transaction ID
                 let displayTxnId = txnId;
-                if (!displayTxnId && screenshotUrl) {
+                if (isCash) {
+                    displayTxnId = "CASH_PAYMENT";
+                } else if (!displayTxnId && screenshotUrl) {
                     displayTxnId = "Screenshot Uploaded";
                 }
 
@@ -1155,17 +1174,15 @@
                     
                     txnId: displayTxnId, 
                     screenshot: screenshotUrl, 
+                    paymentMethod: isCash ? "Cash" : "UPI", // New Field
                     
                     status: "Pending Verification", timestamp: serverTimestamp()
                 });
 
                 const emailData = { 
                     _subject: `New Order: ${orderId}`, 
-                    order_id: orderId, 
-                    name: name, 
-                    phone: phone, 
-                    items: itemsString, 
-                    total_amount: `₹${finals.total}`, 
+                    order_id: orderId, name: name, phone: phone, 
+                    items: itemsString, total_amount: `₹${finals.total}`, 
                     transaction_ref: displayTxnId 
                 };
                 if (screenshotUrl && screenshotUrl !== "UPLOAD_FAILED") emailData.proof_link = screenshotUrl;
@@ -1210,7 +1227,23 @@
                 }
             });
         });
+
+        window.togglePaymentMethod = function() {
+            const isCash = document.getElementById('payCash').checked;
+            const upiSec = document.getElementById('upiSection');
+            const upiInp = document.getElementById('upiInputs');
+            
+            if (isCash) {
+                upiSec.style.display = 'none';
+                upiInp.style.display = 'none';
+            } else {
+                upiSec.style.display = 'block';
+                upiInp.style.display = 'block';
+            }
+        }
+        
     </script>
 </body>
 </html>
+
 
