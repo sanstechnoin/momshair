@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Dashboard - Mom's Hair Oil</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        /* FINANCE CARDS */
+        .fin-card { border: none; border-radius: 15px; transition: transform 0.2s; color: white; }
+        .fin-card:hover { transform: translateY(-5px); }
+        .bg-revenue { background: linear-gradient(135deg, #1B4D3E 0%, #2ecc71 100%); }
+        .bg-expense { background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%); }
+        .bg-profit  { background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%); color: #fff; }
+        .bg-loss    { background: #2c3e50; }
+
+        .big-num { font-size: 2.5rem; font-weight: 800; }
+        .table-hover tbody tr:hover { background-color: #f1f2f6; }
+        
+        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2c3e50; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .login-box { background: white; padding: 2.5rem; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); text-align: center; width: 90%; max-width: 400px; }
+    </style>
+</head>
+<body>
+
+    <div id="login-overlay">
+        <div class="login-box">
+            <h3 class="fw-bold mb-3" style="color: #2c3e50;">Finance Login 💰</h3>
+            <p class="text-muted small mb-4">Secure Area. Admin Password Required.</p>
+            <input type="password" id="admin-pass" class="form-control mb-3 text-center" placeholder="Password">
+            <button class="btn btn-dark w-100" onclick="checkLogin()">Unlock Finance</button>
+            <p id="login-error" class="text-danger small mt-2" style="display:none;">Incorrect Password</p>
+        </div>
+    </div>
+
+    <div id="finance-content" style="display:none;">
+        
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow px-3">
+            <div class="container-fluid">
+                <span class="navbar-brand fw-bold"><i class="bi bi-wallet2"></i> Finance Dashboard</span>
+                <div class="d-flex gap-2">
+                    <a href="admin.html" class="btn btn-outline-light btn-sm"><i class="bi bi-shop"></i> Back to Orders</a>
+                    <button class="btn btn-danger btn-sm" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-4">
+
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body py-2">
+                    <div class="d-flex flex-column flex-md-row gap-3 align-items-center justify-content-between">
+                        <span class="fw-bold text-muted small"><i class="bi bi-funnel-fill"></i> FILTER PERIOD:</span>
+                        <div class="d-flex gap-2">
+                            <input type="date" id="dateFrom" class="form-control form-control-sm" onchange="calculateFinances()">
+                            <span class="align-self-center">-</span>
+                            <input type="date" id="dateTo" class="form-control form-control-sm" onchange="calculateFinances()">
+                            <button class="btn btn-secondary btn-sm" onclick="resetFilters()">All Time</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="card fin-card bg-revenue h-100 p-3">
+                        <div class="card-body">
+                            <h6 class="text-uppercase opacity-75 fw-bold">Total Sales (Paid)</h6>
+                            <div class="big-num" id="display-revenue">₹0</div>
+                            <small class="opacity-75"><i class="bi bi-bag-check"></i> From Orders marked Paid/Delivered</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card fin-card bg-expense h-100 p-3">
+                        <div class="card-body">
+                            <h6 class="text-uppercase opacity-75 fw-bold">Total Expenses</h6>
+                            <div class="big-num" id="display-expense">₹0</div>
+                            <small class="opacity-75"><i class="bi bi-receipt"></i> Materials, Ops, Marketing</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card fin-card bg-profit h-100 p-3" id="profit-card">
+                        <div class="card-body">
+                            <h6 class="text-uppercase opacity-75 fw-bold text-dark">Net Profit</h6>
+                            <div class="big-num text-dark" id="display-profit">₹0</div>
+                            <small class="text-dark fw-bold" id="profit-status">Breakeven</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                
+                <div class="col-lg-4">
+                    <div class="card shadow border-0 h-100">
+                        <div class="card-header bg-dark text-white fw-bold"><i class="bi bi-plus-circle"></i> Log Expense</div>
+                        <div class="card-body">
+                            <form onsubmit="addExpense(event)">
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Date</label>
+                                    <input type="date" id="expDate" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Category</label>
+                                    <select id="expCat" class="form-select" required>
+                                        <option value="Raw Materials">🥥 Raw Materials (Oil/Herbs)</option>
+                                        <option value="Packaging">📦 Packaging (Bottles/Boxes)</option>
+                                        <option value="Logistics">🚚 Courier / Shipping</option>
+                                        <option value="Marketing">📢 Marketing / Ads</option>
+                                        <option value="Operations">⚡ Operations (Bills/Helpers)</option>
+                                        <option value="Personal">🏠 Personal Draw</option>
+                                        <option value="Other">🔹 Other</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Description</label>
+                                    <input type="text" id="expDesc" class="form-control" placeholder="e.g. 5L Coconut Oil" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Amount (₹)</label>
+                                    <input type="number" id="expAmt" class="form-control fw-bold text-danger" placeholder="0" required>
+                                </div>
+                                <button type="submit" id="addBtn" class="btn btn-danger w-100">Log Expense</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="card shadow border-0 h-100">
+                        <div class="card-header bg-white fw-bold d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-list-check"></i> Expense History</span>
+                            <span class="badge bg-secondary" id="expense-count">0 Records</span>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive" style="max-height: 500px;">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light sticky-top">
+                                        <tr class="small text-uppercase">
+                                            <th>Date</th>
+                                            <th>Category</th>
+                                            <th>Description</th>
+                                            <th>Amount</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="expenseTableBody">
+                                        <tr><td colspan="5" class="text-center py-5 text-muted">Loading data...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, deleteDoc, addDoc, query, orderBy, Timestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyA659yIOvlhVTm8-S6RtUDPXxVM8dZZ_kM", authDomain: "momshairoil-3010.firebaseapp.com", projectId: "momshairoil-3010", storageBucket: "momshairoil-3010.firebasestorage.app", messagingSenderId: "884566098620", appId: "1:884566098620:web:bca34f4f82d7b6712ec6b9" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- GLOBAL DATA CACHE ---
+        let allOrders = [];
+        let allExpenses = [];
+
+        // --- AUTH LOGIC (Synced with Admin) ---
+        window.checkLogin = function() {
+            if (document.getElementById('admin-pass').value === "brindharani") {
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('finance-content').style.display = 'block';
+                sessionStorage.setItem("adminLoggedIn", "true");
+                initFinance();
+            } else { document.getElementById('login-error').style.display = 'block'; }
+        };
+        window.logout = function() { sessionStorage.removeItem("adminLoggedIn"); window.location.href="admin.html"; };
+        
+        // Auto-Login if coming from Admin
+        if (sessionStorage.getItem("adminLoggedIn") === "true") {
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('finance-content').style.display = 'block';
+            initFinance();
+        }
+
+        // --- CORE FUNCTIONS ---
+        function initFinance() {
+            // Set Default Date: Today
+            document.getElementById('expDate').valueAsDate = new Date();
+            loadData();
+        }
+
+        async function loadData() {
+            document.getElementById('expenseTableBody').innerHTML = '<tr><td colspan="5" class="text-center py-5"><div class="spinner-border text-primary"></div></td></tr>';
+            
+            try {
+                // 1. FETCH ORDERS (For Revenue)
+                const oSnap = await getDocs(collection(db, "orders"));
+                allOrders = [];
+                oSnap.forEach(d => allOrders.push(d.data()));
+
+                // 2. FETCH EXPENSES
+                const eQuery = query(collection(db, "expenses"), orderBy("date", "desc"));
+                const eSnap = await getDocs(eQuery);
+                allExpenses = [];
+                eSnap.forEach(d => allExpenses.push({ id: d.id, ...d.data() }));
+
+                calculateFinances();
+
+            } catch (error) {
+                console.error("Data Load Error:", error);
+                alert("Error loading finance data.");
+            }
+        }
+
+        window.calculateFinances = function() {
+            // 1. Get Filters
+            const startStr = document.getElementById('dateFrom').value;
+            const endStr = document.getElementById('dateTo').value;
+            const start = startStr ? new Date(startStr) : null;
+            const end = endStr ? new Date(endStr) : null;
+            if(end) end.setHours(23, 59, 59);
+
+            // 2. Calculate REVENUE (Money In)
+            // Rule: Only count 'Payment Received', 'Shipped', 'Delivered'
+            const validStatus = ["Payment Received", "Shipped", "Delivered"];
+            
+            let totalRev = 0;
+            allOrders.forEach(o => {
+                const oDate = o.timestamp ? new Date(o.timestamp.seconds * 1000) : new Date();
+                
+                // Date Filter Check
+                if (start && oDate < start) return;
+                if (end && oDate > end) return;
+
+                if (validStatus.includes(o.status)) {
+                    totalRev += (o.total || 0);
+                }
+            });
+
+            // 3. Calculate EXPENSES (Money Out)
+            let totalExp = 0;
+            let filteredExpenses = [];
+
+            allExpenses.forEach(e => {
+                const eDate = new Date(e.date);
+                // Date Filter Check
+                if (start && eDate < start) return;
+                if (end && eDate > end) return;
+
+                totalExp += (e.amount || 0);
+                filteredExpenses.push(e);
+            });
+
+            // 4. Update UI - Cards
+            const netProfit = totalRev - totalExp;
+            
+            animateValue("display-revenue", totalRev);
+            animateValue("display-expense", totalExp);
+            animateValue("display-profit", netProfit);
+
+            // Profit Styling
+            const pCard = document.getElementById('profit-card');
+            const pStatus = document.getElementById('profit-status');
+            
+            if (netProfit >= 0) {
+                pCard.className = "card fin-card bg-profit h-100 p-3"; // Gold/Green
+                pStatus.innerText = "😊 Profitable";
+            } else {
+                pCard.className = "card fin-card bg-loss h-100 p-3"; // Dark Red/Grey
+                pStatus.innerText = "📉 Loss Making";
+            }
+
+            // 5. Update UI - Expense Table
+            renderExpenseTable(filteredExpenses);
+        }
+
+        function renderExpenseTable(list) {
+            const tb = document.getElementById('expenseTableBody');
+            document.getElementById('expense-count').innerText = list.length + " Records";
+            
+            if(list.length === 0) {
+                tb.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">No expenses found for this period.</td></tr>';
+                return;
+            }
+
+            let html = '';
+            list.forEach(e => {
+                // Category Icon Logic
+                let icon = 'bi-box-seam';
+                if(e.category === 'Marketing') icon = 'bi-megaphone';
+                if(e.category === 'Raw Materials') icon = 'bi-flower1';
+                if(e.category === 'Logistics') icon = 'bi-truck';
+                if(e.category === 'Personal') icon = 'bi-house';
+
+                html += `
+                <tr>
+                    <td class="small fw-bold text-muted">${e.date}</td>
+                    <td><span class="badge bg-light text-dark border"><i class="bi ${icon}"></i> ${e.category}</span></td>
+                    <td>${e.description}</td>
+                    <td class="fw-bold text-danger">-₹${e.amount}</td>
+                    <td><button class="btn btn-sm btn-outline-secondary" onclick="deleteExpense('${e.id}')" title="Delete"><i class="bi bi-trash"></i></button></td>
+                </tr>
+                `;
+            });
+            tb.innerHTML = html;
+        }
+
+        window.addExpense = async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('addBtn');
+            btn.innerHTML = "Saving..."; btn.disabled = true;
+
+            const newExp = {
+                date: document.getElementById('expDate').value,
+                category: document.getElementById('expCat').value,
+                description: document.getElementById('expDesc').value,
+                amount: parseFloat(document.getElementById('expAmt').value),
+                timestamp: Timestamp.now() // For strict sorting
+            };
+
+            try {
+                await addDoc(collection(db, "expenses"), newExp);
+                // Reset Form
+                document.getElementById('expDesc').value = '';
+                document.getElementById('expAmt').value = '';
+                btn.innerHTML = "Log Expense"; btn.disabled = false;
+                
+                // Refresh Data
+                loadData();
+            } catch (err) {
+                console.error(err);
+                alert("Failed to save.");
+                btn.innerHTML = "Log Expense"; btn.disabled = false;
+            }
+        }
+
+        window.deleteExpense = async function(id) {
+            if(confirm("Are you sure you want to delete this expense record?")) {
+                await deleteDoc(doc(db, "expenses", id));
+                loadData();
+            }
+        }
+
+        window.resetFilters = function() {
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            calculateFinances();
+        }
+
+        function animateValue(id, value) {
+            const el = document.getElementById(id);
+            el.innerText = `₹${value.toLocaleString('en-IN')}`;
+        }
+    </script>
+</body>
+</html>
