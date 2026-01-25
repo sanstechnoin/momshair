@@ -8,7 +8,9 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <style>
         body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
@@ -248,12 +250,16 @@
                 </div>
                 <div class="col-lg-4">
                     <div class="card shadow-sm border-primary h-100">
-                        <div class="card-header bg-primary text-white"><span><i class="bi bi-megaphone-fill"></i> Top Banner Announcement</span></div>
+                        <div class="card-header bg-primary text-white"><span><i class="bi bi-megaphone-fill"></i> Rich Banner Editor</span></div>
                         <div class="card-body">
-                            <label class="form-label small fw-bold">Banner Text</label>
-                            <textarea id="banner-text" class="form-control mb-3" rows="3" placeholder="✨ Launch Offer: Heirloom Pricing Ends Soon! ✨"></textarea>
-                            <button class="btn btn-outline-primary w-100" onclick="saveBanner()">Update Website Banner</button>
-                            <small class="text-muted d-block mt-2 text-center" style="font-size: 0.75rem;">Leave empty to hide the banner completely.</small>
+                            <label class="form-label small fw-bold">1. Headline (Always Visible)</label>
+                            <input type="text" id="banner-text" class="form-control mb-3 fw-bold" placeholder="✨ Launch Offer: Heirloom Pricing Ends Soon! ✨">
+                            
+                            <label class="form-label small fw-bold">2. Hidden Details (Expands on Click)</label>
+                            <textarea id="banner-details"></textarea>
+                            
+                            <button class="btn btn-outline-primary w-100 mt-3" onclick="saveBanner()">Update Website Banner</button>
+                            <small class="text-muted d-block mt-2 text-center" style="font-size: 0.75rem;">Clear both to hide banner.</small>
                         </div>
                     </div>
                 </div>
@@ -371,7 +377,21 @@
         function initDashboard() {
             loadOrders(); loadInventory(); loadReviews('pending'); loadReviewCounts(); loadSettings();
             loadShippingRules(); loadCoupons(); loadSupportSettings(); loadEnquiries();
+
+            $('#banner-details').summernote({
+            placeholder: 'Type your message, add images, colors, or links here...',
+            tabsize: 2,
+            height: 150,
+            toolbar: [
+              ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
+              ['color', ['color']],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['insert', ['link', 'picture', 'video']], // Allows Images/GIFs/Videos
+              ['view', ['fullscreen', 'codeview']] // Code view allows raw HTML
+            ]
+        });
         }
+        
         // ---  LOGIC FOR DELETES ---
         window.showConfirm = function(title, body, callback) {
             document.getElementById('confirmTitle').innerText = title;
@@ -511,15 +531,23 @@
 
         // --- SETTINGS, QR CODE, BANNER ---
         async function loadSettings() { 
-            const s = await getDoc(doc(db, "settings", "config")); 
-            if(s.exists()) { 
-                const d = s.data();
-                document.getElementById('master-email').value = d.masterEmail || ""; 
-                document.getElementById('whatsapp-num').value = d.whatsappNumber || ""; 
-                document.getElementById('upi-id').value = d.upiId || ""; 
-                const bannerEl = document.getElementById('banner-text');
-                if(bannerEl) bannerEl.value = d.bannerText || "";
-            } 
+        const s = await getDoc(doc(db, "settings", "config")); 
+        if(s.exists()) { 
+            const d = s.data();
+            document.getElementById('master-email').value = d.masterEmail || ""; 
+            document.getElementById('whatsapp-num').value = d.whatsappNumber || ""; 
+            document.getElementById('upi-id').value = d.upiId || ""; 
+
+            // Load Headline
+            if(document.getElementById('banner-text')) document.getElementById('banner-text').value = d.bannerText || "";
+
+            // Load Rich Text into Summernote
+            if(d.bannerDetails) {
+                $('#banner-details').summernote('code', d.bannerDetails);
+            } else {
+                $('#banner-details').summernote('code', '');
+            }
+        } 
         }
         window.saveSettings = async function() { 
             startLoading(); 
@@ -532,10 +560,16 @@
             stopLoading(); 
         }
         window.saveBanner = async function() {
-            const text = document.getElementById('banner-text').value;
-            startLoading();
-            await setDoc(doc(db, "settings", "config"), { bannerText: text }, { merge: true });
-            stopLoading();
+        const text = document.getElementById('banner-text').value;
+        // Get HTML code from Summernote
+        const details = $('#banner-details').summernote('code');
+
+        startLoading();
+        await setDoc(doc(db, "settings", "config"), { 
+            bannerText: text,
+            bannerDetails: details
+        }, { merge: true });
+        stopLoading();
         }
         window.uploadQrCode = async function() {
             const fileInput = document.getElementById('qrFile');
