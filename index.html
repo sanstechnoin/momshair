@@ -45,9 +45,9 @@
             cursor: pointer; 
             min-height: 40px; 
             transition: all 0.3s ease;
-            /* FORCE BRAND GREEN */
             background-color: #1B4D3E !important; 
             color: white !important;
+            box-shadow: none; /* Ensures no shadow separates the strip */
         }
 
         /* --- 2. THE CURTAIN (Hidden Content) --- */
@@ -57,19 +57,23 @@
             top: 100%; 
             left: 0;
             width: 100%;
-            max-height: 50vh; 
+            max-height: 60vh; 
             overflow-y: auto; 
-            
-            /* Hide Scrollbar */
             scrollbar-width: none; 
             -ms-overflow-style: none; 
             
-            /* FORCE BRAND GREEN TO MATCH */
+            /* MATCH COLOR EXACTLY */
             background-color: #1B4D3E; 
             color: white;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4); 
-            padding: 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            
+            /* REMOVED THE TOP BORDER TO REMOVE THE LINE */
+            border-top: none; 
+            
+            /* COMPACT PADDING */
+            padding: 0px 15px 20px 15px; 
+            
+            /* Shadow only at the bottom */
+            box-shadow: 0 15px 20px rgba(0,0,0,0.3); 
             z-index: 1999; 
         }
         #banner-details-content::-webkit-scrollbar { display: none; }
@@ -77,39 +81,48 @@
         /* Animation */
         #top-announcement.expanded #banner-details-content { 
             display: block; 
-            animation: curtainDown 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            animation: curtainDown 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
         @keyframes curtainDown {
-            from { opacity: 0; transform: scaleY(0.9) translateY(-10px); }
-            to { opacity: 1; transform: scaleY(1) translateY(0); }
+            from { opacity: 0; transform: translateY(-5px); } /* Smaller movement for smoother feel */
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* --- 3. CLOSE BUTTON --- */
         .banner-close { 
             position: absolute; 
-            top: 10px; 
+            top: 5px; /* Moved up slightly */
             right: 15px; 
             font-size: 1.5rem; 
             cursor: pointer; 
             display: none; 
             z-index: 2002;
-            color: rgba(255,255,255,0.8);
+            color: rgba(255,255,255,0.7);
         }
-        .banner-close:hover { color: #fff; transform: scale(1.1); }
+        .banner-close:hover { color: #fff; }
         .expanded .banner-close { display: block; }
         .expanded .jump-icon { display: none; }
 
-        /* --- 4. CONTENT STYLING --- */
+        /* --- 4. COMPACT CONTENT STYLING (The Fix for Space) --- */
         .jump-icon { animation: bounce 1.5s infinite; font-size: 0.8rem; margin-left: 8px; display: inline-block; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
         
+        /* Force image to be small and centered */
         #banner-details-content img { 
-            max-width: 100%; 
+            max-width: 80px !important; /* Smaller Flag */
             height: auto; 
-            border-radius: 8px; 
+            border-radius: 4px; 
             display: block; 
-            margin: 0 auto 15px auto; 
+            margin: 5px auto 10px auto !important; /* Tight margins */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
+        /* Tighten text */
+        #banner-details-content h1, 
+        #banner-details-content h2, 
+        #banner-details-content h3, 
+        #banner-details-content h4 { margin: 5px 0 !important; line-height: 1.2; }
+        
+        #banner-details-content p { margin-bottom: 8px !important; line-height: 1.4; font-size: 0.9rem; }
    </style>
 </head>
 <body>
@@ -1357,6 +1370,7 @@
     </script>
 </body>
 </html>
+
 
 
 
