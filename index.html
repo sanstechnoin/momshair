@@ -1293,7 +1293,16 @@
             } catch (error) {}
         }
         loadWhatsAppNumber();
-        
+
+        // --- AUTO-CLOSE MOBILE MENU ---
+        const navLinks = document.querySelectorAll('.close-menu');
+        const menuToggle = document.getElementById('navbarNav');
+        navLinks.forEach((l) => {
+            l.addEventListener('click', () => {
+                const bsCollapse = bootstrap.Collapse.getInstance(menuToggle);
+                if(bsCollapse) bsCollapse.hide();
+            });
+        });
         // --- BANNER LOGIC ---
         window.currentBannerDetails = ""; 
 
@@ -1370,6 +1379,7 @@
     </script>
 </body>
 </html>
+
 
 
 
