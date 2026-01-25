@@ -38,25 +38,59 @@
             border-color: #198754 !important;
         }
 
-        #banner-details-content img, 
-        #banner-details-content video, 
-        #banner-details-content iframe { 
-            max-width: 100% !important; 
-            height: auto !important; 
-            border-radius: 8px;
-            margin: 10px 0;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        /* OVERLAY BANNER STYLES */
+        #top-announcement { 
+            position: relative; /* Keeps the main strip in place */
+            z-index: 2000; /* Ensures it sits above the navbar */
+            cursor: pointer; 
+        }
+
+        /* The hidden dropdown part */
+        #banner-details-content { 
+            display: none; 
+            position: absolute; /* This makes it float! */
+            top: 100%; /* Starts exactly at bottom of blue strip */
+            left: 0;
+            width: 100%;
+            background-color: #0d6efd; /* Matches bg-primary blue */
+            color: white;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3); /* Drop shadow for depth */
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            z-index: 2001; 
+        }
+
+        /* Animation for smooth reveal */
+        #top-announcement.expanded #banner-details-content { 
+            display: block; 
+            animation: slideDown 0.3s ease forwards;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Ensure text from editor is readable on the blue background */
-        #banner-details-content { 
-            text-align: left; 
-            color: white; 
-            font-size: 0.95rem;
-            line-height: 1.6;
+        .jump-icon { animation: bounce 1.5s infinite; font-size: 0.8rem; margin-left: 8px; display: inline-block; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
+
+        /* Close Button Styling */
+        .banner-close { 
+            position: absolute; 
+            top: 10px; 
+            right: 15px; 
+            font-size: 1.5rem; 
+            cursor: pointer; 
+            display: none; 
+            opacity: 0.8;
+            transition: 0.2s;
         }
-        #banner-details-content a { color: #ffc107; text-decoration: underline; }
-        #banner-details-content ul, #banner-details-content ol { text-align: left; }
+        .banner-close:hover { opacity: 1; transform: scale(1.1); }
+        .expanded .banner-close { display: block; }
+        .expanded .jump-icon { display: none; }
+        
+        /* Make images inside responsive */
+        #banner-details-content img { max-width: 100%; height: auto; border-radius: 10px; }
    </style>
 </head>
 <body>
@@ -67,10 +101,10 @@
 
     <div id="top-announcement" class="bg-primary text-white text-center py-2 small fw-bold" style="display:none;" onclick="toggleBanner()">
         <div class="container position-relative">
-            <span id="banner-headline"></span>
+            <span id="banner-headline"></span>  
             <i id="banner-arrow" class="bi bi-caret-down-fill jump-icon" style="display:none;"></i>
-            <i class="bi bi-x banner-close"></i>          
-            <div id="banner-details-content" class="fw-normal">
+            <i class="bi bi-x banner-close" onclick="closeBanner(event)"></i>
+            <div id="banner-details-content" class="fw-normal text-start">
                 </div>
         </div>
     </div>
@@ -1261,13 +1295,26 @@
         }
         loadBanner();
 
-        // --- BANNER TOGGLE FUNCTION ---
+        // --- BANNER LOGIC ---
+        
+        // 1. Toggle: Opens the banner (if details exist)
         window.toggleBanner = function() {
-            // Only toggle if there are details to show
             if (!window.currentBannerDetails) return;
+            const el = document.getElementById('top-announcement');
+            
+            // Only expand if it's not already expanded
+            if (!el.classList.contains('expanded')) {
+                el.classList.add('expanded');
+            }
+        }
+
+        // 2. Close: Explicitly closes it and stops the click from bubbling up
+        window.closeBanner = function(event) {
+            // Stop the click from hitting the parent div (which would try to open it again)
+            if(event) event.stopPropagation(); 
             
             const el = document.getElementById('top-announcement');
-            el.classList.toggle('expanded');
+            el.classList.remove('expanded');
         }
         
         // This closes the navbar automatically when you click a link on mobile
@@ -1299,3 +1346,4 @@
     </script>
 </body>
 </html>
+
