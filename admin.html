@@ -247,13 +247,13 @@
                     </div>
                 </div>
                 <div class="col-lg-4">
-                    <div class="card shadow-sm border-danger h-100">
-                        <div class="card-header bg-danger text-white"><span><i class="bi bi-exclamation-triangle-fill"></i> Danger Zone</span></div>
-                        <div class="card-body text-center d-flex flex-column justify-content-center">
-                            <p class="text-muted small">Irreversible action. Be careful.</p>
-                            <button class="btn btn-outline-danger w-100 py-3" onclick="deleteAllOrders()">
-                                <i class="bi bi-trash3-fill fs-4 d-block mb-1"></i> DELETE ALL ORDERS
-                            </button>
+                    <div class="card shadow-sm border-primary h-100">
+                        <div class="card-header bg-primary text-white"><span><i class="bi bi-megaphone-fill"></i> Top Banner Announcement</span></div>
+                        <div class="card-body">
+                            <label class="form-label small fw-bold">Banner Text</label>
+                            <textarea id="banner-text" class="form-control mb-3" rows="3" placeholder="✨ Launch Offer: Heirloom Pricing Ends Soon! ✨"></textarea>
+                            <button class="btn btn-outline-primary w-100" onclick="saveBanner()">Update Website Banner</button>
+                            <small class="text-muted d-block mt-2 text-center" style="font-size: 0.75rem;">Leave empty to hide the banner completely.</small>
                         </div>
                     </div>
                 </div>
@@ -509,14 +509,16 @@
         }
         window.deleteCoupon = async function(id) { if(confirm("Delete coupon?")) await deleteDoc(doc(db, "coupons", id)); }
 
-        // --- SETTINGS & QR CODE (FIXED: Added UPI ID Save) ---
+        // --- SETTINGS, QR CODE, BANNER ---
         async function loadSettings() { 
             const s = await getDoc(doc(db, "settings", "config")); 
             if(s.exists()) { 
-                document.getElementById('master-email').value=s.data().masterEmail; 
-                document.getElementById('whatsapp-num').value=s.data().whatsappNumber||""; 
-                // FETCH UPI ID
-                document.getElementById('upi-id').value = s.data().upiId || ""; 
+                const d = s.data();
+                document.getElementById('master-email').value = d.masterEmail || ""; 
+                document.getElementById('whatsapp-num').value = d.whatsappNumber || ""; 
+                document.getElementById('upi-id').value = d.upiId || ""; 
+                const bannerEl = document.getElementById('banner-text');
+                if(bannerEl) bannerEl.value = d.bannerText || "";
             } 
         }
         window.saveSettings = async function() { 
@@ -528,6 +530,12 @@
                 upiId: document.getElementById('upi-id').value
             }, {merge:true}); 
             stopLoading(); 
+        }
+        window.saveBanner = async function() {
+            const text = document.getElementById('banner-text').value;
+            startLoading();
+            await setDoc(doc(db, "settings", "config"), { bannerText: text }, { merge: true });
+            stopLoading();
         }
         window.uploadQrCode = async function() {
             const fileInput = document.getElementById('qrFile');
