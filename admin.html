@@ -53,12 +53,39 @@
 <body>
 
     <div id="login-overlay">
-        <div class="login-box">
-            <h3 class="fw-bold mb-3" style="color: #1B4D3E;">Admin Login 🔒</h3>
-            <p class="text-muted small mb-4">Restricted Access. Enter Password.</p>
-            <input type="password" id="admin-pass" class="form-control mb-3 text-center" placeholder="Password">
-            <button class="btn btn-success w-100" onclick="checkLogin()">Unlock Panel</button>
-            <p id="login-error" class="text-danger small mt-2" style="display:none;">Incorrect Password</p>
+        <div class="login-box text-center" style="max-width: 380px;">
+            <div class="mb-4">
+                <div class="bg-light d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm" style="width: 100px; height: 100px; border: 3px solid #1B4D3E;">
+                    <i class="bi bi-person-fill" style="font-size: 3rem; color: #1B4D3E;"></i>
+                </div>
+                <h4 class="mt-3 fw-bold">Admin Portal</h4>
+            </div>
+
+            <div class="mb-3">
+                <input type="password" id="authInput" class="form-control text-center form-control-lg mb-2" placeholder="Password">
+                <button class="btn btn-success w-100 py-2" onclick="attemptAuth()">
+                    <span id="btnText">Sign In</span>
+                    <span id="btnSpin" class="spinner-border spinner-border-sm" style="display:none"></span>
+                </button>
+            </div>
+
+            <div class="mb-3">
+                <p class="text-muted small mb-2">Sign-in options</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <div class="icon-btn border rounded p-2" onclick="setAuthMode('password')" title="Password" id="opt-pass" style="background:#e9ecef;">
+                        <i class="bi bi-key-fill fs-4"></i>
+                    </div>
+                    <div class="icon-btn border rounded p-2" onclick="setAuthMode('pin')" title="PIN" id="opt-pin">
+                        <i class="bi bi-grid-3x3-gap-fill fs-4"></i>
+                    </div>
+                </div>
+            </div>
+
+            <p id="auth-msg" class="text-danger small fw-bold mt-2" style="display:none;"></p>
+            
+            <button id="resetBtn" class="btn btn-link btn-sm text-muted text-decoration-none mt-2" onclick="startResetFlow()" style="display:none;">
+                <i class="bi bi-arrow-clockwise"></i> Setup/Reset PIN
+            </button>
         </div>
     </div>
 
@@ -341,31 +368,173 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        // ADDED: Auth Imports
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, getDocs, doc, updateDoc, orderBy, query, setDoc, getDoc, where, deleteDoc, increment, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
+        // CONFIG
         const firebaseConfig = { apiKey: "AIzaSyA659yIOvlhVTm8-S6RtUDPXxVM8dZZ_kM", authDomain: "momshairoil-3010.firebaseapp.com", projectId: "momshairoil-3010", storageBucket: "momshairoil-3010.firebasestorage.app", messagingSenderId: "884566098620", appId: "1:884566098620:web:bca34f4f82d7b6712ec6b9" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const storage = getStorage(app);
+        const auth = getAuth(app); // ADDED: Initialize Auth
 
+        // GLOBAL VARIABLES
         let allOrdersCache = []; 
         let pendingOrderId = null, pendingStatus = null, pendingConfirmCallback = null, pendingSecurityCallback = null;
         let unsubSupport = null, unsubCoupons = null, unsubEnquiries = null, unsubProducts = null;
         window.currentReviewTab = 'pending';
+        
+        // AUTH VARIABLES
+        let authMode = 'password'; 
+        const ADMIN_EMAIL = "support@momshairoil.in"; // CHANGE THIS if needed
 
-        // AUTH
-        window.checkLogin = function() {
-            if (document.getElementById('admin-pass').value === "brindharani") {
-                document.getElementById('login-overlay').style.display = 'none'; document.getElementById('admin-content').style.display = 'block';
-                sessionStorage.setItem("adminLoggedIn", "true"); initDashboard();
-            } else { document.getElementById('login-error').style.display = 'block'; }
+        // --- 1. SMART AUTH LOGIC ---
+        
+        // Auto-login listener
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('admin-content').style.display = 'block';
+                initDashboard();
+            } else {
+                document.getElementById('login-overlay').style.display = 'flex';
+                document.getElementById('admin-content').style.display = 'none';
+            }
+        });
+
+        // Switch between Password/PIN
+        window.setAuthMode = function(mode) {
+            authMode = mode;
+            const input = document.getElementById('authInput');
+            document.getElementById('opt-pass').style.background = mode === 'password' ? '#e9ecef' : 'transparent';
+            document.getElementById('opt-pin').style.background = mode === 'pin' ? '#e9ecef' : 'transparent';
+            
+            if (mode === 'password') {
+                input.placeholder = "Password";
+                input.type = "password";
+                input.maxLength = 50;
+            } else {
+                input.placeholder = "Enter 6-Digit PIN";
+                input.type = "password"; 
+                input.maxLength = 6;
+            }
+            document.getElementById('auth-msg').style.display = 'none';
+            document.getElementById('authInput').value = '';
+            document.getElementById('authInput').focus();
         };
-        window.logout = function() { sessionStorage.removeItem("adminLoggedIn"); location.reload(); };
-        if (sessionStorage.getItem("adminLoggedIn") === "true") {
-            document.getElementById('login-overlay').style.display = 'none'; document.getElementById('admin-content').style.display = 'block';
-            initDashboard();
-        }
+
+        // Login Logic
+        window.attemptAuth = async function() {
+            const val = document.getElementById('authInput').value;
+            const msg = document.getElementById('auth-msg');
+            const btnText = document.getElementById('btnText');
+            const btnSpin = document.getElementById('btnSpin');
+
+            if (!val) return;
+
+            btnText.style.display = 'none';
+            btnSpin.style.display = 'inline-block';
+            msg.style.display = 'none';
+
+            // A. PASSWORD MODE (Firebase)
+            if (authMode === 'password') {
+                signInWithEmailAndPassword(auth, ADMIN_EMAIL, val)
+                    .then(() => {
+                        // Check if PIN needs setup
+                        if(!localStorage.getItem('admin_pin_hash')) {
+                            setTimeout(() => { 
+                                if(confirm("Setup your 6-digit PIN for faster login?")) window.startResetFlow();
+                            }, 1000);
+                        }
+                    })
+                    .catch((error) => {
+                        btnText.style.display = 'inline-block';
+                        btnSpin.style.display = 'none';
+                        msg.innerText = "Incorrect Password.";
+                        msg.style.display = 'block';
+                    });
+            }
+            // B. PIN MODE (Local)
+            else {
+                const storedHash = localStorage.getItem('admin_pin_hash');
+                const lastUpdate = localStorage.getItem('pin_date');
+                
+                if (!storedHash) {
+                    msg.innerHTML = "No PIN set. <a href='#' onclick='setAuthMode(\"password\")'>Use Password</a> to login & setup.";
+                    msg.style.display = 'block';
+                    btnText.style.display = 'inline-block';
+                    btnSpin.style.display = 'none';
+                    return;
+                }
+
+                // Expiry Check (60 Days)
+                const now = new Date().getTime();
+                const daysDiff = (now - parseInt(lastUpdate || 0)) / (1000 * 60 * 60 * 24);
+                
+                if (daysDiff > 60) {
+                    msg.innerHTML = "PIN Expired. <a href='#' onclick='setAuthMode(\"password\")'>Use Password</a> to reset.";
+                    msg.style.display = 'block';
+                    btnText.style.display = 'inline-block';
+                    btnSpin.style.display = 'none';
+                    return;
+                }
+
+                if (btoa(val) === storedHash) {
+                    // Manual unlock since we verified PIN locally
+                    document.getElementById('login-overlay').style.display = 'none';
+                    document.getElementById('admin-content').style.display = 'block';
+                    initDashboard();
+                } else {
+                    msg.innerText = "Incorrect PIN.";
+                    msg.style.display = 'block';
+                    btnText.style.display = 'inline-block';
+                    btnSpin.style.display = 'none';
+                }
+            }
+        };
+
+        window.startResetFlow = function() {
+            const newPin = prompt("Set a new 6-Digit PIN (Expires in 60 days):");
+            if (newPin && newPin.length === 6 && !isNaN(newPin)) {
+                localStorage.setItem('admin_pin_hash', btoa(newPin)); 
+                localStorage.setItem('pin_date', new Date().getTime());
+                alert("PIN Updated Successfully!");
+            } else {
+                alert("Invalid PIN. Must be 6 digits.");
+            }
+        };
+
+        window.logout = function() {
+            signOut(auth).then(() => location.reload());
+        };
+
+        // --- 2. SECURE ACTION VERIFICATION (PIN) ---
+        window.askSecurity = function(callback) {
+            document.getElementById('secPassInput').placeholder = "Enter 6-Digit PIN";
+            document.getElementById('secPassInput').value = "";
+            document.getElementById('secError').style.display = 'none';
+            pendingSecurityCallback = callback;
+            new bootstrap.Modal(document.getElementById('securityModal')).show();
+        };
+
+        window.verifySecurity = function() {
+            const input = document.getElementById('secPassInput').value;
+            const storedHash = localStorage.getItem('admin_pin_hash');
+
+            if (storedHash && btoa(input) === storedHash) {
+                bootstrap.Modal.getInstance(document.getElementById('securityModal')).hide();
+                if(pendingSecurityCallback) pendingSecurityCallback();
+            } 
+            else if (!storedHash) {
+                alert("No PIN set. Setup PIN via Login screen first.");
+                bootstrap.Modal.getInstance(document.getElementById('securityModal')).hide();
+            }
+            else {
+                document.getElementById('secError').style.display = 'block';
+            }
+        };
 
         // SOFT REFRESH
         window.softRefresh = function() {
