@@ -47,7 +47,7 @@
             transition: all 0.3s ease;
             background-color: #1B4D3E !important; 
             color: white !important;
-            box-shadow: none; /* Ensures no shadow separates the strip */
+            box-shadow: none;
         }
 
         /* --- 2. THE CURTAIN (Hidden Content) --- */
@@ -61,67 +61,55 @@
             overflow-y: auto; 
             scrollbar-width: none; 
             -ms-overflow-style: none; 
-            
-            /* MATCH COLOR EXACTLY */
             background-color: #1B4D3E; 
             color: white;
-            
-            /* REMOVED THE TOP BORDER TO REMOVE THE LINE */
             border-top: none; 
-            
-            /* COMPACT PADDING */
             padding: 0px 15px 20px 15px; 
-            
-            /* Shadow only at the bottom */
             box-shadow: 0 15px 20px rgba(0,0,0,0.3); 
             z-index: 1999; 
         }
         #banner-details-content::-webkit-scrollbar { display: none; }
 
-        /* Animation */
+        /* Animation for the Curtain Drop */
         #top-announcement.expanded #banner-details-content { 
             display: block; 
             animation: curtainDown 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
         @keyframes curtainDown {
-            from { opacity: 0; transform: translateY(-5px); } /* Smaller movement for smoother feel */
+            from { opacity: 0; transform: translateY(-5px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- 3. CLOSE BUTTON --- */
-        .banner-close { 
-            position: absolute; 
-            top: 5px; /* Moved up slightly */
-            right: 15px; 
-            font-size: 1.5rem; 
-            cursor: pointer; 
-            display: none; 
-            z-index: 2002;
-            color: rgba(255,255,255,0.7);
+        /* --- 3. ARROW ICON ANIMATION (The "X" Replacement) --- */
+        .jump-icon { 
+            font-size: 0.8rem; 
+            margin-left: 8px; 
+            display: inline-block;
+            transition: transform 0.3s ease; /* Smooth rotation */
         }
-        .banner-close:hover { color: #fff; }
-        .expanded .banner-close { display: block; }
-        .expanded .jump-icon { display: none; }
-
-        /* --- 4. COMPACT CONTENT STYLING (The Fix for Space) --- */
-        .jump-icon { animation: bounce 1.5s infinite; font-size: 0.8rem; margin-left: 8px; display: inline-block; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
         
-        /* Force image to be small and centered */
+        /* State 1: Closed (Bouncing Down) */
+        #top-announcement:not(.expanded) .jump-icon {
+            animation: bounce 1.5s infinite;
+        }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
+
+        /* State 2: Expanded (Rotated Up 180 degrees) */
+        #top-announcement.expanded .jump-icon {
+            animation: none; /* Stop bouncing */
+            transform: rotate(180deg); /* Flip Up */
+        }
+
+        /* --- 4. COMPACT CONTENT STYLING --- */
         #banner-details-content img { 
-            max-width: 80px !important; /* Smaller Flag */
+            max-width: 80px !important; 
             height: auto; 
             border-radius: 4px; 
             display: block; 
-            margin: 5px auto 10px auto !important; /* Tight margins */
+            margin: 5px auto 10px auto !important; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-        /* Tighten text */
-        #banner-details-content h1, 
-        #banner-details-content h2, 
-        #banner-details-content h3, 
-        #banner-details-content h4 { margin: 5px 0 !important; line-height: 1.2; }
-        
+        #banner-details-content h1, #banner-details-content h2, #banner-details-content h3, #banner-details-content h4 { margin: 5px 0 !important; line-height: 1.2; }
         #banner-details-content p { margin-bottom: 8px !important; line-height: 1.4; font-size: 0.9rem; }
    </style>
 </head>
@@ -133,9 +121,10 @@
 
     <div id="top-announcement" class="bg-primary text-white text-center py-2 small fw-bold" onclick="toggleBanner()">
         <div class="container position-relative">
-            <span id="banner-headline">Welcome to Mom's Hair Oils 🌿</span>            
-            <i id="banner-arrow" class="bi bi-caret-down-fill jump-icon" style="display:none;"></i>           
-            <i class="bi bi-x banner-close" onclick="closeBanner(event)"></i>          
+            <span id="banner-headline">Welcome to Mom's Hair Oils 🌿</span>
+            
+            <i id="banner-arrow" class="bi bi-caret-down-fill jump-icon" style="display:none;"></i>
+            
             <div id="banner-details-content" class="fw-normal text-start"></div>
         </div>
     </div>
@@ -1304,14 +1293,11 @@
                     const arrow = document.getElementById('banner-arrow');
                     const detailsDiv = document.getElementById('banner-details-content');
 
-                    // Update Text if available, otherwise keep default or hide
                     if (d.bannerText && d.bannerText.trim() !== "") {
                         headline.innerHTML = d.bannerText;
                         
-                        // Handle Rich Details
                         if (d.bannerDetails && d.bannerDetails.trim() !== "") {
                             window.currentBannerDetails = d.bannerDetails;
-                            // Clean newlines
                             detailsDiv.innerHTML = d.bannerDetails.replace(/\n/g, "<br>");
                             arrow.style.display = 'inline-block';
                         } else {
@@ -1319,7 +1305,6 @@
                             arrow.style.display = 'none';
                         }
                     } else {
-                        // If admin cleared text, hide the banner
                         el.style.display = 'none';
                     }
                 }
@@ -1327,31 +1312,13 @@
         }
         loadBanner();
 
-        // 1. Toggle: Opens the banner
+        // TOGGLE: Click anywhere to Open/Close
         window.toggleBanner = function() {
             if (!window.currentBannerDetails) return;
             const el = document.getElementById('top-announcement');
-            // Check if already open to prevent glitches
-            if (!el.classList.contains('expanded')) {
-                el.classList.add('expanded');
-            }
+            // This toggle handles both Open and Close
+            el.classList.toggle('expanded');
         }
-
-        // 2. Close: Explicitly closes it
-        window.closeBanner = function(event) {
-            if(event) event.stopPropagation(); 
-            const el = document.getElementById('top-announcement');
-            el.classList.remove('expanded');
-        }
-        
-        // 3. Desktop Hover Logic (Optional but nice)
-        const bannerEl = document.getElementById('top-announcement');
-        bannerEl.addEventListener('mouseenter', () => {
-            if(window.innerWidth > 992) toggleBanner(); // Only on Laptop/Desktop
-        });
-        bannerEl.addEventListener('mouseleave', () => {
-            if(window.innerWidth > 992) closeBanner();
-        });
 
         window.togglePaymentMethod = function() {
             const isCash = document.getElementById('payCash').checked;
@@ -1370,6 +1337,7 @@
     </script>
 </body>
 </html>
+
 
 
 
