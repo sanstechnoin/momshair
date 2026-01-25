@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Legal & Policies — Mom's Hair Oils</title>
+    <title>Legal & Policies — Mom's Hair Oil</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,8 +27,12 @@
                 <img src="apple-touch-icon.png" alt="Logo" width="40" height="40" class="me-2 rounded-circle">
                 <span>Mom's<span class="text-accent">Oil</span></span>
             </a>
-            <div class="d-flex">
+            <div class="d-flex align-items-center gap-3">
                 <a class="nav-link fw-bold text-primary" href="index.html"><i class="bi bi-arrow-left"></i> Back to Home</a>
+                
+                <button id="navCartBtn" class="btn btn-outline-primary rounded-pill px-3 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#cartModal" onclick="prepareCheckout()">
+                    <i class="bi bi-cart3"></i> <span id="cart-count" class="badge bg-primary rounded-circle">0</span>
+                </button>
             </div>
         </div>
     </nav>
@@ -58,7 +62,7 @@
                         
                         <div class="tab-pane fade show active" id="privacy" role="tabpanel">
                             <h2 class="font-heading text-primary mb-4">Privacy Policy</h2>
-                            <p>At Mom's Hair Oils, we respect your privacy and are committed to protecting the personal information you share with us. This policy explains how we handle your data.</p>
+                            <p>At Mom's Hair Oil, we respect your privacy and are committed to protecting the personal information you share with us. This policy explains how we handle your data.</p>
                             <h4>1. Information We Collect</h4>
                             <p>We collect only the essential information needed to process your order:</p>
                             <ul>
@@ -82,12 +86,12 @@
                             <h4>2. Cosmetic Use Only (Medical Disclaimer)</h4>
                             <p><strong>This product is a herbal cosmetic preparation intended for grooming and hair care.</strong> It is not a medicine and is not intended to diagnose, treat, cure, or prevent any disease (such as Alopecia or other medical hair loss conditions). Results may vary from person to person.</p>
                             <h4>3. Allergy Warning & Patch Test</h4>
-                            <p>Our oils contain natural ingredients (Coconut, Hibiscus, Fenugreek, etc.) which are generally safe. However, natural ingredients can cause allergic reactions in some individuals. <strong>We strongly recommend performing a patch test</strong> on your forearm before full use. We are not responsible for individual allergic reactions.</p>
+                            <p>Our oil contain natural ingredients (Coconut, Hibiscus, Fenugreek, etc.) which are generally safe. However, natural ingredients can cause allergic reactions in some individuals. <strong>We strongly recommend performing a patch test</strong> on your forearm before full use. We are not responsible for individual allergic reactions.</p>
                             <h4>4. Jurisdiction</h4>
                             <p>Any dispute arising out of or in connection with this agreement, including any question regarding its existence, validity, or termination, shall be subject to the exclusive jurisdiction of the courts of <strong>Coimbatore, Tamil Nadu</strong>.</p>
                             <h4>5. Grievance Officer</h4>
                             <p>In accordance with the Information Technology Act 2000 and rules made there under, the name and contact details of the Grievance Officer are provided below:</p>
-                            <p class="fw-bold">Mrs. V Brindha Rani<br>Mom's Hair Oils<br>Email: support@momshairoil.in</p>
+                            <p class="fw-bold">Mrs. V Brindha Rani<br>Mom's Hair Oil<br>Email: support@momshairoil.in</p>
                         </div>
 
                         <div class="tab-pane fade" id="shipping" role="tabpanel">
@@ -111,7 +115,7 @@
                             <p>If you have any questions regarding your order, payments, or our products, please reach out to us. We typically respond within 24 hours.</p>
                             <h4>Business Details</h4>
                             <p>
-                                <strong>Legal Entity Name:</strong> Mom's Hair Oils<br>
+                                <strong>Legal Entity Name:</strong> Mom's Hair Oil<br>
                                 <strong>Registration:</strong> UDYAM-TN-03-0306775<br>
                                 <strong>Address:</strong> Karuppasamy Street, K K Pudur, Coimbatore 641038
                             </p>
@@ -129,10 +133,30 @@
             </div>
         </div>
     </section>
-
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title font-heading fw-bold">Your Care Package</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="cart-items" class="mb-3"></div>
+                    <div class="d-flex justify-content-between fs-5 fw-bold border-top pt-3">
+                        <span>Total:</span>
+                        <span id="cart-total-display" class="text-primary">₹0</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Keep Browsing</button>
+                    <a href="index.html" class="btn btn-primary px-4">Go to Checkout <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
     <footer class="bg-dark text-white py-5">
         <div class="container text-center">
-            <h3 class="font-heading mb-3">Mom's Hair Oils</h3>
+            <h3 class="font-heading mb-3">Mom's Hair Oil</h3>
             <p class="text-white-50 mb-4">Made with ❤️ in India.</p>
             
             <div class="d-flex justify-content-center gap-4 mb-5">
@@ -150,7 +174,7 @@
                     </div>
 
                     <div class="col-md-6 text-center text-md-end">
-                        <p class="mb-1 text-white-50 small">© 2026 Mom's Hair Oils. All Rights Reserved.</p>
+                        <p class="mb-1 text-white-50 small">© 2026 Mom's Hair Oil. All Rights Reserved.</p>
                         <p class="mb-1 small fw-bold text-warning">UDYAM-TN-03-0306775</p>
                         <p class="mt-2 mb-0 small">
                             <strong class="text-white-50">Designed & Developed by</strong>
@@ -173,36 +197,95 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // 1. DYNAMIC PHONE FETCHER
+        // --- 1. SHARED CART LOGIC ---
+        try {
+            window.cart = JSON.parse(localStorage.getItem('momsCart')) || [];
+        } catch (e) { window.cart = []; }
+
+        function updateCartDisplay() {
+            const count = window.cart.reduce((sum, i) => sum + i.quantity, 0);
+            const badge = document.getElementById('cart-count');
+            if(badge) badge.innerText = count;
+        }
+        updateCartDisplay(); // Run on load
+
+        window.saveCartToMemory = function() {
+            localStorage.setItem('momsCart', JSON.stringify(window.cart));
+            updateCartDisplay();
+            prepareCheckout(); 
+        }
+
+        window.prepareCheckout = function() {
+             const container = document.getElementById('cart-items');
+             const totalDisplay = document.getElementById('cart-total-display');
+             
+             if (window.cart.length === 0) { 
+                 container.innerHTML = '<p class="text-center text-muted">Cart is empty.</p>'; 
+                 totalDisplay.innerText = "₹0";
+                 return; 
+             }
+
+             let html = '<ul class="list-group list-group-flush border-top border-bottom">';
+             let subtotal = 0;
+
+             window.cart.forEach((item, index) => {
+                 subtotal += item.price * item.quantity;
+                 html += `
+                 <li class="list-group-item px-0">
+                     <div class="row align-items-center g-2">
+                         <div class="col-6">
+                             <div class="fw-bold text-start small">${item.name}</div>
+                             <div class="small text-muted text-start">₹${item.price}</div>
+                         </div>
+                         <div class="col-3 d-flex justify-content-center">
+                            <div class="input-group input-group-sm" style="width:80px">
+                                <button class="btn btn-outline-secondary px-2" onclick="updateQuantity(${index}, -1)">-</button>
+                                <span class="input-group-text bg-white px-2 fw-bold">${item.quantity}</span>
+                                <button class="btn btn-outline-secondary px-2" onclick="updateQuantity(${index}, 1)">+</button>
+                            </div>
+                         </div>
+                         <div class="col-3 text-end fw-bold text-primary small">₹${item.price * item.quantity}</div>
+                     </div>
+                 </li>`;
+             });
+             html += '</ul>';
+             container.innerHTML = html;
+             totalDisplay.innerText = "₹" + subtotal;
+        }
+
+        window.updateQuantity = function(index, change) {
+            const item = window.cart[index];
+            const newQty = item.quantity + change;
+            if (newQty <= 0) {
+                window.cart.splice(index, 1);
+            } else {
+                item.quantity = newQty;
+            }
+            saveCartToMemory();
+        }
+
+        // --- 2. CONTACT DETAILS ---
         async function loadContactDetails() {
             try {
                 const docSnap = await getDoc(doc(db, "settings", "config"));
                 if (docSnap.exists() && docSnap.data().whatsappNumber) {
-                    const rawNum = docSnap.data().whatsappNumber.trim(); // e.g., "919952532391"
-                    
-                    // Format for display (optional, e.g. +91 99525 32391)
-                    const displayNum = "+" + rawNum; 
+                    const rawNum = docSnap.data().whatsappNumber.trim();
                     const waLink = `https://wa.me/${rawNum}`;
-
-                    // Update Contact Tab
-                    const phoneSpan = document.getElementById('dynamicPhone');
+                    
                     const phoneLink = document.getElementById('dynamicPhoneLink');
-                    if(phoneSpan) phoneSpan.innerText = displayNum;
-                    if(phoneLink) phoneLink.href = waLink;
-
-                    // Update Footer WhatsApp Icon
                     const footerWa = document.getElementById('footerWaLink');
+                    
+                    if(phoneLink) {
+                        phoneLink.href = waLink;
+                        document.getElementById('dynamicPhone').innerText = "+" + rawNum;
+                    }
                     if(footerWa) footerWa.href = waLink;
                 }
-            } catch (error) {
-                console.error("Error fetching phone:", error);
-                // Fallback if DB fails
-                document.getElementById('dynamicPhone').innerText = "+91 99525 32391"; 
-            }
+            } catch (e) { console.log(e); }
         }
         loadContactDetails();
 
-        // 2. TAB SWITCHING LOGIC
+        // --- 3. TABS ---
         document.addEventListener("DOMContentLoaded", function() {
             if (window.location.hash) {
                 const targetId = window.location.hash; 
