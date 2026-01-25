@@ -705,9 +705,8 @@
                     </select></td>
                     <td>
                         <div class="d-flex flex-column gap-1">
-                            
                             <div class="btn-group btn-group-sm w-100">
-                                <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" title="Print Packing Slip">
+                                <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" title="Print Label">
                                     <i class="bi bi-printer"></i>
                                 </button>
                                 <ul class="dropdown-menu shadow">
@@ -715,8 +714,7 @@
                                     <li><a class="dropdown-item small fw-bold" href="#" onclick="printPackingSlip('${o.id}', 'A4')">📄 A4 (Standard)</a></li>
                                     <li><a class="dropdown-item small fw-bold" href="#" onclick="printPackingSlip('${o.id}', 'A5')">📑 A5 (Half Sheet)</a></li>
                                 </ul>
-                                
-                                <button class="btn btn-warning text-dark" onclick="askForReview('${o.phone}', '${o.name}', '${o.orderId || o.id}')" title="Ask for Review (2 Weeks)">
+                                <button class="btn btn-warning text-dark" onclick="askForReview('${o.phone}', '${o.name}', '${o.orderId || o.id}')" title="Ask Review">
                                     <i class="bi bi-star"></i>
                                 </button>
                             </div>
@@ -757,102 +755,6 @@
                         await Promise.all(promises);
                     }
                 }
-
-                    // --- 1. PRO PACKING SLIP (A4 & A5 Options) ---
-        window.printPackingSlip = function(orderId, paperSize) {
-            const order = allOrdersCache.find(o => o.id === orderId);
-            if (!order) return alert("Order not found. Please refresh.");
-
-            const win = window.open('', '', 'width=600,height=800');
-            
-            // CSS to force printer paper size
-            const sizeCss = paperSize === 'A5' 
-                ? '@page { size: A5; margin: 0; } body { width: 148mm; margin: 10mm; }' 
-                : '@page { size: A4; margin: 0; } body { width: 210mm; margin: 15mm; }';
-
-            win.document.write(`
-                <html>
-                <head>
-                    <title>Label ${paperSize} - ${order.orderId}</title>
-                    <style>
-                        ${sizeCss}
-                        body { font-family: 'Helvetica', sans-serif; color: #000; box-sizing: border-box; }
-                        .container { border: 2px solid #000; padding: 20px; border-radius: 8px; }
-                        
-                        /* HEADER (Logo + From) */
-                        .header { display: flex; align-items: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 20px; }
-                        .logo { width: 60px; height: 60px; margin-right: 15px; object-fit: contain; }
-                        .from-address { font-size: 11px; line-height: 1.4; color: #333; }
-                        .from-label { font-weight: bold; font-size: 10px; text-transform: uppercase; color: #555; }
-
-                        /* TO ADDRESS (Big & Bold - The Focus) */
-                        .to-section { background: #f0f0f0; padding: 20px; border-radius: 6px; margin-bottom: 20px; border: 2px dashed #444; }
-                        .to-label { font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #555; margin-bottom: 5px; display:block; }
-                        .to-name { font-size: 24px; font-weight: 900; margin-bottom: 5px; display: block; color: #000; }
-                        .to-details { font-size: 16px; font-weight: 700; line-height: 1.5; }
-
-                        /* ITEMS TABLE */
-                        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
-                        th { text-align: left; border-bottom: 1px solid #000; padding: 5px; }
-                        td { border-bottom: 1px solid #eee; padding: 5px; vertical-align: top; }
-                        
-                        .footer { margin-top: 20px; text-align: center; font-size: 10px; color: #777; border-top: 1px solid #ccc; padding-top: 5px;}
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                        <div class="header">
-                            <img src="apple-touch-icon.png" class="logo" alt="Logo" onerror="this.style.display='none'">
-                            <div class="from-address">
-                                <span class="from-label">SENDER:</span><br>
-                                <strong>Mom's Hair Oil</strong><br>
-                                46 Karuppasamy Street, K K Pudur<br>
-                                Coimbatore 641038<br>
-                                <strong>Phone: +91 91132 32391</strong>
-                            </div>
-                        </div>
-
-                        <span class="to-label">DELIVER TO:</span>
-                        <div class="to-section">
-                            <span class="to-name">${order.name}</span>
-                            <div class="to-details">
-                                📞 ${order.phone}<br>
-                                ${order.address.replace(/\n/g, '<br>')}
-                            </div>
-                        </div>
-
-                        <span class="to-label" style="margin-top:10px;">PACKAGE CONTENTS:</span>
-                        <table>
-                            <thead><tr><th>Item Description</th><th style="text-align:right;">Qty</th></tr></thead>
-                            <tbody>
-                                ${order.cartDetails ? order.cartDetails.map(i => 
-                                    `<tr><td>${i.name} <small>(${i.size})</small></td><td style="text-align:right; font-weight:bold;">1</td></tr>`
-                                ).join('') : `<tr><td>${order.items.replace(/\n/g, ', ')}</td><td style="text-align:right;">-</td></tr>`}
-                            </tbody>
-                        </table>
-
-                        <div class="footer">
-                            Order #${order.orderId} • Handle with Care 🌿
-                        </div>
-                    </div>
-                    <script>
-                        // Slight delay to ensure logo loads
-                        setTimeout(() => { window.print(); }, 500);
-                    <\/script>
-                </body>
-                </html>
-            `);
-        };
-
-        // --- 2. ASK FOR REVIEW (WhatsApp) ---
-        window.askForReview = function(phone, name, orderId) {
-            // Smart Message with Link
-            const msg = `Hi ${name}! 🌿 \n\nIt's been a couple of weeks since you ordered Mom's Hair Oil. We hope you are loving the results! ✨\n\nCould you spare 30 seconds to share your experience? It means the world to us.\n\n👇 Write a Review:\nhttps://momshairoil.in/tracker.html?id=${orderId}`;
-            
-            let cleanPhone = phone.replace(/\D/g, ''); 
-            if(cleanPhone.length === 10) cleanPhone = '91' + cleanPhone;
-            window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
-        };
                 
                 // B. If we are RESTORING a cancelled order (Un-Cancel) -> Decrease Stock (-)
                 else if (oldStatus === "Cancelled" && newStatus !== "Cancelled") {
@@ -903,6 +805,82 @@
             window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
+        // --- 1. PRO PACKING SLIP (A4 & A5) ---
+        window.printPackingSlip = function(orderId, paperSize) {
+            const order = allOrdersCache.find(o => o.id === orderId);
+            if (!order) return alert("Order not found. Please refresh.");
+
+            const win = window.open('', '', 'width=600,height=800');
+            
+            // CSS to force printer paper size
+            const sizeCss = paperSize === 'A5' 
+                ? '@page { size: A5; margin: 0; } body { width: 148mm; margin: 10mm; }' 
+                : '@page { size: A4; margin: 0; } body { width: 210mm; margin: 15mm; }';
+
+            win.document.write(`
+                <html>
+                <head>
+                    <title>Label ${paperSize} - ${order.orderId}</title>
+                    <style>
+                        ${sizeCss}
+                        body { font-family: 'Helvetica', sans-serif; color: #000; box-sizing: border-box; }
+                        .container { border: 2px solid #000; padding: 20px; border-radius: 8px; }
+                        .header { display: flex; align-items: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 20px; }
+                        .logo { width: 60px; height: 60px; margin-right: 15px; object-fit: contain; }
+                        .from-address { font-size: 11px; line-height: 1.4; color: #333; }
+                        .from-label { font-weight: bold; font-size: 10px; text-transform: uppercase; color: #555; }
+                        .to-section { background: #f0f0f0; padding: 20px; border-radius: 6px; margin-bottom: 20px; border: 2px dashed #444; }
+                        .to-label { font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #555; margin-bottom: 5px; display:block; }
+                        .to-name { font-size: 24px; font-weight: 900; margin-bottom: 5px; display: block; color: #000; }
+                        .to-details { font-size: 16px; font-weight: 700; line-height: 1.5; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+                        th { text-align: left; border-bottom: 1px solid #000; padding: 5px; }
+                        td { border-bottom: 1px solid #eee; padding: 5px; vertical-align: top; }
+                        .footer { margin-top: 20px; text-align: center; font-size: 10px; color: #777; border-top: 1px solid #ccc; padding-top: 5px;}
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <img src="apple-touch-icon.png" class="logo" alt="Logo" onerror="this.style.display='none'">
+                            <div class="from-address">
+                                <span class="from-label">SENDER:</span><br>
+                                <strong>Mom's Hair Oil</strong><br>
+                                46 Karuppasamy Street, K K Pudur<br>
+                                Coimbatore 641038<br>
+                                <strong>Phone: +91 91132 32391</strong>
+                            </div>
+                        </div>
+                        <span class="to-label">DELIVER TO:</span>
+                        <div class="to-section">
+                            <span class="to-name">${order.name}</span>
+                            <div class="to-details">📞 ${order.phone}<br>${order.address.replace(/\n/g, '<br>')}</div>
+                        </div>
+                        <span class="to-label" style="margin-top:10px;">PACKAGE CONTENTS:</span>
+                        <table>
+                            <thead><tr><th>Item Description</th><th style="text-align:right;">Qty</th></tr></thead>
+                            <tbody>
+                                ${order.cartDetails ? order.cartDetails.map(i => 
+                                    `<tr><td>${i.name} <small>(${i.size})</small></td><td style="text-align:right; font-weight:bold;">1</td></tr>`
+                                ).join('') : `<tr><td>${order.items.replace(/\n/g, ', ')}</td><td style="text-align:right;">-</td></tr>`}
+                            </tbody>
+                        </table>
+                        <div class="footer">Order #${order.orderId} • Handle with Care 🌿</div>
+                    </div>
+                    <script>setTimeout(() => { window.print(); }, 500);<\/script>
+                </body>
+                </html>
+            `);
+        };
+
+        // --- 2. ASK FOR REVIEW (WhatsApp) ---
+        window.askForReview = function(phone, name, orderId) {
+            const msg = `Hi ${name}! 🌿 \n\nIt's been a couple of weeks since you ordered Mom's Hair Oil. We hope you are loving the results! ✨\n\nCould you spare 30 seconds to share your experience? It means the world to us.\n\n👇 Write a Review:\nhttps://momshairoil.in/tracker.html?id=${orderId}`;
+            let cleanPhone = phone.replace(/\D/g, ''); 
+            if(cleanPhone.length === 10) cleanPhone = '91' + cleanPhone;
+            window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+        };
+        
         function startLoading() { document.getElementById('loadingState').style.display='block'; document.getElementById('successState').style.display='none'; new bootstrap.Modal(document.getElementById('updateModal')).show(); }
         function stopLoading() { 
             document.getElementById('loadingState').style.display='none'; 
