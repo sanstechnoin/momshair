@@ -12,6 +12,26 @@
     <meta property="og:url" content="https://momshairoil.in/tracker.html">
     <meta name="theme-color" content="#1B4D3E">
     
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Store",
+      "name": "Mom's Hair Oils",
+      "image": "https://momshairoil.in/apple-touch-icon.png",
+      "description": "Handcrafted, sun-cooked herbal hair oils made in small batches.",
+      "telephone": "+919952532391",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Karuppasamy Street, K K Pudur",
+        "addressLocality": "Coimbatore",
+        "addressRegion": "TN",
+        "postalCode": "641038",
+        "addressCountry": "IN"
+      },
+      "url": "https://momshairoil.in"
+    }
+    </script>
+    
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -40,11 +60,14 @@
 
         .card { border: none; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         
-        /* INVOICE BUTTON STATES */
+        /* BUTTON STATES */
         .btn-invoice { background-color: #1B4D3E; color: white; border-radius: 30px; padding: 12px 25px; font-weight: bold; width: 100%; transition: 0.3s; border: none; }
         .btn-invoice:hover { background-color: #143a2f; color: white; transform: translateY(-2px); }
         
         .btn-locked { background-color: #6c757d !important; cursor: not-allowed; opacity: 0.8; color: white; border-radius: 30px; padding: 12px 25px; width: 100%; font-weight: bold; border: none; }
+
+        .btn-track { background-color: #ffc107; color: #000; font-weight: bold; border-radius: 10px; padding: 12px; width: 100%; display: block; text-decoration: none; margin-bottom: 20px; transition: 0.2s; border: 1px solid #e0a800; }
+        .btn-track:hover { background-color: #ffca2c; transform: translateY(-1px); }
     </style>
 </head>
 <body>
@@ -86,6 +109,12 @@
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="fw-bold mb-0">Order Status</h5>
                         <span id="orderIdDisplay" class="badge bg-secondary"></span>
+                    </div>
+
+                    <div id="trackingBox" style="display:none;">
+                        <a id="trackingLinkBtn" href="#" target="_blank" class="btn-track text-center shadow-sm">
+                            <i class="bi bi-box-seam"></i> Track Shipment Package
+                        </a>
                     </div>
                     
                     <ul class="timeline" id="statusTimeline"></ul>
@@ -235,11 +264,13 @@
         }
 
         // --- 2. CONTACT DETAILS ---
+        let businessPhone = "+91 99525 32391"; // Fallback
         async function loadContactDetails() {
             try {
                 const docSnap = await getDoc(doc(db, "settings", "config"));
                 if (docSnap.exists() && docSnap.data().whatsappNumber) {
                     const rawNum = docSnap.data().whatsappNumber.trim();
+                    businessPhone = "+" + rawNum; // Store for Invoice
                     const waLink = `https://wa.me/${rawNum}`;
                     const footerWa = document.getElementById('footerWaLink');
                     if(footerWa) footerWa.href = waLink;
@@ -269,67 +300,50 @@
         }
 
         function renderTimeline(data) {
-            // Define Standard Process
             const steps = ["Pending Verification", "Processing", "Shipped", "Delivered"];
-            
-            // Map actual database status to visual step
             let currentStatus = data.status || "Pending Verification";
-            
-            // Handle "Payment Notification" as Step 1 (Waiting)
             if (currentStatus === "Payment Notification") currentStatus = "Pending Verification";
-            
-            // Handle "Received" as Step 2 (Processing)
             if (currentStatus === "Received") currentStatus = "Processing";
 
             let html = '';
             let reachedCurrent = false;
-
-            // Handle Cancelled Case
             const isCancelled = currentStatus.includes("Cancel");
 
             if (isCancelled) {
-                html = `
-                <li class="timeline-item cancelled">
-                    <div class="time-content">
-                        <h5 class="fw-bold mb-0">Order Cancelled</h5>
-                        <p class="text-muted small">This order has been cancelled.</p>
-                    </div>
-                </li>`;
+                html = `<li class="timeline-item cancelled"><div class="time-content"><h5 class="fw-bold mb-0">Order Cancelled</h5><p class="text-muted small">This order has been cancelled.</p></div></li>`;
             } else {
                 steps.forEach(step => {
                     let isActive = false;
-                    if (!reachedCurrent) { 
-                        isActive = true; 
-                        if (step === currentStatus) reachedCurrent = true; 
-                    } 
-                    
-                    html += `
-                    <li class="timeline-item ${isActive ? 'active' : ''}">
-                        <div class="time-content">
-                            <h5 class="fw-bold mb-0" style="font-size:1rem;">${step}</h5>
-                            ${step === "Shipped" && isActive && data.trackingLink ? `<a href="${data.trackingLink}" target="_blank" class="small text-primary text-decoration-none">Track Package &rarr;</a>` : ''}
-                        </div>
-                    </li>`;
+                    if (!reachedCurrent) { isActive = true; if (step === currentStatus) reachedCurrent = true; } 
+                    else { isActive = false; }
+                    html += `<li class="timeline-item ${isActive ? 'active' : ''}"><div class="time-content"><h5 class="fw-bold mb-0" style="font-size:1rem;">${step}</h5></div></li>`;
                 });
             }
             document.getElementById('statusTimeline').innerHTML = html;
             
+            // --- NEW: PERSISTENT TRACKING BUTTON ---
+            const trackBox = document.getElementById('trackingBox');
+            if(data.trackingLink) {
+                trackBox.style.display = 'block';
+                document.getElementById('trackingLinkBtn').href = data.trackingLink;
+            } else {
+                trackBox.style.display = 'none';
+            }
+            
             // --- INVOICE UNLOCK LOGIC ---
-            // Legal Check: Only unlock if status implies payment received
             const paidStatuses = ["Processing", "Shipped", "Delivered", "Received"];
             const invoiceBtn = document.getElementById('invoiceBtn');
             const invoiceMsg = document.getElementById('invoiceMsg');
             
             if (paidStatuses.includes(data.status)) {
                 invoiceBtn.disabled = false;
-                invoiceBtn.className = "btn-invoice"; // Green
+                invoiceBtn.className = "btn-invoice"; 
                 invoiceBtn.innerHTML = '<i class="bi bi-receipt-cutoff"></i> Download Official Invoice';
                 invoiceMsg.innerHTML = "Save this for your records.";
             } else {
                 invoiceBtn.disabled = true;
-                invoiceBtn.className = "btn-locked"; // Grey
+                invoiceBtn.className = "btn-locked"; 
                 invoiceBtn.innerHTML = '<i class="bi bi-lock-fill"></i> Invoice Locked';
-                
                 if(isCancelled) invoiceMsg.innerHTML = "Invoice not available for cancelled orders.";
                 else invoiceMsg.innerHTML = "Invoice is available only after payment confirmation.";
             }
@@ -342,6 +356,23 @@
         window.generateInvoice = function() {
             if(!currentOrderData) return;
             const o = currentOrderData;
+            
+            // PAYMENT MODE LOGIC (Updated)
+            let paymentDisplay = "Online Payment";
+            
+            // 1. Explicit Cash
+            if(o.txnId === 'CASH_PAYMENT') {
+                paymentDisplay = "Cash Payment";
+            } 
+            // 2. Screenshot Only (Matches Logic in Index.html)
+            else if(o.txnId === 'Screenshot Uploaded' || (!o.txnId && o.screenshot)) {
+                paymentDisplay = "UPI Payment (Verified)";
+            } 
+            // 3. Valid UTR
+            else {
+                paymentDisplay = `UTR: ${o.txnId || 'Pending'}`;
+            }
+
             const win = window.open('', '_blank');
             win.document.write(`
                 <html>
@@ -350,6 +381,7 @@
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <style>
                         body { font-family: 'Helvetica Neue', sans-serif; padding: 20px; background: #fff; color: #333; max-width: 500px; margin: 0 auto; }
+                        @media print { .no-print { display: none !important; } }
                         .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #1B4D3E; padding-bottom: 20px; }
                         .logo { font-size: 24px; font-weight: bold; color: #1B4D3E; margin-bottom: 5px; }
                         .sub-logo { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
@@ -364,10 +396,17 @@
                     </style>
                 </head>
                 <body>
+                    <div class="no-print" style="text-align:center; margin-bottom:20px;">
+                        <button onclick="window.print()" style="background:#333; color:#fff; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold;">
+                            <i class="bi bi-printer"></i> Print / Save as PDF
+                        </button>
+                    </div>
+
                     <div class="header">
                         <div class="logo">Mom's Hair Oils 🌿</div>
                         <div class="sub-logo">Heirloom & Handcrafted</div>
                         <div class="udyam">UDYAM-TN-03-0306775</div>
+                        <div style="font-size:12px; margin-top:5px; color:#555;">Support: ${businessPhone}</div>
                     </div>
                     <div class="box">
                         <div class="label">BILLED TO</div>
@@ -382,14 +421,24 @@
                             <div><span class="label">DATE:</span> <span class="val">${new Date(o.timestamp.seconds * 1000).toLocaleDateString()}</span></div>
                         </div>
                     </div>
+                    
+                    ${o.trackingLink ? `
+                    <div class="box">
+                        <div class="label">SHIPMENT TRACKING</div>
+                        <div class="val" style="word-break: break-all; font-size:13px;">${o.trackingLink}</div>
+                    </div>` : ''}
+
                     <div style="margin-bottom: 30px;">
                         <div class="label" style="border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 10px;">ITEMS PURCHASED</div>
-                        ${o.cartDetails ? o.cartDetails.map(item => `<div class="item-row"><div>${item.name} (${item.size}) <span style="font-size:12px; color:#777;">x1</span></div><div>₹${item.price}</div></div>`).join('') : `<div class="item-row"><div>${o.items}</div></div>`}
+                        ${o.cartDetails ? o.cartDetails.map(item => `<div class="item-row"><div>${item.name} <span style="font-size:12px; color:#777;">x1</span></div><div>₹${item.price}</div></div>`).join('') : `<div class="item-row"><div>${o.items}</div></div>`}
                     </div>
                     <div>
                         <div class="total-row"><span>Subtotal</span> <span>₹${o.subtotal}</span></div>
                         <div class="total-row"><span>Shipping</span> <span>₹${o.shipping}</span></div>
-                        ${o.discount > 0 ? `<div class="total-row" style="color:green;"><span>Discount</span> <span>-₹${o.discount}</span></div>` : ''}
+                        ${o.discount > 0 ? `<div class="total-row" style="color:green;"><span>Discount ${o.coupon && o.coupon !== 'NONE' ? `(${o.coupon})` : ''}</span> <span>-₹${o.discount}</span></div>` : ''}
+                        
+                        <div class="total-row" style="color:#777; margin-top:10px; font-size:12px;"><span>Payment Ref</span> <span>${paymentDisplay}</span></div>
+
                         <div class="total-row grand-total"><span>TOTAL PAID</span><span>₹${o.total}</span></div>
                     </div>
                     <div class="footer">
