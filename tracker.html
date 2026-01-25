@@ -3,284 +3,421 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Track & Review - Mom's Hair Oil</title>
+    <title>Track & Invoice - Mom's Hair Oil</title>
+    
+    <meta name="description" content="Track your Mom's Hair Oil order status and download your official invoice. Pure, handcrafted, and heirloom quality.">
+    <meta property="og:title" content="Track Your Order - Mom's Hair Oil">
+    <meta property="og:description" content="Check where your handcrafted batch is and download your bill of supply.">
+    <meta property="og:image" content="https://momshairoil.in/apple-touch-icon.png">
+    <meta property="og:url" content="https://momshairoil.in/tracker.html">
+    <meta name="theme-color" content="#1B4D3E">
     
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css"> 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     
     <style>
-        body { background-color: #F9F7F3; font-family: 'Lato', sans-serif; }
-        .timeline { list-style: none; padding: 0; position: relative; }
-        .timeline:before { content: ''; position: absolute; top: 0; bottom: 0; left: 20px; width: 2px; background: #ddd; margin-left: -1.5px; }
-        .timeline-item { margin-bottom: 20px; position: relative; padding-left: 50px; }
-        .timeline-item:before { content: ''; position: absolute; left: 11px; top: 5px; width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 3px solid #ccc; }
-        .timeline-item.active:before { background: #1B4D3E; border-color: #1B4D3E; }
-        .timeline-item.active .timeline-title { color: #1B4D3E; font-weight: bold; }
+        body { background-color: #f8f9fa; font-family: 'Lato', sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
+        main { flex: 1; }
+
+        /* TIMELINE STYLES */
+        .timeline { list-style: none; padding: 0; position: relative; margin-top: 20px; }
+        .timeline:before { content: ''; position: absolute; top: 0; bottom: 0; left: 20px; width: 2px; background: #ddd; margin-left: -1px; }
+        .timeline-item { margin-bottom: 30px; position: relative; padding-left: 50px; }
+        .timeline-item:before { content: ''; position: absolute; left: 11px; top: 5px; width: 18px; height: 18px; border-radius: 50%; background: #fff; border: 4px solid #ccc; z-index: 1; }
         
-        /* Star Rating */
-        .star-rating { direction: rtl; display: inline-flex; font-size: 2rem; }
-        .star-rating input { display: none; }
-        .star-rating label { color: #ddd; cursor: pointer; transition: color 0.2s; }
-        .star-rating input:checked ~ label, .star-rating label:hover, .star-rating label:hover ~ label { color: #C17C28; }
+        /* Active State (Green) */
+        .timeline-item.active:before { border-color: #198754; background: #198754; }
+        .timeline-item.active .time-content h5 { color: #198754; }
+        
+        /* Cancelled State (Red) */
+        .timeline-item.cancelled:before { border-color: #dc3545; background: #dc3545; }
+        .timeline-item.cancelled .time-content h5 { color: #dc3545; }
+
+        .card { border: none; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        
+        /* INVOICE BUTTON STATES */
+        .btn-invoice { background-color: #1B4D3E; color: white; border-radius: 30px; padding: 12px 25px; font-weight: bold; width: 100%; transition: 0.3s; border: none; }
+        .btn-invoice:hover { background-color: #143a2f; color: white; transform: translateY(-2px); }
+        
+        .btn-locked { background-color: #6c757d !important; cursor: not-allowed; opacity: 0.8; color: white; border-radius: 30px; padding: 12px 25px; width: 100%; font-weight: bold; border: none; }
     </style>
 </head>
 <body>
 
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="text-center mb-4">
-                    <h2 class="fw-bold" style="color: #1B4D3E;">Track Your Order</h2>
-                    <p class="text-muted">Enter your Order ID to check status & leave feedback.</p>
-                </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-cream sticky-top shadow-sm">
+        <div class="container d-flex justify-content-between">
+            <a class="navbar-brand font-heading text-primary fw-bold fs-2 d-flex align-items-center" href="index.html">
+                <img src="apple-touch-icon.png" alt="Logo" width="40" height="40" class="me-2 rounded-circle">
+                <span>Mom's<span class="text-accent">Oil</span></span>
+            </a>
+            
+            <div class="d-flex align-items-center gap-2">
+                <a class="nav-link fw-bold text-primary small text-decoration-none" href="index.html">
+                    <i class="bi bi-house-door-fill"></i> Home
+                </a>
+                <button id="navCartBtn" class="btn btn-outline-primary rounded-pill px-3 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#cartModal" onclick="prepareCheckout()">
+                    <i class="bi bi-cart3"></i> <span id="cart-count" class="badge bg-primary rounded-circle">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
 
-                <div class="card shadow-sm border-0 mb-4">
-                    <div class="card-body p-4">
-                        <div class="input-group mb-3">
-                            <input type="text" id="orderInput" class="form-control form-control-lg" placeholder="Enter Order ID (e.g. M-123456)">
-                            <button class="btn btn-primary" style="background-color: #1B4D3E;" onclick="trackOrder()">Track</button>
-                        </div>
+    <main class="py-5">
+        <div class="container" style="max-width: 600px;">
+            <div class="text-center mb-4">
+                <h2 class="font-heading fw-bold" style="color: #1B4D3E;">Track Your Order 🌿</h2>
+                <p class="text-muted">Enter your Order ID to check status & download invoice.</p>
+            </div>
+
+            <div class="card p-4 mb-4">
+                <div class="input-group mb-3">
+                    <input type="text" id="orderInput" class="form-control form-control-lg" placeholder="e.g. M-123456">
+                    <button class="btn btn-dark" onclick="searchOrder()">Track</button>
+                </div>
+            </div>
+
+            <div id="resultSection" style="display:none;">
+                <div class="card p-4 mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0">Order Status</h5>
+                        <span id="orderIdDisplay" class="badge bg-secondary"></span>
+                    </div>
+                    
+                    <ul class="timeline" id="statusTimeline"></ul>
+
+                    <div class="mt-4 pt-3 border-top">
+                        <button id="invoiceBtn" class="btn-locked" onclick="generateInvoice()" disabled>
+                            <i class="bi bi-lock-fill"></i> Invoice Locked (Payment Pending)
+                        </button>
+                        <small id="invoiceMsg" class="text-muted d-block text-center mt-2" style="font-size: 0.8rem;">
+                            Invoice is available only after payment confirmation.
+                        </small>
                     </div>
                 </div>
 
-                <div id="statusResult" style="display: none;">
-                    <div class="card shadow-sm border-0 mb-4">
-                        <div class="card-header bg-white border-bottom-0 pt-4 px-4">
-                            <h5 class="mb-0">Order: <span id="displayId" class="text-primary fw-bold"></span></h5>
-                            <small class="text-muted">Ordered on: <span id="displayDate"></span></small>
-                        </div>
-                        <div class="card-body px-4 pb-4">
-                            <div class="progress my-3" style="height: 6px;">
-                                <div id="progressBar" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+                <div id="feedbackSection" class="card p-4" style="display:none;">
+                    <h5 class="fw-bold text-center mb-3">Rate Your Experience</h5>
+                    <form id="reviewForm">
+                        <div class="mb-3 text-center">
+                            <label class="form-label d-block text-muted small">Tap to Rate</label>
+                            <div class="rating-stars" style="font-size: 2rem; color: #ffc107; cursor: pointer;">
+                                <i class="bi bi-star" data-val="1"></i>
+                                <i class="bi bi-star" data-val="2"></i>
+                                <i class="bi bi-star" data-val="3"></i>
+                                <i class="bi bi-star" data-val="4"></i>
+                                <i class="bi bi-star" data-val="5"></i>
                             </div>
-                            
-                            <h4 class="text-center my-4 fw-bold" id="currentStatusText">Checking...</h4>
-
-                            <p id="trackingDisplay" class="text-center text-muted small bg-light p-2 rounded" style="display:none;">
-                                🚚 Tracking Number: <span class="fw-bold text-dark" id="trackingNum"></span>
-                            </p>
-
-                            <ul class="timeline mt-4">
-                                <li class="timeline-item active">
-                                    <div class="timeline-title">Order Received</div>
-                                    <small class="text-muted">We have received your request.</small>
-                                </li>
-                                <li class="timeline-item" id="step-Payment">
-                                    <div class="timeline-title">Payment Received</div>
-                                    <small class="text-muted">Admin has verified your payment.</small>
-                                </li>
-                                <li class="timeline-item" id="step-Shipped">
-                                    <div class="timeline-title">Shipped</div>
-                                    <small class="text-muted">Your order is on the way.</small>
-                                </li>
-                                <li class="timeline-item" id="step-Delivered">
-                                    <div class="timeline-title">Delivered</div>
-                                    <small class="text-muted">Package delivered.</small>
-                                </li>
-                            </ul>
+                            <input type="hidden" id="ratingValue" value="5">
                         </div>
-                    </div>
+                        <textarea class="form-control mb-3" id="reviewText" rows="3" placeholder="How is the hair oil?" required></textarea>
+                        <button type="submit" class="btn btn-outline-success w-100">Submit Review</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
 
-                    <div id="feedbackSection" class="card shadow-lg border-warning mb-4" style="display: none;">
-                        <div class="card-header bg-warning text-dark text-center">
-                            <h5 class="mb-0 fw-bold"><i class="bi bi-star-fill"></i> Write a Love Note</h5>
-                        </div>
-                        <div class="card-body p-4 text-center">
-                            <p class="text-muted">Since your order is delivered, we'd love to hear your thoughts!</p>
-                            
-                            <form id="reviewForm">
-                                <input type="hidden" id="verifiedOrderId">
-                                <input type="hidden" id="verifiedName">
-                                
-                                <div class="mb-3">
-                                    <div class="star-rating">
-                                        <input type="radio" id="star5" name="rating" value="5"><label for="star5" title="5 stars"><i class="bi bi-star-fill"></i></label>
-                                        <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="4 stars"><i class="bi bi-star-fill"></i></label>
-                                        <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="3 stars"><i class="bi bi-star-fill"></i></label>
-                                        <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="2 stars"><i class="bi bi-star-fill"></i></label>
-                                        <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="1 star"><i class="bi bi-star-fill"></i></label>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <textarea id="reviewText" class="form-control" rows="3" required placeholder="How is the smell? The texture? Tell us..."></textarea>
-                                </div>
-
-                                <button type="submit" class="btn btn-primary w-100">Submit Verified Review</button>
-                            </form>
-                        </div>
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title font-heading fw-bold">Your Care Package</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="cart-items" class="mb-3"></div>
+                    <div class="d-flex justify-content-between fs-5 fw-bold border-top pt-3">
+                        <span>Total:</span>
+                        <span id="cart-total-display" class="text-primary">₹0</span>
                     </div>
                 </div>
-                
-                <div class="text-center mt-4">
-                    <a href="index.html" class="text-decoration-none" style="color: #1B4D3E;">← Back to Shop</a>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Keep Browsing</button>
+                    <a href="index.html" class="btn btn-primary px-4">Go to Checkout <i class="bi bi-arrow-right"></i></a>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="thankYouModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content text-center p-4">
-                <h3 class="text-success"><i class="bi bi-check-circle-fill"></i></h3>
-                <h4 class="fw-bold">Thank You!</h4>
-                <p>Your Verified Review has been submitted. It will appear on the homepage after approval.</p>
-                <button class="btn btn-outline-primary" data-bs-dismiss="modal">Close</button>
+    <footer class="bg-dark text-white py-5">
+        <div class="container text-center">
+            <h3 class="font-heading mb-3">Mom's Hair Oils</h3>
+            <p class="text-white-50 mb-4">Made with ❤️ in India.</p>
+            
+            <div class="d-flex justify-content-center gap-4 mb-5">
+                <a id="footerWaLink" href="#" target="_blank" class="text-white fs-2 hover-gold"><i class="bi bi-whatsapp"></i></a>
+                <a href="https://instagram.com/its_moms_hair_oil" target="_blank" class="text-white fs-2 hover-gold"><i class="bi bi-instagram"></i></a>
+            </div>
+
+            <div class="border-top border-secondary pt-4">
+                <div class="row g-4 align-items-center">
+                    <div class="col-md-6 text-center text-md-start">
+                        <p class="mb-1 small"><a href="legal.html#privacy" class="text-white-50 text-decoration-none">Privacy Policy</a></p>
+                        <p class="mb-1 small"><a href="legal.html#terms" class="text-white-50 text-decoration-none">Terms & Conditions</a></p>
+                        <p class="mb-0 small"><a href="legal.html#shipping" class="text-white-50 text-decoration-none">Shipping & Returns</a></p>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <p class="mb-1 text-white-50 small">© 2026 Mom's Hair Oils. All Rights Reserved.</p>
+                        <p class="mb-1 small fw-bold text-warning">UDYAM-TN-03-0306775</p>
+                        <p class="mt-2 mb-0 small">
+                            <strong class="text-white-50">Designed & Developed by</strong>
+                            <a href="https://santechnologies.de/" target="_blank" rel="noopener noreferrer" style="color: #ccc; text-decoration: none; font-weight: bold;"> SAN Technologies</a>
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyA659yIOvlhVTm8-S6RtUDPXxVM8dZZ_kM",
-            authDomain: "momshairoil-3010.firebaseapp.com",
-            projectId: "momshairoil-3010",
-            storageBucket: "momshairoil-3010.firebasestorage.app",
-            messagingSenderId: "884566098620",
-            appId: "1:884566098620:web:bca34f4f82d7b6712ec6b9"
-        };
-
+        const firebaseConfig = { apiKey: "AIzaSyA659yIOvlhVTm8-S6RtUDPXxVM8dZZ_kM", authDomain: "momshairoil-3010.firebaseapp.com", projectId: "momshairoil-3010", storageBucket: "momshairoil-3010.firebasestorage.app", messagingSenderId: "884566098620", appId: "1:884566098620:web:bca34f4f82d7b6712ec6b9" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- FETCH MASTER EMAIL ---
-        let masterEmail = "vabinanthana@gmail.com"; 
-        getDoc(doc(db, "settings", "config")).then(snap => { 
-            if(snap.exists() && snap.data().masterEmail) {
-                masterEmail = snap.data().masterEmail;
-            }
-        });
+        // --- 1. SHARED CART LOGIC ---
+        try { window.cart = JSON.parse(localStorage.getItem('momsCart')) || []; } catch (e) { window.cart = []; }
+        function updateCartDisplay() {
+            const count = window.cart.reduce((sum, i) => sum + i.quantity, 0);
+            const badge = document.getElementById('cart-count');
+            if(badge) badge.innerText = count;
+        }
+        updateCartDisplay(); 
 
-        // --- TRACKING LOGIC ---
-        window.trackOrder = async function() {
-            const inputId = document.getElementById('orderInput').value.trim();
-            if (!inputId) return alert("Please enter an Order ID");
+        window.updateQuantity = function(index, change) {
+            const item = window.cart[index];
+            const newQty = item.quantity + change;
+            if (newQty <= 0) window.cart.splice(index, 1);
+            else item.quantity = newQty;
+            localStorage.setItem('momsCart', JSON.stringify(window.cart));
+            updateCartDisplay();
+            prepareCheckout(); 
+        }
 
-            const statusResult = document.getElementById('statusResult');
-            const feedbackSection = document.getElementById('feedbackSection');
-            const displayId = document.getElementById('displayId');
-            const displayDate = document.getElementById('displayDate');
-            const statusText = document.getElementById('currentStatusText');
-            
-            // Elements for Tracking Number Display
-            const trackingEl = document.getElementById('trackingDisplay');
-            const trackingNumEl = document.getElementById('trackingNum');
-            
+        window.prepareCheckout = function() {
+             const container = document.getElementById('cart-items');
+             const totalDisplay = document.getElementById('cart-total-display');
+             if (window.cart.length === 0) { 
+                 container.innerHTML = '<p class="text-center text-muted">Cart is empty.</p>'; 
+                 totalDisplay.innerText = "₹0"; return; 
+             }
+             let html = '<ul class="list-group list-group-flush border-top border-bottom">';
+             let subtotal = 0;
+             window.cart.forEach((item, index) => {
+                 subtotal += item.price * item.quantity;
+                 html += `
+                 <li class="list-group-item px-0">
+                     <div class="row align-items-center g-2">
+                         <div class="col-6"><div class="fw-bold text-start small">${item.name}</div><div class="small text-muted text-start">₹${item.price}</div></div>
+                         <div class="col-3 d-flex justify-content-center">
+                            <div class="input-group input-group-sm" style="width:80px">
+                                <button class="btn btn-outline-secondary px-2" onclick="updateQuantity(${index}, -1)">-</button>
+                                <span class="input-group-text bg-white px-2 fw-bold">${item.quantity}</span>
+                                <button class="btn btn-outline-secondary px-2" onclick="updateQuantity(${index}, 1)">+</button>
+                            </div>
+                         </div>
+                         <div class="col-3 text-end fw-bold text-primary small">₹${item.price * item.quantity}</div>
+                     </div>
+                 </li>`;
+             });
+             html += '</ul>';
+             container.innerHTML = html;
+             totalDisplay.innerText = "₹" + subtotal;
+        }
+
+        // --- 2. CONTACT DETAILS ---
+        async function loadContactDetails() {
             try {
-                const docRef = doc(db, "orders", inputId);
-                const docSnap = await getDoc(docRef);
+                const docSnap = await getDoc(doc(db, "settings", "config"));
+                if (docSnap.exists() && docSnap.data().whatsappNumber) {
+                    const rawNum = docSnap.data().whatsappNumber.trim();
+                    const waLink = `https://wa.me/${rawNum}`;
+                    const footerWa = document.getElementById('footerWaLink');
+                    if(footerWa) footerWa.href = waLink;
+                }
+            } catch (e) { console.log(e); }
+        }
+        loadContactDetails();
 
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    statusResult.style.display = "block";
-                    displayId.innerText = inputId;
-                    if (data.timestamp) displayDate.innerText = new Date(data.timestamp.seconds * 1000).toLocaleDateString();
+        // --- 3. TRACKER STATUS & TIMELINE ---
+        let currentOrderData = null;
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlId = urlParams.get('id');
+        if(urlId) { document.getElementById('orderInput').value = urlId; searchOrder(); }
+
+        window.searchOrder = async function() {
+            const id = document.getElementById('orderInput').value.trim();
+            if(!id) return;
+            try {
+                const docSnap = await getDoc(doc(db, "orders", id));
+                if(docSnap.exists()) {
+                    currentOrderData = docSnap.data();
+                    renderTimeline(currentOrderData);
+                    document.getElementById('resultSection').style.display = 'block';
+                    document.getElementById('orderIdDisplay').innerText = id;
+                } else { alert("Order ID not found."); }
+            } catch(e) { console.error(e); alert("Error fetching order."); }
+        }
+
+        function renderTimeline(data) {
+            // Define Standard Process
+            const steps = ["Pending Verification", "Processing", "Shipped", "Delivered"];
+            
+            // Map actual database status to visual step
+            let currentStatus = data.status || "Pending Verification";
+            
+            // Handle "Payment Notification" as Step 1 (Waiting)
+            if (currentStatus === "Payment Notification") currentStatus = "Pending Verification";
+            
+            // Handle "Received" as Step 2 (Processing)
+            if (currentStatus === "Received") currentStatus = "Processing";
+
+            let html = '';
+            let reachedCurrent = false;
+
+            // Handle Cancelled Case
+            const isCancelled = currentStatus.includes("Cancel");
+
+            if (isCancelled) {
+                html = `
+                <li class="timeline-item cancelled">
+                    <div class="time-content">
+                        <h5 class="fw-bold mb-0">Order Cancelled</h5>
+                        <p class="text-muted small">This order has been cancelled.</p>
+                    </div>
+                </li>`;
+            } else {
+                steps.forEach(step => {
+                    let isActive = false;
+                    if (!reachedCurrent) { 
+                        isActive = true; 
+                        if (step === currentStatus) reachedCurrent = true; 
+                    } 
                     
-                    const status = data.status || "Pending Verification";
-                    statusText.innerText = "Current Status: " + status;
-                    updateTimeline(status);
-
-                    // --- TRACKING NUMBER LOGIC INTEGRATED HERE ---
-                    if (data.trackingNumber && data.trackingNumber !== "NA") {
-                        trackingEl.style.display = "block";
-                        trackingNumEl.innerText = data.trackingNumber;
-                    } else if (status === "Shipped") {
-                        trackingEl.style.display = "block";
-                        trackingNumEl.innerText = "Processing...";
-                    } else {
-                        trackingEl.style.display = "none";
-                    }
-
-                    // --- FEEDBACK FORM LOGIC ---
-                    if (status === "Delivered") {
-                        feedbackSection.style.display = "block";
-                        document.getElementById('verifiedOrderId').value = inputId;
-                        document.getElementById('verifiedName').value = data.name; 
-                    } else {
-                        feedbackSection.style.display = "none";
-                    }
-
-                } else {
-                    alert("Order ID not found. Please check and try again.");
-                }
-            } catch (error) {
-                console.error("Error:", error);
-                alert("Error fetching data.");
+                    html += `
+                    <li class="timeline-item ${isActive ? 'active' : ''}">
+                        <div class="time-content">
+                            <h5 class="fw-bold mb-0" style="font-size:1rem;">${step}</h5>
+                            ${step === "Shipped" && isActive && data.trackingLink ? `<a href="${data.trackingLink}" target="_blank" class="small text-primary text-decoration-none">Track Package &rarr;</a>` : ''}
+                        </div>
+                    </li>`;
+                });
             }
+            document.getElementById('statusTimeline').innerHTML = html;
+            
+            // --- INVOICE UNLOCK LOGIC ---
+            // Legal Check: Only unlock if status implies payment received
+            const paidStatuses = ["Processing", "Shipped", "Delivered", "Received"];
+            const invoiceBtn = document.getElementById('invoiceBtn');
+            const invoiceMsg = document.getElementById('invoiceMsg');
+            
+            if (paidStatuses.includes(data.status)) {
+                invoiceBtn.disabled = false;
+                invoiceBtn.className = "btn-invoice"; // Green
+                invoiceBtn.innerHTML = '<i class="bi bi-receipt-cutoff"></i> Download Official Invoice';
+                invoiceMsg.innerHTML = "Save this for your records.";
+            } else {
+                invoiceBtn.disabled = true;
+                invoiceBtn.className = "btn-locked"; // Grey
+                invoiceBtn.innerHTML = '<i class="bi bi-lock-fill"></i> Invoice Locked';
+                
+                if(isCancelled) invoiceMsg.innerHTML = "Invoice not available for cancelled orders.";
+                else invoiceMsg.innerHTML = "Invoice is available only after payment confirmation.";
+            }
+
+            if(currentStatus === 'Delivered') document.getElementById('feedbackSection').style.display = 'block';
+            else document.getElementById('feedbackSection').style.display = 'none';
         }
 
-        function updateTimeline(status) {
-            let activeIndex = 0;
-            if (status === "Payment Received") activeIndex = 1;
-            if (status === "Shipped") activeIndex = 2;
-            if (status === "Delivered") activeIndex = 3;
+        // --- 4. INVOICE GENERATOR ---
+        window.generateInvoice = function() {
+            if(!currentOrderData) return;
+            const o = currentOrderData;
+            const win = window.open('', '_blank');
+            win.document.write(`
+                <html>
+                <head>
+                    <title>Bill of Supply - ${o.orderId}</title>
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <style>
+                        body { font-family: 'Helvetica Neue', sans-serif; padding: 20px; background: #fff; color: #333; max-width: 500px; margin: 0 auto; }
+                        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #1B4D3E; padding-bottom: 20px; }
+                        .logo { font-size: 24px; font-weight: bold; color: #1B4D3E; margin-bottom: 5px; }
+                        .sub-logo { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+                        .box { background: #f8f9fa; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
+                        .label { font-size: 11px; text-transform: uppercase; color: #888; letter-spacing: 0.5px; margin-bottom: 4px; }
+                        .val { font-size: 14px; font-weight: 600; color: #000; }
+                        .item-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; }
+                        .total-row { display: flex; justify-content: space-between; margin-top: 10px; font-size: 14px; }
+                        .grand-total { border-top: 2px solid #333; margin-top: 15px; padding-top: 10px; font-size: 18px; font-weight: bold; color: #1B4D3E; }
+                        .footer { text-align: center; margin-top: 40px; font-size: 11px; color: #999; line-height: 1.5; }
+                        .udyam { background: #1B4D3E; color: white; padding: 3px 8px; border-radius: 4px; font-size: 10px; display: inline-block; margin-top: 5px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="logo">Mom's Hair Oils 🌿</div>
+                        <div class="sub-logo">Heirloom & Handcrafted</div>
+                        <div class="udyam">UDYAM-TN-03-0306775</div>
+                    </div>
+                    <div class="box">
+                        <div class="label">BILLED TO</div>
+                        <div class="val">${o.name}</div>
+                        <div style="font-size:13px; color:#555; margin-top:2px;">${o.phone}</div>
+                        <div style="font-size:13px; color:#555; margin-top:2px;">${o.address}</div>
+                    </div>
+                    <div class="box">
+                        <div class="label">RECEIPT DETAILS</div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <div><span class="label">ID:</span> <span class="val">${o.orderId}</span></div>
+                            <div><span class="label">DATE:</span> <span class="val">${new Date(o.timestamp.seconds * 1000).toLocaleDateString()}</span></div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 30px;">
+                        <div class="label" style="border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 10px;">ITEMS PURCHASED</div>
+                        ${o.cartDetails ? o.cartDetails.map(item => `<div class="item-row"><div>${item.name} (${item.size}) <span style="font-size:12px; color:#777;">x1</span></div><div>₹${item.price}</div></div>`).join('') : `<div class="item-row"><div>${o.items}</div></div>`}
+                    </div>
+                    <div>
+                        <div class="total-row"><span>Subtotal</span> <span>₹${o.subtotal}</span></div>
+                        <div class="total-row"><span>Shipping</span> <span>₹${o.shipping}</span></div>
+                        ${o.discount > 0 ? `<div class="total-row" style="color:green;"><span>Discount</span> <span>-₹${o.discount}</span></div>` : ''}
+                        <div class="total-row grand-total"><span>TOTAL PAID</span><span>₹${o.total}</span></div>
+                    </div>
+                    <div class="footer">
+                        This is a computer-generated Bill of Supply.<br>Small Enterprise (UDYAM Registered). Exempt from GST.<br><strong>Thank you for choosing purity!</strong>
+                    </div>
+                </body></html>
+            `);
+        }
 
-            let percentage = (activeIndex / 3) * 100;
-            document.getElementById('progressBar').style.width = percentage + "%";
-
-            const ids = ['step-Payment', 'step-Shipped', 'step-Delivered'];
-            ids.forEach((id, index) => {
-                const el = document.getElementById(id);
-                if ((index + 1) <= activeIndex) {
-                    el.classList.add('active');
-                } else {
-                    el.classList.remove('active');
-                }
+        // --- 5. REVIEW LOGIC ---
+        document.querySelectorAll('.bi-star').forEach(star => {
+            star.addEventListener('click', function() {
+                const val = this.getAttribute('data-val');
+                document.getElementById('ratingValue').value = val;
+                document.querySelectorAll('.bi-star').forEach(s => {
+                    s.className = s.getAttribute('data-val') <= val ? "bi bi-star-fill text-warning" : "bi bi-star text-warning";
+                });
             });
-        }
-
-        // --- SUBMIT REVIEW LOGIC (AUTO EMAIL) ---
+        });
         document.getElementById('reviewForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btn = e.target.querySelector('button');
-            btn.innerHTML = "Submitting...";
-            btn.disabled = true;
-
-            const name = document.getElementById('verifiedName').value || "Verified Customer";
-            const orderId = document.getElementById('verifiedOrderId').value;
             const text = document.getElementById('reviewText').value;
-            const rating = document.querySelector('input[name="rating"]:checked')?.value || 5;
-
+            const rating = document.getElementById('ratingValue').value;
             try {
-                // 1. Save to Firebase
-                await addDoc(collection(db, "reviews"), {
-                    name: name,
-                    orderId: orderId, 
-                    text: text,
-                    rating: parseInt(rating),
-                    status: "pending", 
-                    timestamp: serverTimestamp()
-                });
-
-                // 2. Send Auto-Email to Admin
-                fetch(`https://formsubmit.co/ajax/${masterEmail}`, {
-                    method: "POST",
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ 
-                        _subject: `New Review for Order ${orderId}`, 
-                        customer_name: name, 
-                        rating: `${rating} Stars`, 
-                        review_content: text 
-                    })
-                });
-                
-                const modal = new bootstrap.Modal(document.getElementById('thankYouModal'));
-                modal.show();
-                e.target.reset();
+                await addDoc(collection(db, "reviews"), { name: currentOrderData.name, orderId: currentOrderData.orderId, text: text, rating: parseInt(rating), status: "pending", timestamp: serverTimestamp() });
+                alert("Thank you! Review submitted.");
                 document.getElementById('feedbackSection').style.display = 'none'; 
-            } catch (error) {
-                console.error("Error", error);
-                alert("Error submitting review");
-            } finally {
-                btn.innerHTML = "Submit Verified Review";
-                btn.disabled = false;
-            }
+            } catch (error) { console.error(error); alert("Error submitting review"); }
         });
     </script>
 </body>
