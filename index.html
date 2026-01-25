@@ -38,59 +38,77 @@
             border-color: #198754 !important;
         }
 
-        /* OVERLAY BANNER STYLES */
+        /* --- 1. BANNER MAIN STRIP --- */
         #top-announcement { 
-            position: relative; /* Keeps the main strip in place */
-            z-index: 2000; /* Ensures it sits above the navbar */
+            position: relative; 
+            z-index: 2000; 
             cursor: pointer; 
+            min-height: 40px; /* Keeps space reserved immediately */
+            transition: all 0.3s ease;
         }
 
-        /* The hidden dropdown part */
+        /* --- 2. THE CURTAIN (Hidden Content) --- */
         #banner-details-content { 
             display: none; 
-            position: absolute; /* This makes it float! */
-            top: 100%; /* Starts exactly at bottom of blue strip */
+            position: absolute; 
+            top: 100%; 
             left: 0;
             width: 100%;
-            background-color: #0d6efd; /* Matches bg-primary blue */
+            max-height: 50vh; /* Limits to Half Screen */
+            overflow-y: auto; /* Allows scroll if needed */
+            
+            /* HIDE SCROLLBAR (But keep functionality) */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;  /* IE */
+            
+            background-color: #0d6efd; 
             color: white;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3); /* Drop shadow for depth */
-            padding: 20px;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            z-index: 2001; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
+            padding: 20px 20px 40px 20px; /* Extra bottom padding for text */
+            border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 1999; 
         }
+        /* Hide scrollbar for Chrome/Safari */
+        #banner-details-content::-webkit-scrollbar { display: none; }
 
-        /* Animation for smooth reveal */
+        /* Animation */
         #top-announcement.expanded #banner-details-content { 
             display: block; 
-            animation: slideDown 0.3s ease forwards;
+            animation: curtainDown 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+        @keyframes curtainDown {
+            from { opacity: 0; transform: scaleY(0.9) translateY(-10px); }
+            to { opacity: 1; transform: scaleY(1) translateY(0); }
         }
 
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .jump-icon { animation: bounce 1.5s infinite; font-size: 0.8rem; margin-left: 8px; display: inline-block; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
-
-        /* Close Button Styling */
+        /* --- 3. CLOSE BUTTON --- */
         .banner-close { 
             position: absolute; 
             top: 10px; 
             right: 15px; 
-            font-size: 1.5rem; 
+            font-size: 1.8rem; 
             cursor: pointer; 
             display: none; 
-            opacity: 0.8;
-            transition: 0.2s;
+            z-index: 2002; /* Above everything */
+            color: white;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
-        .banner-close:hover { opacity: 1; transform: scale(1.1); }
+        .banner-close:hover { transform: scale(1.2); }
         .expanded .banner-close { display: block; }
         .expanded .jump-icon { display: none; }
+
+        /* --- 4. CONTENT STYLING --- */
+        .jump-icon { animation: bounce 1.5s infinite; font-size: 0.8rem; margin-left: 8px; display: inline-block; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
         
-        /* Make images inside responsive */
-        #banner-details-content img { max-width: 100%; height: auto; border-radius: 10px; }
+        /* Make images inside responsive and centered */
+        #banner-details-content img { 
+            max-width: 100%; 
+            height: auto; 
+            border-radius: 10px; 
+            display: block; 
+            margin: 0 auto 15px auto; 
+        }
    </style>
 </head>
 <body>
@@ -99,13 +117,12 @@
         <i class="bi bi-arrow-up"></i>
     </button>
 
-    <div id="top-announcement" class="bg-primary text-white text-center py-2 small fw-bold" style="display:none;" onclick="toggleBanner()">
+    <div id="top-announcement" class="bg-primary text-white text-center py-2 small fw-bold" onclick="toggleBanner()">
         <div class="container position-relative">
-            <span id="banner-headline"></span>  
-            <i id="banner-arrow" class="bi bi-caret-down-fill jump-icon" style="display:none;"></i>
-            <i class="bi bi-x banner-close" onclick="closeBanner(event)"></i>
-            <div id="banner-details-content" class="fw-normal text-start">
-                </div>
+            <span id="banner-headline">Welcome to Mom's Hair Oils 🌿</span>            
+            <i id="banner-arrow" class="bi bi-caret-down-fill jump-icon" style="display:none;"></i>           
+            <i class="bi bi-x banner-close" onclick="closeBanner(event)"></i>          
+            <div id="banner-details-content" class="fw-normal text-start"></div>
         </div>
     </div>
 
@@ -1260,8 +1277,8 @@
         }
         loadWhatsAppNumber();
         
-        // --- LOAD DYNAMIC BANNER ---
-        window.currentBannerDetails = ""; // Global store
+        // --- BANNER LOGIC ---
+        window.currentBannerDetails = ""; 
 
         async function loadBanner() {
             try {
@@ -1273,21 +1290,22 @@
                     const arrow = document.getElementById('banner-arrow');
                     const detailsDiv = document.getElementById('banner-details-content');
 
+                    // Update Text if available, otherwise keep default or hide
                     if (d.bannerText && d.bannerText.trim() !== "") {
-                        el.style.display = 'block';
                         headline.innerHTML = d.bannerText;
                         
-                        // Check if there are hidden details
+                        // Handle Rich Details
                         if (d.bannerDetails && d.bannerDetails.trim() !== "") {
                             window.currentBannerDetails = d.bannerDetails;
-                            // Convert newlines to <br> for rich feel
+                            // Clean newlines
                             detailsDiv.innerHTML = d.bannerDetails.replace(/\n/g, "<br>");
-                            arrow.style.display = 'inline-block'; // Show Jumping Triangle
+                            arrow.style.display = 'inline-block';
                         } else {
                             window.currentBannerDetails = "";
                             arrow.style.display = 'none';
                         }
                     } else {
+                        // If admin cleared text, hide the banner
                         el.style.display = 'none';
                     }
                 }
@@ -1295,38 +1313,30 @@
         }
         loadBanner();
 
-        // --- BANNER LOGIC ---
-        
-        // 1. Toggle: Opens the banner (if details exist)
+        // 1. Toggle: Opens the banner
         window.toggleBanner = function() {
             if (!window.currentBannerDetails) return;
             const el = document.getElementById('top-announcement');
-            
-            // Only expand if it's not already expanded
+            // Check if already open to prevent glitches
             if (!el.classList.contains('expanded')) {
                 el.classList.add('expanded');
             }
         }
 
-        // 2. Close: Explicitly closes it and stops the click from bubbling up
+        // 2. Close: Explicitly closes it
         window.closeBanner = function(event) {
-            // Stop the click from hitting the parent div (which would try to open it again)
             if(event) event.stopPropagation(); 
-            
             const el = document.getElementById('top-announcement');
             el.classList.remove('expanded');
         }
         
-        // This closes the navbar automatically when you click a link on mobile
-        const navLinks = document.querySelectorAll('.close-menu');
-        const menuToggle = document.getElementById('navbarNav');
-        navLinks.forEach((l) => {
-            l.addEventListener('click', () => {
-                if (typeof bootstrap !== 'undefined') {
-                    const bsCollapse = bootstrap.Collapse.getInstance(menuToggle);
-                    if(bsCollapse) bsCollapse.hide();
-                }
-            });
+        // 3. Desktop Hover Logic (Optional but nice)
+        const bannerEl = document.getElementById('top-announcement');
+        bannerEl.addEventListener('mouseenter', () => {
+            if(window.innerWidth > 992) toggleBanner(); // Only on Laptop/Desktop
+        });
+        bannerEl.addEventListener('mouseleave', () => {
+            if(window.innerWidth > 992) closeBanner();
         });
 
         window.togglePaymentMethod = function() {
@@ -1346,4 +1356,5 @@
     </script>
 </body>
 </html>
+
 
