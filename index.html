@@ -43,8 +43,11 @@
             position: relative; 
             z-index: 2000; 
             cursor: pointer; 
-            min-height: 40px; /* Keeps space reserved immediately */
+            min-height: 40px; 
             transition: all 0.3s ease;
+            /* FORCE BRAND GREEN */
+            background-color: #1B4D3E !important; 
+            color: white !important;
         }
 
         /* --- 2. THE CURTAIN (Hidden Content) --- */
@@ -54,21 +57,21 @@
             top: 100%; 
             left: 0;
             width: 100%;
-            max-height: 50vh; /* Limits to Half Screen */
-            overflow-y: auto; /* Allows scroll if needed */
+            max-height: 50vh; 
+            overflow-y: auto; 
             
-            /* HIDE SCROLLBAR (But keep functionality) */
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none;  /* IE */
+            /* Hide Scrollbar */
+            scrollbar-width: none; 
+            -ms-overflow-style: none; 
             
-            background-color: #0d6efd; 
+            /* FORCE BRAND GREEN TO MATCH */
+            background-color: #1B4D3E; 
             color: white;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
-            padding: 20px 20px 40px 20px; /* Extra bottom padding for text */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4); 
+            padding: 20px;
             border-top: 1px solid rgba(255,255,255,0.1);
             z-index: 1999; 
         }
-        /* Hide scrollbar for Chrome/Safari */
         #banner-details-content::-webkit-scrollbar { display: none; }
 
         /* Animation */
@@ -86,14 +89,13 @@
             position: absolute; 
             top: 10px; 
             right: 15px; 
-            font-size: 1.8rem; 
+            font-size: 1.5rem; 
             cursor: pointer; 
             display: none; 
-            z-index: 2002; /* Above everything */
-            color: white;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            z-index: 2002;
+            color: rgba(255,255,255,0.8);
         }
-        .banner-close:hover { transform: scale(1.2); }
+        .banner-close:hover { color: #fff; transform: scale(1.1); }
         .expanded .banner-close { display: block; }
         .expanded .jump-icon { display: none; }
 
@@ -101,11 +103,10 @@
         .jump-icon { animation: bounce 1.5s infinite; font-size: 0.8rem; margin-left: 8px; display: inline-block; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
         
-        /* Make images inside responsive and centered */
         #banner-details-content img { 
             max-width: 100%; 
             height: auto; 
-            border-radius: 10px; 
+            border-radius: 8px; 
             display: block; 
             margin: 0 auto 15px auto; 
         }
@@ -1356,5 +1357,6 @@
     </script>
 </body>
 </html>
+
 
 
