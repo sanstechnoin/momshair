@@ -1320,6 +1320,25 @@
             el.classList.toggle('expanded');
         }
 
+        // --- DESKTOP HOVER LOGIC ---
+        const bannerContainer = document.getElementById('top-announcement');
+        
+        // 1. Mouse Enter (Open Curtain)
+        bannerContainer.addEventListener('mouseenter', () => {
+            // Only on Desktop (Screen wider than 992px)
+            if (window.innerWidth > 992 && window.currentBannerDetails) {
+                bannerContainer.classList.add('expanded');
+            }
+        });
+
+        // 2. Mouse Leave (Close Curtain)
+        bannerContainer.addEventListener('mouseleave', () => {
+            // Only on Desktop
+            if (window.innerWidth > 992) {
+                bannerContainer.classList.remove('expanded');
+            }
+        });
+        
         window.togglePaymentMethod = function() {
             const isCash = document.getElementById('payCash').checked;
             const upiSec = document.getElementById('upiSection');
@@ -1337,6 +1356,7 @@
     </script>
 </body>
 </html>
+
 
 
 
