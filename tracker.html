@@ -11,7 +11,10 @@
     <meta property="og:image" content="https://momshairoil.in/apple-touch-icon.png">
     <meta property="og:url" content="https://momshairoil.in/tracker.html">
     <meta name="theme-color" content="#1B4D3E">
-    
+    <meta name="geo.region" content="IN-TN" />
+    <meta name="geo.placename" content="Coimbatore" />
+    <meta name="geo.position" content="11.0168;76.9558" />
+    <meta name="ICBM" content="11.0168, 76.9558" />
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -116,7 +119,9 @@
                             <i class="bi bi-box-seam"></i> Track Shipment Package
                         </a>
                     </div>
-                    
+                    <div id="trackingEl" style="display:none; background: #fff3cd; color: #856404; padding: 12px; border-radius: 8px; border: 1px solid #ffeeba; margin-bottom: 20px; font-weight: bold;">
+                        <i class="bi bi-truck"></i> Tracking #: <span id="trackingNumEl"></span>
+                    </div>
                     <ul class="timeline" id="statusTimeline"></ul>
 
                     <div class="mt-4 pt-3 border-top">
@@ -319,6 +324,30 @@
                     html += `<li class="timeline-item ${isActive ? 'active' : ''}"><div class="time-content"><h5 class="fw-bold mb-0" style="font-size:1rem;">${step}</h5></div></li>`;
                 });
             }
+            // --- TRACKING NUMBER LOGIC ---
+            const trackingEl = document.getElementById('trackingEl');
+            const trackingNumEl = document.getElementById('trackingNumEl');
+            
+            // Support both new "trackingLink" and old "trackingNumber" fields
+            const trackVal = data.trackingLink || data.trackingNumber;
+
+            if (trackVal && trackVal !== "NA") {
+                trackingEl.style.display = "block";
+                
+                // If it is a link, make it clickable
+                if(trackVal.includes('http')) {
+                    trackingNumEl.innerHTML = `<a href="${trackVal}" target="_blank" style="color:#856404; text-decoration:underline;">Click to Track</a>`;
+                } else {
+                    trackingNumEl.innerText = trackVal;
+                }
+            } 
+            else if (currentStatus === "Shipped") {
+                trackingEl.style.display = "block";
+                trackingNumEl.innerText = "Processing...";
+            } 
+            else {
+                trackingEl.style.display = "none";
+            }
             document.getElementById('statusTimeline').innerHTML = html;
             
             // --- NEW: PERSISTENT TRACKING BUTTON ---
@@ -357,20 +386,16 @@
             if(!currentOrderData) return;
             const o = currentOrderData;
             
-            // PAYMENT MODE LOGIC (Updated)
+            // PAYMENT MODE DISPLAY LOGIC
             let paymentDisplay = "Online Payment";
-            
-            // 1. Explicit Cash
             if(o.txnId === 'CASH_PAYMENT') {
                 paymentDisplay = "Cash Payment";
             } 
-            // 2. Screenshot Only (Matches Logic in Index.html)
             else if(o.txnId === 'Screenshot Uploaded' || (!o.txnId && o.screenshot)) {
                 paymentDisplay = "UPI Payment (Verified)";
             } 
-            // 3. Valid UTR
-            else {
-                paymentDisplay = `UTR: ${o.txnId || 'Pending'}`;
+            else if(o.txnId) {
+                paymentDisplay = `UTR: ${o.txnId}`;
             }
 
             const win = window.open('', '_blank');
@@ -393,11 +418,12 @@
                         .grand-total { border-top: 2px solid #333; margin-top: 15px; padding-top: 10px; font-size: 18px; font-weight: bold; color: #1B4D3E; }
                         .footer { text-align: center; margin-top: 40px; font-size: 11px; color: #999; line-height: 1.5; }
                         .udyam { background: #1B4D3E; color: white; padding: 3px 8px; border-radius: 4px; font-size: 10px; display: inline-block; margin-top: 5px; }
+                        .print-btn { background:#333; color:#fff; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold; }
                     </style>
                 </head>
                 <body>
                     <div class="no-print" style="text-align:center; margin-bottom:20px;">
-                        <button onclick="window.print()" style="background:#333; color:#fff; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold;">
+                        <button onclick="window.print()" class="print-btn">
                             <i class="bi bi-printer"></i> Print / Save as PDF
                         </button>
                     </div>
@@ -408,12 +434,14 @@
                         <div class="udyam">UDYAM-TN-03-0306775</div>
                         <div style="font-size:12px; margin-top:5px; color:#555;">Support: ${businessPhone}</div>
                     </div>
+
                     <div class="box">
                         <div class="label">BILLED TO</div>
                         <div class="val">${o.name}</div>
                         <div style="font-size:13px; color:#555; margin-top:2px;">${o.phone}</div>
                         <div style="font-size:13px; color:#555; margin-top:2px;">${o.address}</div>
                     </div>
+
                     <div class="box">
                         <div class="label">RECEIPT DETAILS</div>
                         <div style="display:flex; justify-content:space-between;">
@@ -430,17 +458,27 @@
 
                     <div style="margin-bottom: 30px;">
                         <div class="label" style="border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 10px;">ITEMS PURCHASED</div>
-                        ${o.cartDetails ? o.cartDetails.map(item => `<div class="item-row"><div>${item.name} <span style="font-size:12px; color:#777;">x1</span></div><div>₹${item.price}</div></div>`).join('') : `<div class="item-row"><div>${o.items}</div></div>`}
+                        ${o.cartDetails ? o.cartDetails.map(item => `
+                        <div class="item-row">
+                            <div>${item.name} <span style="font-size:12px; color:#777;">x1</span></div>
+                            <div>₹${item.price}</div>
+                        </div>`).join('') : `<div class="item-row"><div>${o.items}</div></div>`}
                     </div>
+
                     <div>
                         <div class="total-row"><span>Subtotal</span> <span>₹${o.subtotal}</span></div>
                         <div class="total-row"><span>Shipping</span> <span>₹${o.shipping}</span></div>
                         ${o.discount > 0 ? `<div class="total-row" style="color:green;"><span>Discount ${o.coupon && o.coupon !== 'NONE' ? `(${o.coupon})` : ''}</span> <span>-₹${o.discount}</span></div>` : ''}
                         
-                        <div class="total-row" style="color:#777; margin-top:10px; font-size:12px;"><span>Payment Ref</span> <span>${paymentDisplay}</span></div>
+                        <div class="total-row" style="color:#777; margin-top:10px; font-size:12px;">
+                            <span>Payment Ref</span> <span>${paymentDisplay}</span>
+                        </div>
 
-                        <div class="total-row grand-total"><span>TOTAL PAID</span><span>₹${o.total}</span></div>
+                        <div class="total-row grand-total">
+                            <span>TOTAL PAID</span><span>₹${o.total}</span>
+                        </div>
                     </div>
+
                     <div class="footer">
                         This is a computer-generated Bill of Supply.<br>Small Enterprise (UDYAM Registered). Exempt from GST.<br><strong>Thank you for choosing purity!</strong>
                     </div>
