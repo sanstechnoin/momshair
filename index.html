@@ -37,6 +37,26 @@
             color: white !important;
             border-color: #198754 !important;
         }
+
+        #banner-details-content img, 
+        #banner-details-content video, 
+        #banner-details-content iframe { 
+            max-width: 100% !important; 
+            height: auto !important; 
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        /* Ensure text from editor is readable on the blue background */
+        #banner-details-content { 
+            text-align: left; 
+            color: white; 
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        #banner-details-content a { color: #ffc107; text-decoration: underline; }
+        #banner-details-content ul, #banner-details-content ol { text-align: left; }
    </style>
 </head>
 <body>
@@ -45,7 +65,15 @@
         <i class="bi bi-arrow-up"></i>
     </button>
 
-    <div id="top-announcement" class="bg-primary text-white text-center py-2 small fw-bold" style="display:none;"></div>
+    <div id="top-announcement" class="bg-primary text-white text-center py-2 small fw-bold" style="display:none;" onclick="toggleBanner()">
+        <div class="container position-relative">
+            <span id="banner-headline"></span>
+            <i id="banner-arrow" class="bi bi-caret-down-fill jump-icon" style="display:none;"></i>
+            <i class="bi bi-x banner-close"></i>          
+            <div id="banner-details-content" class="fw-normal">
+                </div>
+        </div>
+    </div>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-cream sticky-top shadow-sm">
         <div class="container">
@@ -1199,15 +1227,32 @@
         loadWhatsAppNumber();
         
         // --- LOAD DYNAMIC BANNER ---
+        window.currentBannerDetails = ""; // Global store
+
         async function loadBanner() {
             try {
                 const docSnap = await getDoc(doc(db, "settings", "config"));
                 if (docSnap.exists()) {
-                    const text = docSnap.data().bannerText;
+                    const d = docSnap.data();
                     const el = document.getElementById('top-announcement');
-                    if (text && text.trim() !== "") {
-                        el.innerHTML = text;
+                    const headline = document.getElementById('banner-headline');
+                    const arrow = document.getElementById('banner-arrow');
+                    const detailsDiv = document.getElementById('banner-details-content');
+
+                    if (d.bannerText && d.bannerText.trim() !== "") {
                         el.style.display = 'block';
+                        headline.innerHTML = d.bannerText;
+                        
+                        // Check if there are hidden details
+                        if (d.bannerDetails && d.bannerDetails.trim() !== "") {
+                            window.currentBannerDetails = d.bannerDetails;
+                            // Convert newlines to <br> for rich feel
+                            detailsDiv.innerHTML = d.bannerDetails.replace(/\n/g, "<br>");
+                            arrow.style.display = 'inline-block'; // Show Jumping Triangle
+                        } else {
+                            window.currentBannerDetails = "";
+                            arrow.style.display = 'none';
+                        }
                     } else {
                         el.style.display = 'none';
                     }
@@ -1215,6 +1260,15 @@
             } catch (e) { console.log("Banner load error", e); }
         }
         loadBanner();
+
+        // --- BANNER TOGGLE FUNCTION ---
+        window.toggleBanner = function() {
+            // Only toggle if there are details to show
+            if (!window.currentBannerDetails) return;
+            
+            const el = document.getElementById('top-announcement');
+            el.classList.toggle('expanded');
+        }
         
         // This closes the navbar automatically when you click a link on mobile
         const navLinks = document.querySelectorAll('.close-menu');
@@ -1245,10 +1299,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
