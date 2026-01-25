@@ -819,11 +819,21 @@
             });
         }
 
-        // --- GLOBAL STATE ---
+        // --- GLOBAL STATE (WITH MEMORY) ---
         window.productsData = {}; 
-        window.cart = [];
+        
+        // 1. Load Cart from Memory
+        try {
+            window.cart = JSON.parse(localStorage.getItem('momsCart')) || [];
+        } catch (e) { window.cart = []; }
+        
         window.appliedCoupon = null;
 
+        // 2. Helper to Save Memory
+        window.saveCartToMemory = function() {
+            localStorage.setItem('momsCart', JSON.stringify(window.cart));
+            updateCartDisplay();
+        }
         // --- FETCH PRODUCTS & VARIANTS ---
         onSnapshot(collection(db, "products"), (snapshot) => {
             snapshot.forEach((doc) => {
@@ -898,6 +908,8 @@
                     quantity: 1 
                 });
             }
+            saveCartToMemory();
+            }
             updateCartDisplay();
             const btn = document.getElementById('navCartBtn'); 
             btn.classList.add('cart-juggle'); 
@@ -921,6 +933,7 @@
                 item.quantity = newQty;
             }
             updateCartDisplay();
+            saveCartToMemory()
             prepareCheckout();
         }
 
@@ -1358,6 +1371,7 @@
     </script>
 </body>
 </html>
+
 
 
 
