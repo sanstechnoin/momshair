@@ -696,9 +696,9 @@
                                     </a>
                                 </div>
                                 <p class="mb-0 fw-bold">UPI ID: <span id="displayUpiId" class="text-primary">vabinanthana@okaxis</span></p>
-                                <button id="upiAppBtn" type="button" class="btn btn-success w-100 d-md-none mt-2" onclick="window.location.href='upi://pay?pa=vabinanthana@okaxis&pn=MomsHairOil&cu=INR'">
-                                    <i class="bi bi-phone"></i> Pay via UPI App
-                                </button>
+                                <a id="upiAppBtn" href="#" class="btn btn-success w-100 d-md-none mt-2 text-decoration-none d-flex align-items-center justify-content-center gap-2">
+                                <i class="bi bi-phone"></i> Tap to Pay (GPay / PhonePe)
+                                </a>
                             </div>
                         </div>
 
@@ -836,12 +836,7 @@
                         // Desktop/Clickable Image Link
                         const qrAnchor = document.getElementById('paymentLinkAnchor');
                         if(qrAnchor) qrAnchor.href = fullLink;
-                        
-                        // Mobile Button Link
-                        const upiBtn = document.getElementById('upiAppBtn');
-                        if (upiBtn) {
-                            upiBtn.onclick = function() { window.location.href = fullLink; };
-                        }
+
                     }
                 }
             } catch (error) { console.log("Using default payment details", error); }
@@ -1020,13 +1015,15 @@
             // 1. Calculate Totals
             let subtotal = window.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             let shipping = 0;
+            
+            // Shipping Logic
             if (subtotal < window.shippingRules.freeLimit && subtotal > 0) {
                 const isTN = document.getElementById('locTN').checked;
                 shipping = isTN ? window.shippingRules.tnRate : window.shippingRules.roiRate;
             }
             
+            // Coupon Logic
             let discount = 0;
-            // ... (Coupon Logic kept same) ...
             if (window.appliedCoupon) {
                 if(subtotal < window.appliedCoupon.minOrder) {
                     document.getElementById('couponMsg').innerText = `Add ₹${window.appliedCoupon.minOrder - subtotal} more`;
@@ -1053,28 +1050,33 @@
             
             // 3. Update UI
             document.getElementById('display-subtotal').innerText = `₹${subtotal}`;
-            document.getElementById('display-shipping').innerText = shipping===0?"Free":`₹${shipping}`;
+            document.getElementById('display-shipping').innerText = shipping === 0 ? "Free" : `₹${shipping}`;
             document.getElementById('display-total').innerText = `₹${total}`;
 
-            // --- NEW: GENERATE CORRECT PAYMENT LINK ---
+            // --- SMART UPI LINK GENERATOR ---
             const upiId = document.getElementById('displayUpiId').innerText.trim();
             
             if(upiId && total > 0) {
-                // We add '&am=' (Amount) and '&tn=' (Note) to fix GPay errors
-                // We also encode the name to handle spaces correctly
+                // A. Create Description (Item List)
+                // Limit description length to avoid UPI errors
+                let itemDesc = window.cart.map(i => `${i.name} x${i.quantity}`).join(', ');
+                if(itemDesc.length > 50) itemDesc = itemDesc.substring(0, 47) + "...";
+                
                 const merchantName = encodeURIComponent("Moms Hair Oil"); 
-                const note = encodeURIComponent("Hair Oil Order");
+                const note = encodeURIComponent(`Order: ${itemDesc}`); // Adds items to description
+                const amount = total.toFixed(2); // Ensures "500.00" format
+
+                // B. Construct Link
+                // &am=Amount | &tn=Note(Description)
+                const link = `upi://pay?pa=${upiId}&pn=${merchantName}&am=${amount}&cu=INR&tn=${note}`;
                 
-                // The Magic Link Format
-                const link = `upi://pay?pa=${upiId}&pn=${merchantName}&am=${total}.00&cu=INR&tn=${note}`;
-                
-                // Update Button
+                // C. Update the "Tap to Pay" Link (Mobile)
                 const upiBtn = document.getElementById('upiAppBtn');
                 if(upiBtn) {
-                    upiBtn.onclick = function() { window.location.href = link; };
+                    upiBtn.href = link; 
                 }
                 
-                // Update QR Code Link (if user clicks the image)
+                // D. Update QR Code Link (Desktop)
                 const qrAnchor = document.getElementById('paymentLinkAnchor');
                 if(qrAnchor) {
                     qrAnchor.href = link;
@@ -1083,7 +1085,7 @@
             // ------------------------------------------
 
             return { subtotal, shipping, discount, total };
-        }
+        };
 
         // Coupon Logic
         window.loadCouponSuggestions = async function() {
@@ -1422,6 +1424,7 @@
     </script>
 </body>
 </html>
+
 
 
 
