@@ -54,7 +54,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+
     <style>
         .chat-widget-btn { position: fixed; bottom: 20px; right: 20px; z-index: 1050; width: 60px; height: 60px; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: transform 0.3s; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; border: none; }
         .chat-widget-btn:hover { transform: scale(1.1); }
@@ -696,66 +696,15 @@
                                     </a>
                                 </div>
                                 <p class="mb-0 fw-bold">UPI ID: <span id="displayUpiId" class="text-primary">vabinanthana@okaxis</span></p>
-
-                                <div id="android-pay-view" class="d-md-none mt-3" style="display:none;">
-                                    <a id="btn-android-link" href="#" class="btn btn-success w-100 py-2 d-flex align-items-center justify-content-center gap-2 shadow-sm">
-                                        <i class="bi bi-fingerprint"></i> Tap to Pay
-                                    </a>
-                                    <small class="text-muted" style="font-size: 0.7rem;">Select GPay, PhonePe, or Paytm</small>
-                                </div>
-
-                                <div id="ios-pay-view" class="d-md-none mt-3" style="display:none;">
-                                    <p class="small fw-bold text-muted mb-2">Pay via App:</p>
-                                    <div class="row g-2">
-                                        <div class="col-4">
-                                            <a id="btn-ios-gpay" href="#" class="text-decoration-none text-center d-block">
-                                                <div class="bg-white p-2 rounded-3 shadow-sm border d-flex align-items-center justify-content-center mx-auto" style="width: 50px; height: 50px;">
-                                                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="GPay" style="width: 25px;">
-                                                </div>
-                                                <span class="d-block mt-1" style="font-size: 0.65rem; color: #333; font-weight: 600;">GPay</span>
-                                            </a>
-                                        </div>
-                                        <div class="col-4">
-                                            <a id="btn-ios-phonepe" href="#" class="text-decoration-none text-center d-block">
-                                                <div class="bg-white p-2 rounded-3 shadow-sm border d-flex align-items-center justify-content-center mx-auto" style="width: 50px; height: 50px;">
-                                                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/71/PhonePe_Logo.svg" alt="PhonePe" style="width: 25px;">
-                                                </div>
-                                                <span class="d-block mt-1" style="font-size: 0.65rem; color: #333; font-weight: 600;">PhonePe</span>
-                                            </a>
-                                        </div>
-                                        <div class="col-4">
-                                            <a id="btn-ios-paytm" href="#" class="text-decoration-none text-center d-block">
-                                                <div class="bg-white p-2 rounded-3 shadow-sm border d-flex align-items-center justify-content-center mx-auto" style="width: 50px; height: 50px;">
-                                                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm" style="width: 28px;">
-                                                </div>
-                                                <span class="d-block mt-1" style="font-size: 0.65rem; color: #333; font-weight: 600;">Paytm</span>
-                                            </a>
-                                        </div>
-                                        <div class="col-6">
-                                            <a id="btn-ios-bhim" href="#" class="btn btn-outline-light text-dark w-100 p-1 border shadow-sm d-flex align-items-center justify-content-center gap-2" style="height: 45px;">
-                                                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/BHIM-Logo.png" alt="BHIM" style="width: 20px;">
-                                                <span style="font-size: 0.75rem; font-weight: 600;">BHIM</span>
-                                            </a>
-                                        </div>
-                                        <div class="col-6">
-                                            <a id="btn-ios-other" href="#" class="btn btn-secondary w-100 p-1 border shadow-sm d-flex align-items-center justify-content-center gap-2" style="height: 45px;">
-                                                <i class="bi bi-wallet2" style="font-size: 1rem;"></i>
-                                                <span style="font-size: 0.75rem; font-weight: 600;">Others</span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
+                                <a id="upiAppBtn" href="#" class="btn btn-success w-100 d-md-none mt-2 text-decoration-none d-flex align-items-center justify-content-center gap-2">
+                                <i class="bi bi-phone"></i> Tap to Pay (GPay / PhonePe)
+                                </a>
                             </div>
                         </div>
 
                         <div class="row g-2">
                             <div class="col-6"><input type="text" class="form-control" id="custName" placeholder="Full Name" required></div>
-                            <div class="col-6">
-                                <input type="tel" class="form-control" id="custPhone" placeholder="WhatsApp Number" required>
-                                <small id="phoneWarning" class="text-warning fw-bold small mt-1" style="display:none; font-size: 0.7rem;">
-                                    <i class="bi bi-exclamation-circle-fill"></i> Please provide an <b>Indian Contact Number</b> in the Address field below for the courier.
-                                </small>
-                            </div>
+                            <div class="col-6"><input type="tel" class="form-control" id="custPhone" placeholder="WhatsApp Number" required></div>
                             <div class="col-12"><textarea class="form-control" id="custAddress" rows="2" placeholder="Full Address with Pincode" required></textarea></div>
                             
                             <div class="col-12" id="upiInputs">
@@ -841,8 +790,7 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>  
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, setDoc, doc, serverTimestamp, onSnapshot, getDoc, updateDoc, increment, query, where, limit, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -1063,7 +1011,11 @@
              loadCouponSuggestions();
         }
 
-        window.recalcTotal = function() {        
+        window.recalcTotal = function() {
+            // 1. Calculate Totals
+            let subtotal = window.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            let shipping = 0;
+            
             // Shipping Logic
             if (subtotal < window.shippingRules.freeLimit && subtotal > 0) {
                 const isTN = document.getElementById('locTN').checked;
@@ -1092,52 +1044,48 @@
                 document.getElementById('couponMsg').style.display = 'none';
             }
 
-            window.recalcTotal = function() {
-            // ... (Keep existing Shipping/Coupon logic same as before) ...
-            let subtotal = window.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            let shipping = 0;
-            if (subtotal < window.shippingRules.freeLimit && subtotal > 0) {
-                const isTN = document.getElementById('locTN').checked;
-                shipping = isTN ? window.shippingRules.tnRate : window.shippingRules.roiRate;
-            }
-            let discount = 0;
-            if (window.appliedCoupon) {
-                 // ... (Keep coupon logic same) ...
-                 if (window.appliedCoupon.type === 'percent') { discount = Math.round((subtotal * window.appliedCoupon.value) / 100); } 
-                 else { discount = window.appliedCoupon.value; }
-                 document.getElementById('row-discount').style.display = 'flex';
-                 document.getElementById('display-discount').innerText = `-₹${discount}`;
-            }
-
+            // 2. Final Total
             let total = subtotal + shipping - discount;
             if (total < 0) total = 0;
             
+            // 3. Update UI
             document.getElementById('display-subtotal').innerText = `₹${subtotal}`;
-            document.getElementById('display-shipping').innerText = shipping===0?"Free":`₹${shipping}`;
+            document.getElementById('display-shipping').innerText = shipping === 0 ? "Free" : `₹${shipping}`;
             document.getElementById('display-total').innerText = `₹${total}`;
 
-            // --- NEW: GENERATE 5 LINKS FOR NEW UI ---
+            // --- SMART UPI LINK GENERATOR ---
             const upiId = document.getElementById('displayUpiId').innerText.trim();
+            
             if(upiId && total > 0) {
+                // A. Create Description (Item List)
+                // Limit description length to avoid UPI errors
                 let itemDesc = window.cart.map(i => `${i.name} x${i.quantity}`).join(', ');
                 if(itemDesc.length > 50) itemDesc = itemDesc.substring(0, 47) + "...";
+                
                 const merchantName = encodeURIComponent("Moms Hair Oil"); 
-                const note = encodeURIComponent(`Order: ${itemDesc}`);
-                const amount = total.toFixed(2); 
+                const note = encodeURIComponent(`Order: ${itemDesc}`); // Adds items to description
+                const amount = total.toFixed(2); // Ensures "500.00" format
 
-                const params = `pa=${upiId}&pn=${merchantName}&am=${amount}&cu=INR&tn=${note}`;
-
-                // Update ALL Buttons
-                if(document.getElementById('btn-android-link')) document.getElementById('btn-android-link').href = `upi://pay?${params}`;
-                if(document.getElementById('btn-ios-gpay')) document.getElementById('btn-ios-gpay').href = `gpay://upi/pay?${params}`;
-                if(document.getElementById('btn-ios-phonepe')) document.getElementById('btn-ios-phonepe').href = `phonepe://pay?${params}`;
-                if(document.getElementById('btn-ios-paytm')) document.getElementById('btn-ios-paytm').href = `paytmmp://pay?${params}`;
-                if(document.getElementById('btn-ios-bhim')) document.getElementById('btn-ios-bhim').href = `bhim://pay?${params}`;
-                if(document.getElementById('btn-ios-other')) document.getElementById('btn-ios-other').href = `upi://pay?${params}`;
-                if(document.getElementById('paymentLinkAnchor')) document.getElementById('paymentLinkAnchor').href = `upi://pay?${params}`;
+                // B. Construct Link
+                // &am=Amount | &tn=Note(Description)
+                const link = `upi://pay?pa=${upiId}&pn=${merchantName}&am=${amount}&cu=INR&tn=${note}`;
+                
+                // C. Update the "Tap to Pay" Link (Mobile)
+                const upiBtn = document.getElementById('upiAppBtn');
+                if(upiBtn) {
+                    upiBtn.href = link; 
+                }
+                
+                // D. Update QR Code Link (Desktop)
+                const qrAnchor = document.getElementById('paymentLinkAnchor');
+                if(qrAnchor) {
+                    qrAnchor.href = link;
+                }
             }
+            // ------------------------------------------
+
             return { subtotal, shipping, discount, total };
-        }
+        };
 
         // Coupon Logic
         window.loadCouponSuggestions = async function() {
@@ -1268,10 +1216,7 @@
 
         window.placeOrder = async function() {
             const name = document.getElementById('custName').value;
-            const phone = phoneIti.getNumber();
-            if (!phoneIti.isValidNumber()) {
-                return showNotification("Please enter a valid phone number.");
-            }
+            const phone = document.getElementById('custPhone').value;
             const address = document.getElementById('custAddress').value;
             const txnId = document.getElementById('custTxnId').value.trim();
             const fileInput = document.getElementById('custScreenshot');
@@ -1475,47 +1420,7 @@
                 upiInp.style.display = 'block';
             }
         }
-        // --- 1. AUTO-DETECT OS (Switch Android/iOS Payment View) ---
-        function detectPaymentUI() {
-            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-            const androidView = document.getElementById('android-pay-view');
-            const iosView = document.getElementById('ios-pay-view');
-            
-            // Check for iPhone / iPad / iPod
-            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-                if(iosView) { iosView.style.display = 'block'; iosView.classList.remove('d-none'); }
-            } else {
-                // Default to Android / Standard view
-                if(androidView) { androidView.style.display = 'block'; androidView.classList.remove('d-none'); }
-            }
-        }
-        detectPaymentUI();
-
-        // --- 2. INTERNATIONAL PHONE SETUP ---
-        let phoneInput = document.querySelector("#custPhone");
-        let phoneIti = window.intlTelInput(phoneInput, {
-            initialCountry: "in", 
-            separateDialCode: true,
-            preferredCountries: ["in", "ae", "us", "gb"], 
-            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
-        });
-
-        // Warn if not India
-        phoneInput.addEventListener("countrychange", function() {
-            const countryData = phoneIti.getSelectedCountryData();
-            const warningMsg = document.getElementById('phoneWarning');
-            
-            if (countryData.iso2 !== 'in') {
-                // Update text and show orange warning
-                warningMsg.innerHTML = '<i class="bi bi-exclamation-circle-fill"></i> Please mention an <b>Indian Contact Number</b> in the Address below for the courier.';
-                warningMsg.className = "text-warning fw-bold small mt-1"; 
-                warningMsg.style.display = 'block';
-            } else {
-                warningMsg.style.display = 'none';
-            }
-        });
+        
     </script>
 </body>
 </html>
-
-
