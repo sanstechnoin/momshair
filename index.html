@@ -1217,7 +1217,14 @@
 
         window.placeOrder = async function() {
             const name = document.getElementById('custName').value;
-            const phone = document.getElementById('custPhone').value;
+                        // Get the full international number (e.g., +919952532391) from the plugin
+            const phone = phoneIti.getNumber(); 
+            
+            // Validate Validity
+            if (!phoneIti.isValidNumber()) {
+                return showNotification("Please enter a valid phone number.");
+            }
+
             const address = document.getElementById('custAddress').value;
             const txnId = document.getElementById('custTxnId').value.trim();
             const fileInput = document.getElementById('custScreenshot');
@@ -1421,22 +1428,31 @@
                 upiInp.style.display = 'block';
             }
         }
-                // DETECT COUNTRY CHANGE & WARN
+                        // --- INTERNATIONAL PHONE SETUP ---
+        let phoneInput = document.querySelector("#custPhone");
+        let phoneIti = window.intlTelInput(phoneInput, {
+            initialCountry: "in", // Default to India 🇮🇳
+            separateDialCode: true,
+            preferredCountries: ["in", "ae", "us", "gb"], // Common countries
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+        });
+
+        // DETECT COUNTRY CHANGE & WARN
         phoneInput.addEventListener("countrychange", function() {
             const countryData = phoneIti.getSelectedCountryData();
             const warningMsg = document.getElementById('phoneWarning');
             
             if (countryData.iso2 !== 'in') {
-                // If NOT India -> Show Orange Warning
+                // If NOT India, show warning
                 warningMsg.style.display = 'block';
             } else {
-                // If India -> Hide Warning
+                // If India, hide warning
                 warningMsg.style.display = 'none';
             }
-        });
-        
+        });       
     </script>
 </body>
 </html>
+
 
 
