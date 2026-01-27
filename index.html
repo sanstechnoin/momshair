@@ -1504,7 +1504,11 @@
         phoneInput.addEventListener("countrychange", function() {
             const countryData = phoneIti.getSelectedCountryData();
             const warningMsg = document.getElementById('phoneWarning');
+            
             if (countryData.iso2 !== 'in') {
+                // Update text and show orange warning
+                warningMsg.innerHTML = '<i class="bi bi-exclamation-circle-fill"></i> Please mention an <b>Indian Contact Number</b> in the Address below for the courier.';
+                warningMsg.className = "text-warning fw-bold small mt-1"; 
                 warningMsg.style.display = 'block';
             } else {
                 warningMsg.style.display = 'none';
@@ -1513,4 +1517,5 @@
     </script>
 </body>
 </html>
+
 
