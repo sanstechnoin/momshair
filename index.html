@@ -866,7 +866,54 @@
         getDoc(doc(db, "settings", "shipping")).then(snap => {
             if(snap.exists()) window.shippingRules = snap.data();
         });
+		
+		// --- AUTO-DETECT OS (Show Button vs Icons) ---
+        function detectPaymentUI() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            const androidView = document.getElementById('android-pay-view');
+            const iosView = document.getElementById('ios-pay-view');
+            
+            // Check for iPhone / iPad / iPod
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                if(iosView) {
+                    iosView.style.display = 'block';     // Show Icons
+                    iosView.classList.remove('d-none');  
+                }
+            } else {
+                // Default to Android / Standard view
+                if(androidView) {
+                    androidView.style.display = 'block';    // Show Button
+                    androidView.classList.remove('d-none'); 
+                }
+            }
+        }
+        // Run immediately
+        detectPaymentUI();
+		
+		// --- INTERNATIONAL PHONE SETUP ---
+        let phoneInput = document.querySelector("#custPhone");
+        let phoneIti = window.intlTelInput(phoneInput, {
+            initialCountry: "in", // Default to India 🇮🇳
+            separateDialCode: true,
+            preferredCountries: ["in", "ae", "us", "gb"], // Common countries
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+        });
 
+        // DETECT COUNTRY CHANGE & WARN
+        phoneInput.addEventListener("countrychange", function() {
+            const countryData = phoneIti.getSelectedCountryData();
+            const warningMsg = document.getElementById('phoneWarning');
+            
+            if (countryData.iso2 !== 'in') {
+                // If NOT India -> Show Instruction (Yellow/Orange is better for "Info" but Red is fine too)
+                warningMsg.innerHTML = '<i class="bi bi-exclamation-circle-fill"></i> Please mention an <b>Indian Contact Number</b> in the Address below for the courier.';
+                warningMsg.style.display = 'block';
+            } else {
+                // If India -> Hide Instruction
+                warningMsg.style.display = 'none';
+            }
+        });
+		
         // --- NEW: Load Dynamic Payment Details (QR + Link + Text) ---
         async function loadPaymentDetails() {
             try {
@@ -1489,53 +1536,7 @@
                 upiInp.style.display = 'block';
             }
         }
-        
-	// --- AUTO-DETECT OS (Show Button vs Icons) ---
-        function detectPaymentUI() {
-            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-            const androidView = document.getElementById('android-pay-view');
-            const iosView = document.getElementById('ios-pay-view');
-            
-            // Check for iPhone / iPad / iPod
-            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-                if(iosView) {
-                    iosView.style.display = 'block';     // Show Icons
-                    iosView.classList.remove('d-none');  
-                }
-            } else {
-                // Default to Android / Standard view
-                if(androidView) {
-                    androidView.style.display = 'block';    // Show Button
-                    androidView.classList.remove('d-none'); 
-                }
-            }
-        }
-        // Run immediately
-        detectPaymentUI();
-	
-	// --- INTERNATIONAL PHONE SETUP ---
-        let phoneInput = document.querySelector("#custPhone");
-        let phoneIti = window.intlTelInput(phoneInput, {
-            initialCountry: "in", // Default to India 🇮🇳
-            separateDialCode: true,
-            preferredCountries: ["in", "ae", "us", "gb"], // Common countries
-            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
-        });
-
-        // DETECT COUNTRY CHANGE & WARN
-        phoneInput.addEventListener("countrychange", function() {
-            const countryData = phoneIti.getSelectedCountryData();
-            const warningMsg = document.getElementById('phoneWarning');
-            
-            if (countryData.iso2 !== 'in') {
-                // If NOT India -> Show Instruction (Yellow/Orange is better for "Info" but Red is fine too)
-                warningMsg.innerHTML = '<i class="bi bi-exclamation-circle-fill"></i> Please mention an <b>Indian Contact Number</b> in the Address below for the courier.';
-                warningMsg.style.display = 'block';
-            } else {
-                // If India -> Hide Instruction
-                warningMsg.style.display = 'none';
-            }
-        });
     </script>
 </body>
 </html>
+
