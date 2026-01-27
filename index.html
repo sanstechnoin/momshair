@@ -704,7 +704,7 @@
 
                         <div class="row g-2">
                             <div class="col-6"><input type="text" class="form-control" id="custName" placeholder="Full Name" required></div>
-                            <div class="col-6"><input type="tel" class="form-control" id="custPhone" placeholder="WhatsApp Number" required></div>
+                            <div class="col-6"><input type="tel" class="form-control" id="custPhone" placeholder="WhatsApp Number" required><small id="phoneWarning" class="text-warning fw-bold small mt-1" style="display:none; font-size: 0.7rem;"><i class="bi bi-exclamation-circle-fill"></i> Please provide an <b>Indian Contact Number</b> in the Address field below for the courier.</small></div>
                             <div class="col-12"><textarea class="form-control" id="custAddress" rows="2" placeholder="Full Address with Pincode" required></textarea></div>
                             
                             <div class="col-12" id="upiInputs">
@@ -1420,6 +1420,19 @@
                 upiInp.style.display = 'block';
             }
         }
+                // DETECT COUNTRY CHANGE & WARN
+        phoneInput.addEventListener("countrychange", function() {
+            const countryData = phoneIti.getSelectedCountryData();
+            const warningMsg = document.getElementById('phoneWarning');
+            
+            if (countryData.iso2 !== 'in') {
+                // If NOT India -> Show Orange Warning
+                warningMsg.style.display = 'block';
+            } else {
+                // If India -> Hide Warning
+                warningMsg.style.display = 'none';
+            }
+        });
         
     </script>
 </body>
