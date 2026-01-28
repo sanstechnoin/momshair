@@ -989,7 +989,7 @@
         // BETTER WHATSAPP MSG + TRACKER LINK
         window.sendWhatsappUpdate = function(ph, nm, oid, st) { 
             let msg = `Hello ${nm}, update on Order ${oid}: ${st}.`;
-            const trackerUrl = "https://momshairoil.in/tracker.html";
+            const trackerUrl = "https://momshairoil.in/tracker";
             if(st === "Payment Received") msg = `Hello ${nm}! 🌿 We have received your payment for Order ${oid}. Your natural batch is being prepared with care!`;
             else if (st === "Shipped") msg = `Great news ${nm}! 🚚 Your Order ${oid} has been SHIPPED! Track your package here: ${trackerUrl}`;
             else if (st === "Delivered") msg = `Hi ${nm}! 🎉 Your order ${oid} has been DELIVERED. We hope you love it! Please leave us a review here: ${trackerUrl}`;
