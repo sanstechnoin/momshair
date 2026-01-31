@@ -260,6 +260,13 @@
                                     <small class="text-muted">Enter the UPI ID (e.g. name@bank)</small>
                                 </div>
 
+                                <div class="form-check form-switch mt-3 pt-2 border-top">
+                                <input class="form-check-input" type="checkbox" id="enable-cash">
+                                <label class="form-check-label small fw-bold text-success" for="enable-cash">
+                                <i class="bi bi-cash-stack"></i> Enable Cash on Delivery
+                                </label>
+                                </div>
+                                
                                 <div class="col-12 text-end pb-3 border-bottom">
                                     <button class="btn btn-dark px-4" onclick="saveSettings()">Save All Settings</button>
                                 </div>
@@ -737,6 +744,9 @@
             document.getElementById('whatsapp-num').value = d.whatsappNumber || ""; 
             document.getElementById('upi-id').value = d.upiId || ""; 
 
+            //Enable Cash
+            document.getElementById('enable-cash').checked = d.enableCash === true;
+            
             // Load Headline
             if(document.getElementById('banner-text')) document.getElementById('banner-text').value = d.bannerText || "";
 
@@ -755,6 +765,7 @@
                 masterEmail: document.getElementById('master-email').value, 
                 whatsappNumber: document.getElementById('whatsapp-num').value,
                 upiId: document.getElementById('upi-id').value
+                enableCash: document.getElementById('enable-cash').checked
             }, {merge:true}); 
             stopLoading(); 
         }
