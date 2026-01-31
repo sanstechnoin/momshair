@@ -764,7 +764,7 @@
             await setDoc(doc(db, "settings", "config"), { 
                 masterEmail: document.getElementById('master-email').value, 
                 whatsappNumber: document.getElementById('whatsapp-num').value,
-                upiId: document.getElementById('upi-id').value
+                upiId: document.getElementById('upi-id').value,
                 enableCash: document.getElementById('enable-cash').checked
             }, {merge:true}); 
             stopLoading(); 
