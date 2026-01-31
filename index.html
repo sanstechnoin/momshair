@@ -681,7 +681,7 @@
                                     <input class="form-check-input" type="radio" name="payMethod" id="payUPI" value="UPI" checked onchange="togglePaymentMethod()">
                                     <label class="form-check-label fw-bold" for="payUPI">UPI / GPay</label>
                                 </div>
-                                <div class="form-check">
+                                <div class="form-check" id="cashOptionDiv">
                                     <input class="form-check-input" type="radio" name="payMethod" id="payCash" value="CASH" onchange="togglePaymentMethod()">
                                     <label class="form-check-label fw-bold" for="payCash">Cash Payment</label>
                                 </div>
@@ -817,6 +817,20 @@
                 const docSnap = await getDoc(doc(db, "settings", "config"));
                 if (docSnap.exists()) {
                     const data = docSnap.data();
+
+                    // 0. Handle Cash Option Visibility
+                    const cashDiv = document.getElementById('cashOptionDiv');
+                    const upiRadio = document.getElementById('payUPI');
+                    
+                    if (data.enableCash === false) {
+                        // Admin disabled cash -> Hide it and force UPI
+                        if(cashDiv) cashDiv.style.display = 'none';
+                        if(upiRadio) upiRadio.checked = true;
+                        togglePaymentMethod(); // Force UI update
+                    } else {
+                        // Admin enabled cash -> Show it
+                        if(cashDiv) cashDiv.style.display = 'block';
+                    }
                     
                     // 1. Update QR Image from DB if exists
                     if (data.qrCodeUrl) {
@@ -1453,6 +1467,7 @@
     </script>
 </body>
 </html>
+
 
 
 
