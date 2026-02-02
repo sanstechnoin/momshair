@@ -401,8 +401,21 @@
         const storage = getStorage(app);
         const auth = getAuth(app); // ADDED: Initialize Auth
 
+
+        // --- FETCH PIN FROM SERVER IMMEDIATELY ---
+        async function loadSystemPin() {
+            try {
+                const s = await getDoc(doc(db, "settings", "config"));
+                if (s.exists() && s.data().adminPin) {
+                    serverPinHash = s.data().adminPin; // Store it for login check
+                }
+            } catch (e) { console.log("PIN Load Error", e); }
+        }
+        loadSystemPin(); // Run on load
+
+        
         // GLOBAL VARIABLES
-        let allOrdersCache = []; 
+        let allOrdersCache = []; let serverPinHash = null;
         let pendingOrderId = null, pendingStatus = null, pendingConfirmCallback = null, pendingSecurityCallback = null;
         let unsubSupport = null, unsubCoupons = null, unsubEnquiries = null, unsubProducts = null;
         window.currentReviewTab = 'pending';
@@ -477,18 +490,28 @@
                         msg.style.display = 'block';
                     });
             }
-            // B. PIN MODE (Local)
+            // B. PIN MODE (Database)
             else {
-                const storedHash = localStorage.getItem('admin_pin_hash');
-                const lastUpdate = localStorage.getItem('pin_date');
-                
-                if (!storedHash) {
-                    msg.innerHTML = "No PIN set. <a href='#' onclick='setAuthMode(\"password\")'>Use Password</a> to login & setup.";
+                if (!serverPinHash) {
+                    msg.innerHTML = "No PIN set in Database. <a href='#' onclick='setAuthMode(\"password\")'>Use Password</a> to login & setup.";
                     msg.style.display = 'block';
                     btnText.style.display = 'inline-block';
                     btnSpin.style.display = 'none';
                     return;
                 }
+
+                if (btoa(val) === serverPinHash) {
+                    // Success
+                    document.getElementById('login-overlay').style.display = 'none';
+                    document.getElementById('admin-content').style.display = 'block';
+                    initDashboard();
+                } else {
+                    msg.innerText = "Incorrect PIN.";
+                    msg.style.display = 'block';
+                    btnText.style.display = 'inline-block';
+                    btnSpin.style.display = 'none';
+                }
+            }
 
                 // Expiry Check (60 Days)
                 const now = new Date().getTime();
@@ -516,12 +539,20 @@
             }
         };
 
-        window.startResetFlow = function() {
-            const newPin = prompt("Set a new 6-Digit PIN (Expires in 60 days):");
+        window.startResetFlow = async function() {
+            const newPin = prompt("Set a new 6-Digit PIN (Permanent):");
             if (newPin && newPin.length === 6 && !isNaN(newPin)) {
-                localStorage.setItem('admin_pin_hash', btoa(newPin)); 
-                localStorage.setItem('pin_date', new Date().getTime());
-                alert("PIN Updated Successfully!");
+                // Save to Firebase
+                try {
+                    await setDoc(doc(db, "settings", "config"), { 
+                        adminPin: btoa(newPin) 
+                    }, { merge: true });
+                    
+                    serverPinHash = btoa(newPin); // Update local variable immediately
+                    alert("✅ PIN Saved to Database! It will now work on any device.");
+                } catch(e) {
+                    alert("Error saving PIN: " + e.message);
+                }
             } else {
                 alert("Invalid PIN. Must be 6 digits.");
             }
