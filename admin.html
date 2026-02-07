@@ -259,12 +259,11 @@
                                     <input type="text" id="upi-id" class="form-control" placeholder="vbrindharani-1@okaxis">
                                     <small class="text-muted">Enter the UPI ID (e.g. name@bank)</small>
                                 </div>
-
-                                <div class="col-12 mt-2">
-                                    <label class="form-label fw-bold small text-info"><i class="bi bi-credit-card"></i> Razorpay Key ID</label>
-                                    <input type="text" id="razorpay-key" class="form-control" placeholder="rzp_live_...">
-                                    <small class="text-muted">Paste your Live Key ID here (starts with rzp_live_)</small>
-                                </div>
+				
+				<div class="col-12 mt-2">
+    				    <label class="form-label fw-bold small text-info"><i class="bi bi-credit-card"></i> Razorpay Key ID (Live)</label>
+				    <input type="text" id="razorpay-key" class="form-control" placeholder="rzp_live_...">
+				</div>
 
                                 <div class="form-check form-switch mt-3 pt-2 border-top">
                                 <input class="form-check-input" type="checkbox" id="enable-cash">
@@ -749,7 +748,7 @@
             document.getElementById('master-email').value = d.masterEmail || ""; 
             document.getElementById('whatsapp-num').value = d.whatsappNumber || ""; 
             document.getElementById('upi-id').value = d.upiId || "";
-            document.getElementById('razorpay-key').value = d.razorpayKey || "";
+	    document.getElementById('razorpay-key').value = d.razorpayKey || "";
 
             //Enable Cash
             document.getElementById('enable-cash').checked = d.enableCash === true;
@@ -772,7 +771,7 @@
                 masterEmail: document.getElementById('master-email').value, 
                 whatsappNumber: document.getElementById('whatsapp-num').value,
                 upiId: document.getElementById('upi-id').value,
-                razorpayKey: document.getElementById('razorpay-key').value,
+		razorpayKey: document.getElementById('razorpay-key').value,
                 enableCash: document.getElementById('enable-cash').checked
             }, {merge:true}); 
             stopLoading(); 
