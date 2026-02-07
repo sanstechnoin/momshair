@@ -25,7 +25,7 @@
     <meta name="twitter:title" content="Mom's Hair Oil - Pure & Handcrafted">
     <meta name="twitter:description" content="Heirloom quality herbal hair oil from Coimbatore. Sun-cooked and pure.">
     <meta name="twitter:image" content="https://momshairoil.in/social-banner.jpg">
-
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -675,30 +675,41 @@
                         <h6 class="text-uppercase text-muted fw-bold mb-3 small">Details & Payment</h6>
 
                         <div class="mb-3">
-                            <label class="form-label small fw-bold">Select Payment Method</label>
-                            <div class="d-flex gap-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="payMethod" id="payUPI" value="UPI" checked onchange="togglePaymentMethod()">
-                                    <label class="form-check-label fw-bold" for="payUPI">UPI / GPay</label>
+                            <label class="form-label small fw-bold">Select Payment Mode</label>
+                            <div class="d-flex flex-column gap-2">
+                                
+                                <div class="form-check border rounded p-2 bg-white shadow-sm">
+                                    <input class="form-check-input" type="radio" name="payMethod" id="payRazorpay" value="RAZORPAY" checked onchange="togglePaymentMethod()">
+                                    <label class="form-check-label fw-bold w-100" for="payRazorpay">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span><i class="bi bi-shield-check text-success"></i> Online Payment</span>
+                                            <span class="badge bg-success" style="font-size:0.6rem">INSTANT</span>
+                                        </div>
+                                        <small class="text-muted fw-normal" style="font-size:0.75rem">UPI Apps (GPay/PhonePe), Cards, Netbanking</small>
+                                    </label>
                                 </div>
-                                <div class="form-check" id="cashOptionDiv">
-                                    <input class="form-check-input" type="radio" name="payMethod" id="payCash" value="CASH" onchange="togglePaymentMethod()">
-                                    <label class="form-check-label fw-bold" for="payCash">Cash Payment</label>
+
+                                <div class="form-check border rounded p-2 bg-white shadow-sm">
+                                    <input class="form-check-input" type="radio" name="payMethod" id="payManual" value="MANUAL" onchange="togglePaymentMethod()">
+                                    <label class="form-check-label fw-bold w-100" for="payManual">
+                                        <span><i class="bi bi-qr-code"></i> Manual Transfer</span>
+                                        <small class="text-muted d-block fw-normal" style="font-size:0.75rem">Scan QR manually & Upload Screenshot</small>
+                                    </label>
                                 </div>
                             </div>
                         </div>
 
-                        <div id="upiSection">
-                            <div class="bg-light p-3 rounded mb-3 text-center">
-                                <div class="d-none d-md-block mb-2">
-                                    <a id="paymentLinkAnchor" href="#" target="_blank">
-                                        <img src="qrcode.png" alt="UPI QR" style="width: 100px;" class="border p-1 bg-white" id="paymentQRImage">
-                                    </a>
-                                </div>
-                                <p class="mb-0 fw-bold">UPI ID: <span id="displayUpiId" class="text-primary">vabinanthana@okaxis</span></p>
-                                <a id="upiAppBtn" href="#" class="btn btn-success w-100 d-md-none mt-2 text-decoration-none d-flex align-items-center justify-content-center gap-2">
-                                <i class="bi bi-phone"></i> Tap to Pay (GPay / PhonePe)
-                                </a>
+                        <div id="manualPaymentSection" style="display:none;">
+                            <div class="bg-light p-3 rounded mb-3 text-center border">
+                                <p class="mb-1 small fw-bold text-muted">Scan to Pay:</p>
+                                <img src="qrcode.png" alt="UPI QR" style="width: 120px;" class="border p-1 bg-white mb-2" id="paymentQRImage">
+                                <p class="mb-0 fw-bold small">UPI ID: <span id="displayUpiId" class="text-primary text-decoration-underline">Loading...</span></p>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-danger">Upload Payment Proof *</label>
+                                <input type="file" class="form-control form-control-sm" id="custScreenshot" accept="image/*">
+                                <input type="text" class="form-control form-control-sm mt-1" id="custTxnId" placeholder="Enter UTR / Ref Number (Optional)">
                             </div>
                         </div>
 
@@ -801,7 +812,8 @@
         const db = getFirestore(app);
         const storage = getStorage(app);
 
-        let masterEmail = "vabinanthana@gmail.com"; 
+        let masterEmail = "support@momshairoil.in";
+	let razorpayKeyId = null; 
         getDoc(doc(db, "settings", "config")).then(snap => { 
             if(snap.exists() && snap.data().masterEmail) masterEmail = snap.data().masterEmail;
         });
@@ -811,52 +823,29 @@
             if(snap.exists()) window.shippingRules = snap.data();
         });
 
-        // --- NEW: Load Dynamic Payment Details (QR + Link + Text) ---
+        // --- 1. LOAD SETTINGS & KEY ---
         async function loadPaymentDetails() {
             try {
                 const docSnap = await getDoc(doc(db, "settings", "config"));
                 if (docSnap.exists()) {
                     const data = docSnap.data();
+                    if (data.masterEmail) masterEmail = data.masterEmail;
+                    
+                    // Store Razorpay Key
+                    if (data.razorpayKey) razorpayKeyId = data.razorpayKey;
 
-                    // 0. Handle Cash Option Visibility
-                    const cashDiv = document.getElementById('cashOptionDiv');
-                    const upiRadio = document.getElementById('payUPI');
-                    
-                    if (data.enableCash === false) {
-                        // Admin disabled cash -> Hide it and force UPI
-                        if(cashDiv) cashDiv.style.display = 'none';
-                        if(upiRadio) upiRadio.checked = true;
-                        togglePaymentMethod(); // Force UI update
-                    } else {
-                        // Admin enabled cash -> Show it
-                        if(cashDiv) cashDiv.style.display = 'block';
-                    }
-                    
-                    // 1. Update QR Image from DB if exists
+                    // Update Manual UPI Details
                     if (data.qrCodeUrl) {
                         const qrImg = document.getElementById('paymentQRImage'); 
-                        if(qrImg) {
-                            // FIX: Add a random time parameter (?t=...) to force the browser to ignore cache and load the new image
-                            qrImg.src = data.qrCodeUrl + (data.qrCodeUrl.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
-                        }
+                        if(qrImg) qrImg.src = data.qrCodeUrl + "?t=" + new Date().getTime();
                     }
-
-                    // 2. Update UPI ID Text if exists
                     if (data.upiId) {
                         document.getElementById('displayUpiId').innerText = data.upiId;
-                        
-                        // Construct the full UPI link dynamically
-                        const fullLink = `upi://pay?pa=${data.upiId}&pn=MomsHairOil&cu=INR`;
-                        
-                        // Desktop/Clickable Image Link
-                        const qrAnchor = document.getElementById('paymentLinkAnchor');
-                        if(qrAnchor) qrAnchor.href = fullLink;
-
                     }
                 }
-            } catch (error) { console.log("Using default payment details", error); }
+            } catch (error) { console.log("Config Error", error); }
         }
-        loadPaymentDetails(); // Call on load
+        loadPaymentDetails();
 
         // Banner Promo
         if (!sessionStorage.getItem('promoShown')) {
@@ -1229,108 +1218,125 @@
 
         window.showNotification = function(msg) { document.getElementById('notificationMsg').innerText = msg; new bootstrap.Modal(document.getElementById('notificationModal')).show(); }
 
+        // --- 3. PLACE ORDER (MAIN LOGIC) ---
         window.placeOrder = async function() {
+            // A. Validation
             const name = document.getElementById('custName').value;
-                        // Get the full international number (e.g., +919952532391) from the plugin
             const phone = phoneIti.getNumber(); 
-            
-            // Validate Validity
-            if (!phoneIti.isValidNumber()) {
-                return showNotification("Please enter a valid phone number.");
-            }
-
             const address = document.getElementById('custAddress').value;
-            const txnId = document.getElementById('custTxnId').value.trim();
-            const fileInput = document.getElementById('custScreenshot');
             const terms = document.getElementById('termsCheck').checked;
             
-            // NEW: Check Payment Method
-            const isCash = document.getElementById('payCash').checked;
-
+            if (!phoneIti.isValidNumber()) return showNotification("Please enter a valid phone number.");
             if (window.cart.length === 0) return showNotification("Cart is empty!");
-            if (!name || !phone || !address) return showNotification("Please fill all details.");
-            
-            // --- VALIDATION: Only check Payment Proof if UPI is selected ---
-            if (!isCash) {
-                if (!txnId && fileInput.files.length === 0) {
-                    return showNotification("Please provide UTR Number OR upload a Screenshot.");
-                }
-            }
-            // --------------------------------------------------------------
-
+            if (!name || !address) return showNotification("Please fill all details.");
             if (!terms) return showNotification("Please accept terms.");
 
+            const method = document.querySelector('input[name="payMethod"]:checked').value;
+            
+            // Manual Proof Validation
+            if (method === 'MANUAL') {
+                const fileInput = document.getElementById('custScreenshot');
+                if (fileInput.files.length === 0) return showNotification("Please upload the Payment Screenshot.");
+            }
+
             const btn = document.getElementById('placeOrderBtn'); 
-            if(btn) { btn.innerHTML = "Processing..."; btn.disabled = true; }
+            btn.innerHTML = "Processing..."; btn.disabled = true;
             
             const finals = recalcTotal();
             const orderId = "M-" + Math.floor(100000 + Math.random() * 900000);
-            
-            let screenshotUrl = "";
-            // Only upload image if UPI selected AND file exists
-            if (!isCash && fileInput.files.length > 0) {
-                try {
-                    const file = fileInput.files[0];
-                    const storageRef = ref(storage, `payment_proofs/${orderId}_${file.name}`);
-                    const snapshot = await uploadBytes(storageRef, file);
-                    screenshotUrl = await getDownloadURL(snapshot.ref);
-                } catch (err) {
-                    console.error("Upload failed", err);
-                    if (err.code === 'storage/unauthorized') {
-                        alert("⚠️ Permission Denied: Check Storage Rules.");
-                        if(btn) { btn.innerHTML = "Place Order"; btn.disabled = false; }
-                        return; 
+
+            // --- B. RAZORPAY FLOW ---
+            if (method === 'RAZORPAY') {
+                if(!razorpayKeyId) { alert("Error: Payment Key Missing. Contact Admin."); btn.disabled=false; return; }
+
+                var options = {
+                    "key": razorpayKeyId, 
+                    "amount": Math.round(finals.total * 100), // Paise
+                    "currency": "INR",
+                    "name": "Mom's Hair Oil",
+                    "description": "Order #" + orderId,
+                    "image": "https://momshairoil.in/apple-touch-icon.png",
+                    "handler": function (response) {
+                        // Payment Success -> Save Order
+                        saveOrderToDb(orderId, name, phone, address, finals, "RAZORPAY", response.razorpay_payment_id, null);
+                    },
+                    "prefill": { "name": name, "contact": phone },
+                    "theme": { "color": "#1B4D3E" },
+                    "modal": {
+                        "ondismiss": function() { btn.innerHTML = "Place Order"; btn.disabled = false; }
                     }
-                    screenshotUrl = "UPLOAD_FAILED";
-                }
+                };
+                var rzp1 = new Razorpay(options);
+                rzp1.open();
+                return;
             }
 
+            // --- C. MANUAL FLOW ---
+            if (method === 'MANUAL') {
+                let screenshotUrl = "No Image";
+                const fileInput = document.getElementById('custScreenshot');
+                const txnId = document.getElementById('custTxnId').value || "Manual Upload";
+                
+                try {
+                    const file = fileInput.files[0];
+                    const sRef = ref(storage, `payment_proofs/${orderId}_${file.name}`);
+                    const snap = await uploadBytes(sRef, file);
+                    screenshotUrl = await getDownloadURL(snap.ref);
+                    
+                    // Save Order
+                    saveOrderToDb(orderId, name, phone, address, finals, "MANUAL_UPI", txnId, screenshotUrl);
+                } catch(e) {
+                    console.error(e);
+                    alert("Image Upload Failed. Try again.");
+                    btn.disabled = false;
+                }
+            }
+        }
+
+        // --- 4. SAVE TO DB HELPER ---
+        async function saveOrderToDb(orderId, name, phone, address, finals, method, txnId, screenshot) {
             let itemsString = ""; 
-            const flatCartForAdmin = [];
+            const flatCart = [];
+            
+            // Prepare Items & Update Stock
+            const batchPromises = [];
             window.cart.forEach(item => {
                 itemsString += `${item.name} x${item.quantity} (₹${item.price * item.quantity})\n`;
-                for(let i=0; i<item.quantity; i++) flatCartForAdmin.push({id: item.pid, size: item.size, name: item.name, price: item.price});
-            });
-
-            const deductionPromises = [];
-            window.cart.forEach(item => {
+                for(let i=0; i<item.quantity; i++) flatCart.push({id: item.pid, size: item.size, name: item.name, price: item.price});
+                
+                // Deduct Stock
                 const fieldPath = `variants.${item.size}.stock`;
-                const productRef = doc(db, "products", item.pid);
-                deductionPromises.push(updateDoc(productRef, { [fieldPath]: increment(-item.quantity) }));
+                batchPromises.push(updateDoc(doc(db, "products", item.pid), { [fieldPath]: increment(-item.quantity) }));
             });
 
             try {
-                await Promise.all(deductionPromises);
+                await Promise.all(batchPromises);
 
-                // Determine what to save as Transaction ID
-                let displayTxnId = txnId;
-                if (isCash) {
-                    displayTxnId = "CASH_PAYMENT";
-                } else if (!displayTxnId && screenshotUrl) {
-                    displayTxnId = "Screenshot Uploaded";
-                }
+                const status = (method === 'RAZORPAY') ? "Payment Received" : "Pending Verification";
 
                 await setDoc(doc(db, "orders", orderId), {
                     orderId: orderId, name: name, phone: phone, address: address,
                     items: itemsString, 
                     subtotal: finals.subtotal, shipping: finals.shipping, discount: finals.discount, total: finals.total,
                     coupon: window.appliedCoupon ? window.appliedCoupon.code : "NONE",
-                    cartDetails: flatCartForAdmin, 
+                    cartDetails: flatCart, 
                     
-                    txnId: displayTxnId, 
-                    screenshot: screenshotUrl, 
-                    paymentMethod: isCash ? "Cash" : "UPI", // New Field
+                    txnId: txnId, 
+                    screenshot: screenshot, 
+                    paymentMethod: method, 
                     
-                    status: "Pending Verification", timestamp: serverTimestamp()
+                    status: status, 
+                    timestamp: serverTimestamp()
                 });
 
+                // Send Email
                 const emailData = { 
-                    _subject: `New Order: ${orderId}`, 
+                    _subject: `New Order: ${orderId} (${method})`, 
                     order_id: orderId, name: name, phone: phone, 
                     items: itemsString, total_amount: `₹${finals.total}`, 
-                    transaction_ref: displayTxnId 
+                    transaction_ref: txnId 
                 };
-                if (screenshotUrl && screenshotUrl !== "UPLOAD_FAILED") emailData.proof_link = screenshotUrl;
+                if(screenshot) emailData.proof_link = screenshot;
 
                 fetch(`https://formsubmit.co/ajax/${masterEmail}`, {
                     method: "POST", headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
@@ -1340,14 +1346,14 @@
                 document.getElementById('success-order-id').innerText = orderId;
                 bootstrap.Modal.getInstance(document.getElementById('cartModal')).hide();
                 new bootstrap.Modal(document.getElementById('orderSuccessModal')).show();
+                
+                window.cart = []; window.saveCartToMemory();
 
             } catch (error) {
-                console.error("Error:", error);
-                showNotification("Error placing order.");
-                if(btn) { btn.innerHTML = "Place Order"; btn.disabled = false; }
+                console.error("DB Error:", error);
+                alert("Order Saved, but there was a network glitch. Please contact support.");
             }
         }
-
         async function loadWhatsAppNumber() {
             try {
                 const docSnap = await getDoc(doc(db, "settings", "config"));
@@ -1429,17 +1435,15 @@
             }
         });
         
+        // --- 2. TOGGLE UI ---
         window.togglePaymentMethod = function() {
-            const isCash = document.getElementById('payCash').checked;
-            const upiSec = document.getElementById('upiSection');
-            const upiInp = document.getElementById('upiInputs');
+            const method = document.querySelector('input[name="payMethod"]:checked').value;
+            const manualSec = document.getElementById('manualPaymentSection');
             
-            if (isCash) {
-                upiSec.style.display = 'none';
-                upiInp.style.display = 'none';
+            if (method === 'MANUAL') {
+                manualSec.style.display = 'block';
             } else {
-                upiSec.style.display = 'block';
-                upiInp.style.display = 'block';
+                manualSec.style.display = 'none';
             }
         }
                         // --- INTERNATIONAL PHONE SETUP ---
@@ -1467,7 +1471,3 @@
     </script>
 </body>
 </html>
-
-
-
-
